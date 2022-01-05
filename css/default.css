@@ -1,0 +1,51 @@
+/* Container */
+html {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+body {
+    background-color: lightblue;
+    color: black; 
+}
+header {
+    font-size: 20px;
+}
+nav {
+    background-color:  white;
+}
+section {
+    background-color: grey;
+}
+footer {
+    font-size: 1vw;
+    text-align: center;
+}
+/* Elements */
+img {
+    height: 100%;
+    width: 100%;
+}
+/* Class */
+.top ul {
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px;
+}
+.top li {
+    float: left;
+}
+.top li a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+}
+.top li a:hover {
+    background-color: black;
+    color: white;
+}
+/* IDs */
+#copyright {
+    margin: auto;
+    width: 250px;
+}
