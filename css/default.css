@@ -1,6 +1,7 @@
-/* Container */
+/* Containers */
 html {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
 }
 body {
     color: black; 
@@ -12,33 +13,75 @@ header {
 nav {
     border: 1px solid grey;
 }
-section {
-    border: 1px solid grey;
-}
-footer {
-    font-size: 10px; /* vw = viewport scale */
-    text-align: center;
-    border: 1px solid grey;
-}
-/* Elements */
-img {
-    height: 32px;
-    width: 32px;
-}
-/* Class */
-.top ul {
+ul {
     list-style-type: none;
     overflow: hidden;
     padding: 0px;
     margin: 0px;
 }
-.top li {
+li {
     float: left;
+    padding: 10px;
 }
-.top li a {
+section {
+    border: 1px solid grey;
+}
+article {
+    border: 1px dotted grey;
+}
+footer { 
+    text-align: center;
+    border: 1px solid grey;
+}
+/* Elements */ /* vw = viewport scale */
+a {
     display: block;
     color: black;
-    text-align: center;
-    padding: 10px;
     text-decoration: none;
+}
+h1 {
+    font-size: 42px; 
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 20px;
+}
+h4{
+    font-size: 18px;
+}
+h5{
+    font-size: 16px;
+}
+h6 {
+    font-size: 9px;
+}
+/* Media */
+img {
+    height: 32px;
+    width: 32px;
+}
+/* Classes */
+.bottom {
+    position: fixed;
+    bottom: -3px;
+    right: 0px;
+    text-align: right;
+    border: none;
+}
+.bottom ul {
+    background-color: white;
+    border: 1px solid grey;
+}
+.bottom li {
+    float: none;
+}
+.bottom img {
+    background-color: white;
+    border: 1px solid grey;
+}
+/* Identifactor */
+#nav_site {
+    display: none;
 }

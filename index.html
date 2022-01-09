@@ -4,14 +4,20 @@
 
         <title>SXuno</title>
 
-        <meta charset="UTF-8">
+
         <meta name="description" content="Portfolio SXuno">
-        <meta name="Keywords" content="Portfolio, Artstation, Github, Sketchfab, LinkedIn">
+        <meta name="keywords" content="Portfolio, Artstation, Github, Sketchfab, LinkedIn">
         <meta name="autor" content="Stefan Wienold">
+        <meta name="language" content="English">
+
+        <meta name="robots" content="index, nofollow">
 
         <meta name="viewport" content="width=device-with, inital-scale=1.0">
+        <meta charset="UTF-8">
 
         <link rel="stylesheet" href="css/default.css">
+
+        <script src="func/main.js"></script>
 
     </head>
     <body>
@@ -32,37 +38,61 @@
         </nav>
 
         <section>
-            <h2>About</h2>
+            <h2><a id="about">About</a></h2>
             <article>
                 thats me
             </article>
         </section>
 
         <section>
-            <h2>Highlights</h2>
+            <h2><a id="highlights">Highlights</a></h2>
             <article>
+                <img src="...">
+                <img src="...">
                 <img src="...">
             </article>
         </section>
 
         <section>
-            <h2>Modeling</h2>
+            <h2><a id="modeling">Modeling</a></h2>
             <article>
+                <h3>Architectrual Visualization</h3>
+                <img src="...">
+            </article>
+            <article>
+                <h3>Product Presentation</h3>
+                <img src="...">
+            </article>
+            <article>
+                <h3>Enviorment Art</h3>
                 <img src="...">
             </article>
         </section>
 
         <section>
-            <h2>Programing</h2>
+            <h2><a id="programing">Programing</a></h2>
             <article>
+                <h3>Coding</h3>
+                <img src="...">
+            </article>
+            <article>
+                <h3>Visual Scripting</h3>
                 <img src="...">
             </article>
         </section>
 
         <section>
-            <h2>Contact</h2>
+            <h2><a id="contact">Contact</a></h2>
             <article>
+                <h3>direct</h3>
                 email
+            </article>
+            <article>
+                <h3>portals</h3>
+                <ul>
+                    <li>Fiverr</li>
+                    <li>Upwork</li>
+                </ul>
             </article>
         </section>
 
@@ -70,8 +100,15 @@
             <h6>copyright Stefan Wienold 2022</h6>
         </footer>
 
-        <nav class="bottom" style="text-align: right;">
-            <img src="icon/menu.svg">
+        <nav class="bottom">          
+                <ul  id="nav_site" onmouseenter="js_ani('nav_site', 'menu', 'enter')" onmouseleave="js_ani('nav_site', 'menu', 'leave')">
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#highlights">Highlights</a></li>
+                    <li><a href="#modeling">Modeling</a></li>
+                    <li><a href="#programing">Programing</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <img src="icon/menu.svg" onmouseenter="js_ani('nav_site', 'button', 'enter')" onmouseleave="js_ani('nav_site', 'button', 'leave')">    
         </nav>
 
     </body>
