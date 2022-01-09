@@ -59,10 +59,14 @@ h6 {
 }
 /* Media */
 img {
+    height: 150px;
+    width: 200px;
+}
+/* Classes */
+.top img {
     height: 32px;
     width: 32px;
 }
-/* Classes */
 .bottom {
     position: fixed;
     bottom: -3px;
@@ -78,6 +82,8 @@ img {
     float: none;
 }
 .bottom img {
+    height: 32px;
+    width: 32px;
     background-color: white;
     border: 1px solid grey;
 }
