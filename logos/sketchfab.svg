@@ -1,7 +1,7 @@
 <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
         <title>sketchfab</title>
-        <circle cx="100" cy="100" r="100" style="fill:black"/>
-        <polygon points="99,39 150,69 99,96 48,69" style="fill:white" />
-        <polygon points="150,84 150,135 107,160 107,107" style="fill:white" />
-        <polygon points="48,84 48,135 92,160 92,107" style="fill:white" />
+        <circle cx="100" cy="100" r="100" style="fill:white"/>
+        <polygon points="99,39 150,69 99,96 48,69" style="fill:black" />
+        <polygon points="150,84 150,135 107,160 107,107" style="fill:black" />
+        <polygon points="48,84 48,135 92,160 92,107" style="fill:black" />
 </svg>

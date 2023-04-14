@@ -1,0 +1,35 @@
+html {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+body {
+    background-color: black;
+    color: white;
+    width: 420px;
+    margin: auto;
+}
+header {
+    padding: 0px;
+}
+h1 {
+    font-size: 48px;
+}
+ul {
+    list-style-type: none;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0px;
+}
+li {
+    float: lefT;
+    padding: 10px;
+}
+/* Elements */ /* vw = viewport scale */
+a {
+    display: block;
+    color: white;
+    text-decoration: none;
+}
+nav img{
+    height: 32px;
+    width: 32px;
+}
