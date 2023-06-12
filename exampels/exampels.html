@@ -11,27 +11,82 @@
             a {
                 text-decoration: none;
                 color: orange;
+                padding: 0px;
             }
             img {
                 height: 315px;
                 width: 560px;
             }
+            #wrapper-body {
+                width: 1125px;
+                margin: auto;
+                padding-top: 20px;
+            }
+            #wrapper-links {
+                height: 48px;
+                width: 164px;
+                margin: auto;
+                padding-top: 20px;
+            }
 
+            .links a {
+                display: block;
+                width: 48px;
+                height: 48px;
+            }
+            .links img {
+                height: 48px;
+                width: 48px;
+            }
+            #link-twitter {
+                margin: 0px 10px;
+            }
+            #wrapper-content {
+                padding-top: 50px;
+            }
+            .effekt-link {
+                float: left;
+                background-color: white;
+                border-radius: 24px;
+            }
+            .effekt-link:hover {
+                box-shadow: 0 0px 16px lightblue;
+            }
         </style>
-
     </head>
     <body>
-        <div>EXAMPELS</div>
-        <div id="links">
-            <a href="#sketchfab">S</a>
-            <a href="#twitter">T</a>
-            <a href="#youtube">Y</a>
-        </div>
-        <div id="exampels">
-            <img src="images/preview-woodhut.jpg">
-            <iframe width="560" height="315" title="Smithgridstone" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed"> </iframe>
-            <img src="images/preview-japanesebath.png">
-            <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/8atRYanX8yk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe> -->
+        <div id="wrapper-body">
+            <div id="wrapper-links">
+                <div class="links">
+                    <div id="link-sketchfab" class="effekt-link">
+                        <a href="https://sketchfab.com/sxuno">
+                            <img src="logos/sketchfab.svg">
+                        </a>
+                    </div>
+                    <div id="link-twitter" class="effekt-link">
+                        <a href="https://twitter.com/SXuno">
+                            <img src="logos/twitter.svg">
+                        </a>
+                    </div>
+                    <div id="link-youtube" class="effekt-link">
+                        <a href="https://www.youtube.com/channel/UC5llmhOtMno3-DQoRaLsNgg">
+                            <img src="logos/youtube.svg">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div id="wrapper-content">
+                <div id="content-slider">
+                    <img src="images/preview-japanesebath.png">
+                    <img src="images/preview-unrealtestspace.jpg">
+                    <img src="images/preview-woodhut.jpg">
+                    <img src="images/preview-workspace.jpg">
+                </div>
+                <div id="content-interactiv">            
+                    <iframe width="560" height="315" src="https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed" title="Smithgridstone" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"> </iframe>            
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/8atRYanX8yk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
     </body>
 
