@@ -60,22 +60,31 @@
                 background-size: cover;
             }
             #preview-japanesebath {
-                background-image: url("images/preview-japanesebath.png");                
+                background-image: url("images/preview-japanesebath.png");
+                background-position: center;               
             }
             #preview-unrealtestspace {
-                background-image: url("images/preview-unrealtestspace.png");                
+                background-image: url("images/preview-unrealtestspace.png");
+                background-position: center;                
             }
             #preview-woodhut {
-                background-image: url("images/preview-woodhut.png");                
+                background-image: url("images/preview-woodhut.png");
+                background-position: center;               
             }
             #preview-workspace {
-                background-image: url("images/preview-workspace.png");                
+                background-image: url("images/preview-workspace.png");
+                background-position: center;               
             }
             #preview-smithgridstone {
                 background-image: url("images/preview-smithgridstone.png");
+                background-position: center;
             }
             #preview-carshop {
                 background-image: url("images/preview-carshop.png");
+                background-position: center;
+            }
+            .effekt-background-zoom:hover {
+                background-size: 120%;
             }
             .wrapper-preview {
                 height: 315px;
@@ -100,7 +109,7 @@
                 position: absolute;
                 bottom: 0px;
                 right: 0px;
-                padding: 0px 10px 10px 0px;
+                padding: 10px;
                 width: 540px;
                 white-space: nowrap;
             }
@@ -169,7 +178,7 @@
             <div id="wrapper-content">
                 <div class="content">
                     <div class="wrapper-preview">                        
-                        <div id="preview-japanesebath" onclick="image('japanesebath')">
+                        <div id="preview-japanesebath" class="effekt-background-zoom" onclick="image('japanesebath')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Japanese bath</h2>
@@ -181,7 +190,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-unrealtestspace" onclick="image('unrealtestspace')">
+                        <div id="preview-unrealtestspace" class="effekt-background-zoom" onclick="image('unrealtestspace')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Unrealtestspace</h2>
@@ -193,7 +202,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-woodhut" onclick="image('woodhut')">
+                        <div id="preview-woodhut" class="effekt-background-zoom" onclick="image('woodhut')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Woodhut</h2>
@@ -205,7 +214,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-workspace" onclick="image('workspace')">
+                        <div id="preview-workspace" class="effekt-background-zoom" onclick="image('workspace')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Workspace</h2>
@@ -217,7 +226,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview"> 
-                        <div id="preview-smithgridstone" onclick="image('smithgridstone')">
+                        <div id="preview-smithgridstone" class="effekt-background-zoom" onclick="image('smithgridstone')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Smithgridstone</h2>
@@ -231,7 +240,7 @@
                     <!-- <iframe width="560" height="315" src="https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed" title="Smithgridstone" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"> </iframe> -->
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-carshop" onclick="image('carshop')">
+                        <div id="preview-carshop" class="effekt-background-zoom" onclick="image('carshop')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Carshop</h2>
