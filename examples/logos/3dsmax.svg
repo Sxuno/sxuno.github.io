@@ -1,0 +1,8 @@
+
+<svg width="86" height="86" viewbox="0 0 86 86" xmlns="http://www.w3.org/2000/svg" >
+        <title>3dsmax</title>
+        <polygon points="12,20 21,14 21,59 12,66" style="fill:#7CC5DC;" />
+        <polygon points="21,14 21,59 68,59 68,17 66,14" style="fill:#3AA4CB;" />
+        <polygon points="21,59 68,59 68,24 72,24 72,69 19,69 17,66 17,62 " style="fill:#39697E;" />
+        <text x="33" y="49" textLength="22" lengthAdjust="spacingAndGlyphs" style="fill:#ffffff;font-family: Arial;font-size: 36px;font-weight: bold;">3</text>
+</svg>
