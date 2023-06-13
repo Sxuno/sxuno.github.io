@@ -9,6 +9,7 @@
                 color: white;
                 font-family: Arial, Helvetica, sans-serif;
                 text-shadow: 1px 1px rgb(0, 0, 0);
+                user-select: none;
             }
             a {
                 text-decoration: none;
@@ -16,7 +17,7 @@
                 padding: 0px;
             }
             #wrapper-body {
-                width: 1128px;
+                width: 1128px;                
                 margin: 40px auto;
             }
             #wrapper-links {
@@ -46,10 +47,11 @@
                 box-shadow: 0 0px 16px lightblue;
             }
             #wrapper-content {
-                height: 950px;
+                min-height: 950px;
                 padding: 40px 0px;
             }
-            .content div{
+            .content div {
+                display: block;
                 cursor: pointer;
                 float: left;
                 height: 315px;
@@ -61,18 +63,18 @@
                 background-image: url("images/preview-japanesebath.png");                
             }
             #preview-unrealtestspace {
-                background-image: url("images/preview-unrealtestspace.jpg");                
+                background-image: url("images/preview-unrealtestspace.png");                
             }
             #preview-woodhut {
-                background-image: url("images/preview-woodhut.jpg");                
+                background-image: url("images/preview-woodhut.png");                
             }
             #preview-workspace {
-                background-image: url("images/preview-workspace.jpg");                
+                background-image: url("images/preview-workspace.png");                
             }
             #preview-smithgridstone {
                 background-image: url("images/preview-smithgridstone.png");
             }
-            #preview-carshop{
+            #preview-carshop {
                 background-image: url("images/preview-carshop.png");
             }
             .wrapper-preview {
@@ -116,6 +118,31 @@
                 width: 36px;
                 padding-left: 10px;
             }
+            #wrapper-details {
+                display: none;
+                background-color: lightblue;
+                z-index: 3;
+                border-radius: 5px;
+            }
+            #details-func-close {
+                height: 28px;
+                width: 28px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: rgba(0,0,0,0.75);
+                border-radius: 8px;
+                text-align: center;
+                font-size: 20px;
+                cursor: pointer;
+            }
+            #details-image {
+                height: 630px;
+                width: 1080px;
+                background-size: cover;
+                border-radius: 5px;
+                margin: 2px;
+            }
         </style>
     </head>
     <body>
@@ -142,7 +169,7 @@
             <div id="wrapper-content">
                 <div class="content">
                     <div class="wrapper-preview">                        
-                        <div id="preview-japanesebath">
+                        <div id="preview-japanesebath" onclick="image('japanesebath')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Japanese bath</h2>
@@ -154,7 +181,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-unrealtestspace">
+                        <div id="preview-unrealtestspace" onclick="image('unrealtestspace')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Unrealtestspace</h2>
@@ -166,7 +193,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-woodhut">
+                        <div id="preview-woodhut" onclick="image('woodhut')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Woodhut</h2>
@@ -178,7 +205,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-workspace">
+                        <div id="preview-workspace" onclick="image('workspace')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Workspace</h2>
@@ -190,7 +217,7 @@
                         </div>
                     </div>
                     <div class="wrapper-preview"> 
-                        <div id="preview-smithgridstone">
+                        <div id="preview-smithgridstone" onclick="image('smithgridstone')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Smithgridstone</h2>
@@ -204,7 +231,7 @@
                     <!-- <iframe width="560" height="315" src="https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed" title="Smithgridstone" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking"> </iframe> -->
                     </div>
                     <div class="wrapper-preview">
-                        <div id="preview-carshop">
+                        <div id="preview-carshop" onclick="image('carshop')">
                             <div class="effekt-preview"></div>
                             <div class="preview-details">
                                 <h2>Carshop</h2>
@@ -219,7 +246,86 @@
                     </div>
                 </div>
             </div>
+            <div id="wrapper-details">
+                <div class="details">
+                    <div id="details-func-close" onclick="detailsFuncClose()">x</div>
+                    <div id="details-image"></div>
+                    <div id="details-description"></div>
+                </div>
+            </div>
         </div>
-    </body>
+        <script>
+            function scroll(value) {
+                if(value == false) {
+                    let scrollTop = window.pageYOffset || document.documentElement.scrollTop
+                    let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
 
+                    window.onscroll = function () {
+                        window.scrollTo(scrollLeft, scrollTop)
+                    }
+                }
+                if(value == true) {
+                    window.onscroll = function() {}
+                }
+            }
+            function image(name) {
+                scroll(false)
+                let w = document.documentElement.clientWidth
+                let h = window.innerHeight
+
+                let html = document.getElementById("wrapper-details")
+                let posY = (h-634)/2
+                let posX = (w-1084)/2
+                html.style.top = `${window.pageYOffset+posY}px`
+                html.style.left = `${posX}px`
+                html.style.position = "absolute"
+                html.style.height = "634px"
+                html.style.width = "1084px"
+                html.style.display = "block"
+
+                let image = document.getElementById("details-image")
+                image.style.backgroundImage = "url(images/preview-"+name+".png)"
+
+            }
+            function sketchfab(name) {
+
+            }
+            function youtube(name) {
+
+            }
+            function responsive() {
+                let w = document.documentElement.clientWidth
+                let h = window.innerHeight
+
+                let html = document.getElementById("wrapper-details")
+                let posY = (h-634)/2
+                let posX = (w-1084)/2
+                html.style.top = `${window.pageYOffset+posY}px`
+                html.style.left = `${posX}px`
+            }
+            function detailsFuncClose() {
+                document.getElementById("wrapper-details").style.display = "none"
+                scroll(true)
+            }
+            function setSize() {
+                let w = window.innerWidth
+                let h = window.innerHeight
+                let width = ""
+                if(w > 1128) {
+                    width = "1128px"
+                }
+                if(w < 1128) {
+                    width = "564px"
+                }
+                document.getElementById("wrapper-body").style.width = width      
+            }
+            window.addEventListener("DOMContentLoaded", (event) => {
+                setSize()
+            })
+            addEventListener("resize", () => {
+                setSize()    
+                responsive()         
+            })
+        </script>
+    </body>
 </html>
