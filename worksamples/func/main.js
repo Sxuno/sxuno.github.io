@@ -1,7 +1,17 @@
 window.addEventListener("DOMContentLoaded", () => {
 
+    //ToDo: +add cookie loader lang,theme
+    //---
+    //console.log(document.cookie)
+
+    //ToDo: +add auto language based on system
+    //---
+    //console.log(`system: ${navigator.language}`)
     
+    //ToDo: +add themeselector
+    //---
     //console.log(document.styleSheets[1])
+    //document.styleSheets[1].disabled = true
 
 })
 function scroll(bool) {

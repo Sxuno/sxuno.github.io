@@ -16,15 +16,21 @@ div {
 }
 .header {
     height: 55px;
-    width: 328px;
+    width: 420px;
     margin: 25px auto;
-    padding: 0px 400px;
+    padding: 0px 354px;
 }
 .header h1 {
     font-size: 48px;
     text-align: center;
     margin: 0px;
     padding: 0px;
+    float: right;
+}
+.header img {
+    width: 55px;
+    height: 55px;
+    float: left;
 }
 .navigationbar {
     height: 58px;
