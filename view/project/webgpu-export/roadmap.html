@@ -36,7 +36,7 @@ small { display: block; text-align: center; font-size: 12px; margin: 0px auto; p
 <script>
 window.api = {}
 window.api.roadmap = {}
-if (window.location.protocol === 'file:') {
+/*if (window.location.protocol === 'file:') {*/
 	window.api.roadmap.data = 
 	{
 		'versions': 
@@ -68,8 +68,8 @@ if (window.location.protocol === 'file:') {
 		]
 	}
 	console.table(window.api.roadmap.data)
-}
-/*
+/*}
+
 if (window.location.protocol !== 'file:') {
 	fetch('roadmap.json')
 		.then(res => res.json())
