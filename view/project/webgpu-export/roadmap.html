@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>Blender WebGPU Export</title>
+  <link rel="icon" type="image/x-ico" href="./../../../media/icon/menu.svg">
+<style>
+* { color-scheme: dark; font-family: Arial, Helvetica, sans-serif; user-select: none; }
+a:link, a:visited, a:hover, a:active, a:focus { color: rgb(0, 128, 255); text-decoration: none; }
+html, body { height: 100%; margin: 0px; display: flex; flex-direction: column; }
+h3, h4 { margin-top: 0px; }
+header h1 { width: 100%; max-width: 1080px; min-width: 433px; margin: auto; }
+main { max-width: 1080px; width: 100%; margin: auto; flex-grow: 1; }
+.grid-wrap { display: flex; flex-wrap: wrap; }
+.col10 { flex: 0 0 10%; padding: 5px 5px 5px 0px; }
+.col25 { flex: 1 1 25%; padding: 5px 0px; }
+.col33 { flex: 1 1 33%; padding: 5px 0px; }
+.col50 { flex: 1 1 50%; padding: 5px 0px; min-width: 320px; }
+.roadmap { padding: 5px; border: 1px solid black; display: flex; position: relative; }
+.legend { background-color: transparent; display: flex; flex-direction: column; position: absolute; top: 0px; left: 0px; z-index: 1; }
+.legend div { background-color: transparent; font-size: 12px; font-weight: bold; padding-left: 5px; position: relative; }
+.legend div:nth-child(1) { top: 25px; }
+.legend div:nth-child(2) { top: 64px; }
+.legend div:nth-child(3) { top: 102px; }
+.timeline { display: flex; overflow-x: scroll; max-width: 100%; padding-bottom: 6px; flex-grow: 1; }
+.timeline div { background-color: black; flex: 0 0 auto; justify-content: flex-end; border-right: 1px solid black; }
+.timeline div:nth-child(1) label { font-weight: bold; color: white;}
+.timeline > div:last-child { flex-grow: 1; }
+.timeline div label { background-color: rgb(0, 128, 255); color: rgb(31, 58, 97); font-style: italic; display: flex; flex: 0 0 auto; justify-content: flex-end; padding-right: 5px; }
+.timeline div div { background-color: grey; display: flex; justify-content: flex-end; height: 33px; gap: 5px; margin-top: 20px; }
+.timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; }
+footer { background-color: rgb(27, 27, 27); border-top: 1px solid black; color: grey; margin: 20px 0px 0px 0px; }
+small { display: block; text-align: center; font-size: 12px; margin: 0px auto; padding: 10px 0px; }
+</style>
+<script>
+window.api = {}
+window.api.roadmap = {}
+if (window.location.protocol === 'file:') {
+	window.api.roadmap.data = 
+	{
+		'versions': 
+		[
+			{
+			'label': 'Version 0.1.0dev',
+			'rows': {
+				'Integrations'  : ['Render Resolution', 'Mesh Data'],
+				'Technologies'  : ['Device Setup', 'Renderpass'],
+				'Features'      : ['Export Generator','Standalone Distribution']
+				}
+			},
+			{
+			'label': 'in development',
+			'rows': {
+				'Integrations'  : ['Material Color', 'Backface culling', 'Background RGB', 'Light Points', 'Keyframes',],
+				'Technologies'  : ['RGB Shader','Deferred Rendering', 'Shadows', 'Lightning', 'GPU-driven rendering', 'Draw call batching' ],
+				'Features'      : ['Template Preview', 'Shading Modes', 'Camera Movement', 'Debug View'],
+				}
+			},
+			{
+			'label': 'Future release',
+			'rows': {
+				'Integrations'  : ['Material Texture', 'Material Normals', 'Material Emissive', 'Material Roughness', 'Material Alpha', 'Particle Systems'],
+				'Technologies'  : ['Texture Shader', 'Normalmap Shader', 'Forward Rendering', 'Instancing', 'Frame Interpolation', 'Virtual Shadow Map'],
+				'Features'      : ['Template Showcase', 'Template Benchmark', 'Bounding Boxes', 'LOD System'],
+				}
+			}
+		]
+	}
+	console.table(window.api.roadmap.data)
+}
+if (window.location.protocol !== 'file:') {
+	fetch('roadmap.json')
+		.then(res => res.json())
+		.then(json => {
+			window.api.roadmap.data = json
+		})
+		.catch(console.error)
+}
+// ? Namespace roadmap.timeline.render is better
+window.api.roadmap.render = function (data) {
+  const timeline = document.querySelector('.timeline')
+  timeline.innerHTML = ''
+
+  data.versions.forEach(version => {
+	const box = document.createElement('div')
+	box.className = 'box'
+
+	const label = document.createElement('label')
+	label.textContent = version.label
+	box.appendChild(label)
+
+	for (const rowLabel in version.rows) {
+	  const row = document.createElement('div')
+	  row.className = 'row'
+
+	  version.rows[rowLabel].forEach(text => {
+		const col = document.createElement('div')
+		col.className = 'col'
+		col.textContent = text
+		row.appendChild(col)
+	  })
+	  box.appendChild(row)
+	}
+	timeline.appendChild(box)
+  })
+}
+// Runtime
+document.addEventListener('DOMContentLoaded', (event) => {
+	console.time(event.type)
+		console.log(window.api)
+		window.api.roadmap.render(window.api.roadmap.data)
+	console.timeEnd(event.type)
+})
+</script>
+<body>
+	<header>
+		<h1>Blender WebGPU Export</h1>
+	</header>
+	<main id = 'githubpage'>
+		<section id = 'preview'>
+			<h2>Preview</h2>
+		</section>
+		<section id = 'description'>
+			<h2>Description</h2>
+				Exports Blender Scenes to Html using<br />
+				a modular WebGPU engine designed for<br />
+				direct use in the browser via CDN.<br />
+				<br />
+				Ideal for real-time previews, Web-based sharing,<br />
+				or bridging Blender and browser-based<br>
+				rendering workflows.<br />
+		</section>
+		<section id = 'features'>
+			<h2>Features</h2>
+				<div class = 'grid-wrap'>
+					<div class = 'col50'>
+						<section>
+							<h3>Distributions</h3>
+							Deliver your Scene as small Demos via<br />
+							Standalone or build bigger interactive<br />
+							immersions with Script or Server Distribution.
+						</section>
+					</div>
+					<div class = 'col50'>
+						<section>
+							<h3>Templates</h3>
+							Different Templates to enhance your<br />
+							exported scenes with a basic framework.
+						</section>
+					</div>
+					<div class = 'col50'>
+						<section>
+							<h3>Shading Selector</h3>
+							Set your default shading mode, right<br />
+							on export instead digging throu<br />
+							code and functions.
+						</section>
+					</div>
+					<div class = 'col50'>
+						<section>
+							<h3>Camera Controller</h3>
+							Different camera controller for creative<br />
+							ways of presentation or interactions.
+						</section>
+					</div>                 
+				</div>
+		</section>
+		<section id = 'specifications'>
+			<h2>Specifications</h2>
+			<section class = 'requirements'>
+				<h3>Requirements</h3>
+				<div class = 'grid-wrap'>
+					<div class = 'col50'>
+						<section>
+							<h4>Addon</h4>
+							Blender 4.5.0 or newer<br />
+							<br />
+							(No support for older versions)<br />
+							<br />
+							Python 3.11+<br />
+							<br />
+							(bundled with Blender)<br/>
+						</section>
+					</div>
+					<div class = 'col50'>
+						<section>
+							<h4>WebGPU</h4>
+							Chrome (Stable), Edge (Stable), Firefox Nightly<br />
+							<br />
+							<i>“WebGPU support must be enabled in browser settings<br />
+							if not available by default.”</i><br />
+							<br />
+							<b>ChromeOS</b><br />
+							&emsp;Supported on recent hardware<br />
+							<b>Linux</b><br />
+							&emsp;Vulkan support required<br />
+							<b>macOS</b><br />
+							&emsp;Metal support required (macOS 10.14+)<br />
+							<b>Windows</b><br />
+							&emsp;DirectX 12 GPU required
+						</section>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h3>Tech Stack</h3>
+					<div class = 'grid-wrap'>
+						<div class = 'col33'>
+							<b>Languages</b><br />
+							Python, Javascript, WGSL<br />
+						</div>
+						<div class = 'col33'>
+							<b>APIs</b><br />
+							Blender API, WebGPU API<br />
+						</div>
+						<div class = 'col33'>
+							<b>Markup</b><br />
+							HTML, CSS
+						</div>
+					</div>
+			</section>
+		</section>
+		<section id = 'roadmap'>
+			<h2>Roadmap</h2>
+			<div class = 'roadmap'>
+				<div class = 'legend'>
+					<div class = 'label'>Integrations</div>
+					<div class = 'label'>Technologies</div>
+					<div class = 'label'>Features</div>
+				</div>
+				<div class = 'timeline'>
+					<!-- window.api.roadmap.render() -->
+				</div>
+			</div>
+		</section>
+		<section id = 'demo'>
+			<h2>Demo</h2>
+			WebGPU needs to be activated
+		</section>
+		<section id = 'download'>
+			<h2>Download</h2>
+			<nav>
+				<h3>Github</h3>
+				<div class = 'grid-wrap'>
+					<div class = 'col10'>
+						source: 
+					</div>
+					<div class = 'col33'>
+						<a href = 'https://github.com/sxuno/webgpu-export/' target = '_blank' rel = 'noopener noreferrer'>https://github.com/sxuno/webgpu-export/</a>
+					</div>
+				</div>
+				<div class = 'grid-wrap'>
+					<div class = 'col10'>
+					release:
+					</div>
+					<div class = 'col33'>
+						<a href = 'https://github.com/sxuno/webgpu-export/releases' target='_blank' rel='noopener noreferrer'>https://github.com/sxuno/webgpu-export/releases</a><br /><br />
+					</div>
+				</div>
+				<h3>Blender Addons</h3>
+				<div class = 'grid-wrap'>
+					<div class = 'col10'>
+					release:
+					</div>
+					<div class = 'col33'>
+						<a href = 'https://extensions.blender.org/add-ons/' target = '_blank' rel = 'noopener noreferrer'>https://extensions.blender.org/add-ons/</a>
+					</div>
+				</div>
+			</nav>
+		</section>
+	</main>
+	<footer>
+		<small>
+		copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+		</small>
+	</footer>
+</body>

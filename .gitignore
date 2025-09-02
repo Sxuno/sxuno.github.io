@@ -1,0 +1,3 @@
+svg-builder.py
+/media/*/*.html
+!media/*/*.svg
