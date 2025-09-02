@@ -69,6 +69,7 @@ if (window.location.protocol === 'file:') {
 	}
 	console.table(window.api.roadmap.data)
 }
+/*
 if (window.location.protocol !== 'file:') {
 	fetch('roadmap.json')
 		.then(res => res.json())
@@ -77,6 +78,8 @@ if (window.location.protocol !== 'file:') {
 		})
 		.catch(console.error)
 }
+*/
+
 // ? Namespace roadmap.timeline.render is better
 window.api.roadmap.render = function (data) {
   const timeline = document.querySelector('.timeline')
@@ -117,7 +120,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	<header>
 		<h1>Blender WebGPU Export</h1>
 	</header>
-	<main id = 'githubpage'>
+	<main>
 		<section id = 'preview'>
 			<h2>Preview</h2>
 		</section>
