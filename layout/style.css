@@ -31,7 +31,7 @@ main { max-width: 1080px; width: 100%; margin: auto; flex-grow: 1; }
 .timeline > div:last-child { flex-grow: 1; }
 .timeline div label { background-color: rgb(0, 128, 255); color: rgb(31, 58, 97); font-style: italic; display: flex; flex: 0 0 auto; justify-content: flex-end; padding-right: 5px; }
 .timeline div div { background-color: grey; display: flex; justify-content: flex-end; height: 33px; gap: 5px; margin-top: 20px; }
-.timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; }
+.timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; font-family: Arial, Helvetica, sans-serif; }
 footer { background-color: rgb(27, 27, 27); border-top: 1px solid black; color: grey; margin: 20px 0px 0px 0px; }
 small { display: block; text-align: center; font-size: 12px; margin: 0px auto; padding: 10px 0px; }
 /* new */
