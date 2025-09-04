@@ -8,9 +8,9 @@ engine.shader.lights = engine.shader.lights || {}
 engine.shader.lights.fragment = `
 struct Light {
     location : vec3f,
-    _pad0 : f32,
+    distance : f32,
     color : vec3f,
-    _pad1 : f32,
+    power : f32,
 };
 
 struct Metadata {
@@ -49,10 +49,11 @@ fn main(@builtin(position) fragCoord : vec4f) -> @location(0) vec4f {
     let fragmentPos = worldPosH.xyz / worldPosH.w;
 
     var finalLight = vec3f(0.0);
-    let intensity = 0.0; 
-    let radius    = 4.2;
 
     for (var i = 0u; i < u32(metadata.lightNum); i = i + 1u) {
+        let intensity = lights[i].power; 
+        let radius    = lights[i].distance;
+
         let toLight = lights[i].location - fragmentPos;
         let dist    = length(toLight);
 

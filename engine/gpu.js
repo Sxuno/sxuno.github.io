@@ -25,7 +25,7 @@ engine.gpu = (function() {
 			_context[_context.length -1].configure({
 				device: _device,
 				format: _format,
-				alphaMode: 'premultiplied',
+				alphaMode: 'opaque',
 			})
 		}
 		console.log(`GPU init ${performance.now() - engine.STATS.delta} ms`)    
@@ -157,11 +157,11 @@ engine.gpu = (function() {
 					light.location[0], 
 					light.location[1], 
 					light.location[2], 
-					0,
+					light.distance,
 					light.color[0], 
 					light.color[1], 
 					light.color[2], 
-					0
+					light.power,
 				)
 			}
 			const typedArray = new Float32Array(data)

@@ -74,9 +74,10 @@ engine.pipeline.basepass = (function () {
 		_buffer.metadata = engine.gpu.buffer.metadata.create(_data.metadata) // GPUBufferUsage.UNIFORM
 		_buffer.material = {}
 		_buffer.material.color = engine.gpu.buffer.material.create(_data.material.rgb.lookup) // GPUBufferUsage.STORAGE		
-		// BUFFER SHARED
-		//engine.gpu.buffer.geometry.create(_data, 'debug')
+		/* BUFFER SHARED */
 		
+		// engine.gpu.buffer.geometry.create(_data, 'debug') 
+
 		// BUFFER Geomentry
 		_buffer.vertex = engine.gpu.buffer.vertex.create( _data.mesh.vertex) // GPUBufferUsage.VERTEX	
 		_buffer.vertexMaterial = engine.gpu.buffer.vertex.color.create(_data.mesh.vertexMaterial) // GPUBufferUsage.VERTEX	

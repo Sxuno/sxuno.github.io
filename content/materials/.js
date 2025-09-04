@@ -1,0 +1,1 @@
+engine.scene.data.materials.push({name:'',rgb:[1.0,0.0,1.0],culling:false})

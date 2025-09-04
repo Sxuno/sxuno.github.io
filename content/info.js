@@ -32,7 +32,7 @@ engine.scene.data.info.files = [
 	'meshes/book.008',
 	'meshes/book.009',
 	'meshes/birch_leaves_generated',
-	'materials/default',
+	'materials/',
 	'materials/Material',
 	'materials/M_B_Green',
 	'materials/white',
