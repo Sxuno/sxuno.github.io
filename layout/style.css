@@ -41,6 +41,4 @@ small { display: block; text-align: center; font-size: 12px; margin: 0px auto; p
 #webgpu-engine {width:1080px;}
 #worksample_3Dmodels {width:1080px;}
 
-label a {
-    display: inline;
-}
+label a { display: inline;}
