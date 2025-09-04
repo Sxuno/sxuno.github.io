@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang = 'en'>
 	<head>
 		<title>SXuno</title>
 
 		<meta name="desription" content="Art, coding and moddeling portfolio">
 		<meta name="keywords" content="SXuno, Portfolio, Artstaion, Github, Sketfab, LinkedIn">
 		<meta name="autor" content="Stefan Wienold">
-		<meta name="language" content="English">
+		<meta name="language" content = 'en'>
 
 		<meta name="robots" content="index, nofollow">
 
@@ -51,14 +51,16 @@
 				</ul>
 			</nav>
 		</main>
-			<canvas class = 'webgpu' width = '3200' height = '1920'></canvas>
-			<!-- note: inline size = rendersize css size canvas size -->
-			<script>engine.init()</script>
+
+		<canvas class = 'webgpu' width = '3200' height = '1920'></canvas>
+		<!-- note: inline size = rendersize / css size canvas size -->
+		<script>engine.init()</script>
+
 		<footer>
 			<small>
 			copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 			</small>
-			<img src = './media/logo/webgpu.svg'>
+			<img src = './media/logo/webgpu.svg' webgpuengine = 'binding.visibility(STATS.gpu)'>
 		</footer>
 	</body>
 </html>

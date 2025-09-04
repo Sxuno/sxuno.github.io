@@ -7,6 +7,7 @@
 // TODO: add engine benchmark and preformance values here
 engine = {}
 engine.STATS = engine.STATS ||{}
+engine.STATS.gpu = null
 engine.STATS.delta = {}
 engine.STATS.frametime = null
 engine.STATS.delta = performance.now()
@@ -17,6 +18,7 @@ for (var [index, src] of Object.entries(
 			'engine/gpu.js',
 			'engine/runtime.js',
 			'engine/utils/math.js',
+			'engine/bindings.js',
 			'engine/pipeline/depthpass.js',
 			'engine/pipeline/basepass.js',
 			'engine/pipeline/shadowpass.js',

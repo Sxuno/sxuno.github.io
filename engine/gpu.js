@@ -13,10 +13,16 @@ engine.gpu = (function() {
 	var _sampler = null
 
 	async function init() {
-		if (!navigator) {throw new Error('WebGPU not supported')}
+		if (!navigator) {
+			engine.STATS.gpu = false
+			throw new Error('WebGPU not supported')			
+		}
 		_adapter = await navigator.gpu.requestAdapter()
-		if (!_adapter) {throw new Error('GPU not supported')}
-
+		if (!_adapter) {
+			engine.STATS.gpu = false
+			throw new Error('GPU not supported')
+		}
+		engine.STATS.gpu = true
 		_device =  await _adapter.requestDevice()
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
