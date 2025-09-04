@@ -25,7 +25,7 @@ engine.gpu = (function() {
 			_context[_context.length -1].configure({
 				device: _device,
 				format: _format,
-				alphaMode: 'opaque',
+				alphaMode: 'premultiplied',
 			})
 		}
 		console.log(`GPU init ${performance.now() - engine.STATS.delta} ms`)    
