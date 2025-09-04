@@ -45,7 +45,9 @@ engine.runtime = (function () {
 		_device.queue.submit([encoder.finish()])
 
 		engine.STATS.frametime = performance.now() - engine.STATS.delta
-		document.getElementById('stats').innerText = `ms ${engine.STATS.frametime}`
+		if(document.getElementById('stats')){
+			document.getElementById('stats').innerText = `ms ${engine.STATS.frametime}`
+		}		
 
 		requestAnimationFrame(frame)
 	}
