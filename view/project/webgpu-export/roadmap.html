@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-  <meta charset='UTF-8' />
-  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-  <title>Blender WebGPU Export</title>
-  <link rel="icon" type="image/x-ico" href="./../../../media/icon/menu.svg">
-  <link rel="stylesheet" href="./../../../layout/style.css">
+	<meta charset='UTF-8' />
+	<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+	<title>Blender WebGPU Export</title>
+	<link rel="icon" type="image/x-ico" href="./../../../media/icon/menu.svg">
+	<link rel="stylesheet" href="./../../../layout/style.css">
 <script>
 window.api = {}
 window.api.roadmap = {}
@@ -55,31 +55,31 @@ if (window.location.protocol !== 'file:') {
 
 // ? Namespace roadmap.timeline.render is better
 window.api.roadmap.render = function (data) {
-  const timeline = document.querySelector('.timeline')
-  timeline.innerHTML = ''
+	const timeline = document.querySelector('.timeline')
+	timeline.innerHTML = ''
 
-  data.versions.forEach(version => {
-	const box = document.createElement('div')
-	box.className = 'box'
+	data.versions.forEach(version => {
+		const box = document.createElement('div')
+		box.className = 'box'
 
-	const label = document.createElement('label')
-	label.textContent = version.label
-	box.appendChild(label)
+		const label = document.createElement('label')
+		label.textContent = version.label
+		box.appendChild(label)
 
-	for (const rowLabel in version.rows) {
-	  const row = document.createElement('div')
-	  row.className = 'row'
+		for (const rowLabel in version.rows) {
+		const row = document.createElement('div')
+		row.className = 'row'
 
-	  version.rows[rowLabel].forEach(text => {
-		const col = document.createElement('div')
-		col.className = 'col'
-		col.textContent = text
-		row.appendChild(col)
-	  })
-	  box.appendChild(row)
-	}
-	timeline.appendChild(box)
-  })
+		version.rows[rowLabel].forEach(text => {
+			const col = document.createElement('div')
+			col.className = 'col'
+			col.textContent = text
+			row.appendChild(col)
+		})
+		box.appendChild(row)
+		}
+		timeline.appendChild(box)
+	})
 }
 // Runtime
 document.addEventListener('DOMContentLoaded', (event) => {

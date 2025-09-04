@@ -1,0 +1,1 @@
+engine.scene.data.materials.push({name:'Sand',rgb:[1.0,0.8501315116882324,0.5353221893310547],culling:false})

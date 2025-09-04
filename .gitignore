@@ -1,3 +1,6 @@
 svg-builder.py
 /media/*/*.html
 !media/*/*.svg
+
+scene.blend
+scene.blend1

@@ -1,0 +1,24 @@
+/*
+ * This file is part of Blender WebGPU Export.
+ * Licensed under the GNU General Public License v3.0 or later.
+ * See LICENSE.txt for full license details.
+ */
+
+* {color-scheme: dark;}
+
+#stats {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	color: lime;
+}
+.webgpu {
+	position: absolute;
+	width: 1600px;
+	height: 960px;
+	top: 0px;
+	left: 22.5px;
+	z-index: 0;
+}
