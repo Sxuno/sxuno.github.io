@@ -1,10 +1,7 @@
 /* TODO combine*/
 /* index.html */
 main h1 {font-size: 54px;padding: 10px 0px;margin: 0px;}
-main ul {list-style-type: none;overflow: hidden;padding: 0px;margin: 0px;}
-main li {float: left;padding-right: 20px;}
 main a {display: block;color: white;text-decoration: none;}
-main nav img{height: 32px;width: 32px;}
 label {font-style: italic;color: grey;}
 /* webgpu-export/roadmap.html */
 * { color-scheme: dark; font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif; user-select: none; }
@@ -19,6 +16,24 @@ main { max-width: 1080px; width: 100%; margin: auto; flex-grow: 1; }
 .col25 { flex: 1 1 25%; padding: 5px 0px; }
 .col33 { flex: 1 1 33%; padding: 5px 0px; }
 .col50 { flex: 1 1 50%; padding: 5px 0px; min-width: 320px; }
+
+/* new */
+
+/* shared */
+footer { background-color: rgb(27, 27, 27); border-top: 1px solid black; color: grey; margin: 20px 0px 0px 0px; height: 40px;}
+footer small {float: left; display: block; text-align: center; font-size: 12px; margin: 0px auto; padding-top: 10px; margin-left: 47.5%; z-index: 0}
+footer label {float: right; margin-top: 8px;padding-right: 5px; text-align: center;}
+footer img {width : 32px; height: 32px; float: right; padding: 0px; z-index: 1; position: relative; bottom: 5px;}
+
+#githubpage { width:210px; padding-top: 10%; z-index: 100; /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
+
+label a { display: inline;}
+.network ul {list-style-type: none;overflow: hidden;padding: 0px;margin: 0px;}
+.network ul li {float: left;padding-right: 20px;}
+.network ul li a img {height: 32px;width: 32px;}
+
+#webgpu-export {width:1080px;}
+
 .roadmap { padding: 5px; border: 1px solid black; display: flex; position: relative; }
 .legend { background-color: transparent; display: flex; flex-direction: column; position: absolute; top: 0px; left: 0px; z-index: 1; }
 .legend div { background-color: transparent; font-size: 12px; font-weight: bold; padding-left: 5px; position: relative; }
@@ -31,14 +46,8 @@ main { max-width: 1080px; width: 100%; margin: auto; flex-grow: 1; }
 .timeline > div:last-child { flex-grow: 1; }
 .timeline div label { background-color: rgb(0, 128, 255); color: rgb(31, 58, 97); font-style: italic; display: flex; flex: 0 0 auto; justify-content: flex-end; padding-right: 5px; }
 .timeline div div { background-color: grey; display: flex; justify-content: flex-end; height: 33px; gap: 5px; margin-top: 20px; }
-.timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; font-family: Arial, Helvetica, sans-serif; }
-footer { background-color: rgb(27, 27, 27); border-top: 1px solid black; color: grey; margin: 20px 0px 0px 0px; height: 40px;}
-footer img {width : 32px; height: 32px; float: right; padding: 0px; position: relative; bottom: 30px; z-index: 1}
-small { display: block; text-align: center; font-size: 12px; margin: 0px auto; padding: 10px 0px; z-index: 0}
-/* new */
-#githubpage { width:210px; padding-top: 10%; z-index: 100; /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
-#webgpu-export {width:1080px;}
+.timeline div div div { background-color: white; color: black; height: 18px; margin: 10px; padding: 2.5px; border-radius: 2.5px; font-family: Arial, Helvetica, sans-serif; }
+
 #webgpu-engine {width:1080px;}
 #worksample_3Dmodels {width:1080px;}
 
-label a { display: inline;}
