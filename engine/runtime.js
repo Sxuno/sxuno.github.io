@@ -14,6 +14,7 @@ engine.runtime = (function () {
 		_format = format
 		_context = context
 		
+		await engine.bindings.init()
 		engine.debug.start('load scene')
 		await engine.scene.data.info.init()
 		await engine.scene.data.init()
