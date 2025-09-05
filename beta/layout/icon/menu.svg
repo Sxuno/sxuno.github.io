@@ -1,8 +1,0 @@
-<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
-    <g class="layer">
-        <title>menu</title>
-        <rect x="14" y="23" height="18" width="100" rx="6" ry="6" style="fill: black" />
-        <rect x="14" y="55" height="18" width="100" rx="6" ry="6" style="fill: black" />
-        <rect x="14" y="87" height="18" width="100" rx="6" ry="6" style="fill: black" />
-    </g>
-</svg>

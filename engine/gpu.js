@@ -142,16 +142,16 @@ engine.gpu = (function() {
 				console.log(geometryData)
 			}
 			// TODO: combine all mesh buffer and make it layout aware
-			 /* geometryData : <object>[mesh[data]] or <object>[mesh[[datamesh1], [datamesh2]]*/
-			 /* error on missalignment */
-			 /* return buffer.geometry.mesh.vertex.get() , buffer.geometry.view.albedo.get() */
+				/* geometryData : <object>[mesh[data]] or <object>[mesh[[datamesh1], [datamesh2]]*/
+				/* error on missalignment */
+				/* return buffer.geometry.mesh.vertex.get() , buffer.geometry.view.albedo.get() */
 
-			 // vertex
-			 // vertexColor
-			 // index
-			 // materialSlot
-			 // materialSlotOffset
-			 // modelMatrix
+				// vertex
+				// vertexColor
+				// index
+				// materialSlot
+				// materialSlotOffset
+				// modelMatrix
 		}
 		// light buffer
 		buffer.light = buffer.light || {}

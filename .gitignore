@@ -4,7 +4,8 @@
 svg-builder.py
 /media/*/*.html
 !media/*/*.svg
-
+# Archive
+archive/
 # Blender
 scene.blend
 scene.blend1

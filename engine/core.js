@@ -47,7 +47,7 @@ engine.init = (canvas) => {
 				window.addEventListener('load', resolve, { once: true }) // instead of DOMContentloaded to avoid a manual timeoutloop
 			})
 		}
-		console.log('WEBSIDE init '+ engine.STATS.delta + ' ms')
+		console.log('WEBSITE init '+ engine.STATS.delta + ' ms')
 		const {_device, _format, _context} = await engine.gpu.init(canvas)
 		engine.runtime.init(_device, _context[0], _format)
 		} catch (err) {console.error(err)}

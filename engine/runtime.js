@@ -31,7 +31,7 @@ engine.runtime = (function () {
 		requestAnimationFrame(frame)
 	}
 	function frame() {
-		
+		engine.STATS.frametime = performance.now() - engine.STATS.delta
 		engine.STATS.delta = performance.now()
 
 		const encoder = _device.createCommandEncoder()
@@ -44,8 +44,6 @@ engine.runtime = (function () {
 
 		_device.queue.submit([encoder.finish()])
 
-		engine.STATS.frametime = performance.now() - engine.STATS.delta
-		
 		engine.bindings.exec()
 
 		requestAnimationFrame(frame)
