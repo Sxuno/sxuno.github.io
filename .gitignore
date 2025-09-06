@@ -13,5 +13,6 @@ scene.blend1
 # webgpu-export template files
 scene.css
 scene.html
-
+# whitepapers
+view/project/webgpu-engine/whitepaper.md
 view/project/webgpu-export/whitepaper.md

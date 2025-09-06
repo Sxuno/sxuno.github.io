@@ -4,21 +4,21 @@
  * See LICENSE.txt for details.
  */
 
+var _htmlElements = []
 var _bindings = []
 
 engine.bindings = engine.bindings || {}
 engine.bindings.init = async function() {
-        for (const entry of document.querySelectorAll('[webgpuengine]')) {
-        _bindings.push(entry)
+    for (const entry of document.querySelectorAll('[webgpuengine]')) {
+        _htmlElements.push(entry)
+        let _instructionset = entry.getAttribute('webgpuengine')
+        _bindings.push(_instructionset.split(/[(),]/).map(args => args.trim()).filter(Boolean))
     }
 }
+engine.bindings.get = function() {console.table(_bindings) /* return _bindings */}
 engine.bindings.exec = function() {
-    for (const entry of _bindings) {
+    for (const entry of _htmlElements) {
         // proof of concept
-        // TODO: 
-            // ? add binding update frequency
-            // move logic to binding.exec do a quick pars on regiter 
-            // rethink namespace and call methods
         if (engine.STATS.gpu) {
             entry.style.visibility = 'visible'
         } else {

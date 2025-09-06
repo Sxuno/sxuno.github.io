@@ -11,6 +11,20 @@ engine.STATS.gpu = null
 engine.STATS.delta = {}
 engine.STATS.frametime = null
 engine.STATS.delta = performance.now()
+
+engine.STATS.test = (function()  {
+	let _gpu = null
+	const gpu = {}
+		gpu.get = function() {
+			return _gpu
+		}
+		gpu.set = function(bool) {
+			bool ? _gpu = bool : _gpu = !_gpu // TODO: make to xor bitwise
+			if(engine.bindings?.gpu?.set) {
+				engine.bindings.gpu.set(_gpu)
+			}
+		}
+})()
 // Scripts
 for (var [index, src] of Object.entries(
 	(() => {
@@ -39,7 +53,7 @@ for (var [index, src] of Object.entries(
 	document.head.appendChild(script)
 }
 // TODO: update to access module inits through eg engine.core.init.gpu() etc
-engine.init = (canvas) => {
+engine.init = () => {
   	(async () => {
 		try {
 		if (document.readyState === 'loading') {
@@ -48,7 +62,7 @@ engine.init = (canvas) => {
 			})
 		}
 		console.log('WEBSITE init '+ engine.STATS.delta + ' ms')
-		const {_device, _format, _context} = await engine.gpu.init(canvas)
+		const {_device, _format, _context} = await engine.gpu.init()
 		engine.runtime.init(_device, _context[0], _format)
 		} catch (err) {console.error(err)}
  	})()
@@ -80,3 +94,12 @@ engine.debug = {
 }
 // TODO: move init orchestration here as system integration controll point.
 engine.core = engine.core || {}
+
+engine.pipeline = engine.pipeline || {}
+engine.pipeline.init = async function(name) {
+	if (!engine.pipeline[name]) {
+		let script = document.createElement('script')
+		script.src = `engine/pipeline/${name}.js`
+		document.head.appendChild(script)
+	}
+}
