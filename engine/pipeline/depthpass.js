@@ -5,6 +5,9 @@
  */
 
 engine.pipeline = engine.pipeline || {}
+// TODO:
+    // update buffer creation
+    // remove device, context from draw and pass encoder (step for depth Debugview)
 engine.pipeline.depthpass = (function () {
     let _ZBuffer
     let _width = 0

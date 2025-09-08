@@ -45,7 +45,7 @@ engine.runtime = (function () {
 
 		_device.queue.submit([encoder.finish()])
 
-		engine.bindings.exec()
+		//engine.bindings.exec()
 
 		requestAnimationFrame(frame)
 	}

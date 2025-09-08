@@ -4,18 +4,21 @@
  * See LICENSE.txt for details.
  */
 engine.gpu = (function() {
+	/* GPU DEFAULTS */
 	var _adapter = null
 	var _device = null
 	let _format = null
 	let _context = null
-
+	/* GPU ISTRUCTIONS */
+	let _instructions = null
+	/* GPU RESOURCES */
 	var _bindings = null
 	var _sampler = null
 
 	async function init() {
 		if (!navigator) {
 			engine.STATS.gpu = false
-			throw new Error('WebGPU not supported')			
+			throw new Error('WebGPU not supported')
 		}
 		_adapter = await navigator.gpu.requestAdapter()
 		if (!_adapter) {
@@ -26,7 +29,36 @@ engine.gpu = (function() {
 		_device =  await _adapter.requestDevice()
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
-		for (const canvas of document.getElementsByTagName('canvas')) {
+		_instructions = []
+		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {
+			/* canvas instructions */
+			let _instructionset = canvas.getAttribute('webgpuengine')
+			if (!_instructionset) {
+				console.warn(`canvas ${canvas.getAttribute('id') || (canvas.setAttribute('id', index),'with generated id '+canvas.getAttribute('id')+',')} has no instructionset.`)
+				_instructionset = `scene(0)|resolution(${parseInt(getComputedStyle(canvas).width)},${parseInt(getComputedStyle(canvas).height)})`
+			}
+			_instructions.push(_instructionset.split(/[|]/).map(sets => sets.trim()).filter(Boolean))
+			for(let _instruction of _instructions[_instructions.length -1]) {
+				_instruction = _instruction.split(/[()]/).map(call => call.trim()).filter(Boolean)
+				//console.log(_instruction)
+				// TODO:
+					// decide on data structure		
+					/* generated idea 
+					let instructions = input
+					.split('|')
+					.map(chunk => {
+						let [name, args] = chunk.split(/[()]/)
+						return [
+						name.trim(),
+						args.split(',').map(a => a.trim()).filter(Boolean).map(val =>
+							isNaN(val) ? val : Number(val)
+						)
+						]
+					})
+
+					console.log(instructions)*/
+			}
+			/* canvas */
 			_context.push(canvas.getContext('webgpu'))
 			_context[_context.length -1].configure({
 				device: _device,
@@ -142,16 +174,16 @@ engine.gpu = (function() {
 				console.log(geometryData)
 			}
 			// TODO: combine all mesh buffer and make it layout aware
-				/* geometryData : <object>[mesh[data]] or <object>[mesh[[datamesh1], [datamesh2]]*/
-				/* error on missalignment */
-				/* return buffer.geometry.mesh.vertex.get() , buffer.geometry.view.albedo.get() */
+			 /* geometryData : <object>[mesh[data]] or <object>[mesh[[datamesh1], [datamesh2]]*/
+			 /* error on missalignment */
+			 /* return buffer.geometry.mesh.vertex.get() , buffer.geometry.view.albedo.get() */
 
-				// vertex
-				// vertexColor
-				// index
-				// materialSlot
-				// materialSlotOffset
-				// modelMatrix
+			 // vertex
+			 // vertexColor
+			 // index
+			 // materialSlot
+			 // materialSlotOffset
+			 // modelMatrix
 		}
 		// light buffer
 		buffer.light = buffer.light || {}
@@ -261,13 +293,13 @@ engine.gpu = (function() {
 		}
 	// view textures
 	const view = {}
-		// TODO: add context aware combined resize observer
+		// TODO: 
+			// add context aware combined resize observer
 			// debug output as createView vs texture
 		view.create = function(name) {
 			// TODO: 
-				// register with name to context
-				// or 
-				// register to geometry buffer
+				// register with name to context or register to geometry buffer
+				// for dependency fallback method
 			texture = _device.createTexture({
 				label: name,
 				size: 	[_context[0].canvas.width, _context[0].canvas.height],

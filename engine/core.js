@@ -4,7 +4,9 @@
  * See LICENSE.txt for details.
  */
 
-// TODO: add engine benchmark and preformance values here
+// TODO: 
+	// add engine benchmark and preformance values here
+	// update with binding to show stats
 engine = {}
 engine.STATS = engine.STATS ||{}
 engine.STATS.gpu = null
@@ -12,6 +14,7 @@ engine.STATS.delta = {}
 engine.STATS.frametime = null
 engine.STATS.delta = performance.now()
 
+// TEST
 engine.STATS.test = (function()  {
 	let _gpu = null
 	const gpu = {}
@@ -25,7 +28,9 @@ engine.STATS.test = (function()  {
 			}
 		}
 })()
-// Scripts
+
+/* Scripts */
+// TODO: split to justInTime principle
 for (var [index, src] of Object.entries(
 	(() => {
 		return [
@@ -53,7 +58,7 @@ for (var [index, src] of Object.entries(
 	document.head.appendChild(script)
 }
 // TODO: update to access module inits through eg engine.core.init.gpu() etc
-engine.init = () => {
+engine.init = (method) => {
   	(async () => {
 		try {
 		if (document.readyState === 'loading') {
@@ -61,13 +66,12 @@ engine.init = () => {
 				window.addEventListener('load', resolve, { once: true }) // instead of DOMContentloaded to avoid a manual timeoutloop
 			})
 		}
-		console.log('WEBSITE init '+ engine.STATS.delta + ' ms')
+		console.log('WEBSIDE init '+ engine.STATS.delta + ' ms')
 		const {_device, _format, _context} = await engine.gpu.init()
 		engine.runtime.init(_device, _context[0], _format)
 		} catch (err) {console.error(err)}
  	})()
 }
-// TODO: update with triggers to show stats
 engine.debug = {
 	enabled: true,
 	timers: {},
@@ -94,12 +98,3 @@ engine.debug = {
 }
 // TODO: move init orchestration here as system integration controll point.
 engine.core = engine.core || {}
-
-engine.pipeline = engine.pipeline || {}
-engine.pipeline.init = async function(name) {
-	if (!engine.pipeline[name]) {
-		let script = document.createElement('script')
-		script.src = `engine/pipeline/${name}.js`
-		document.head.appendChild(script)
-	}
-}
