@@ -5,9 +5,15 @@
  */
 
 engine.scene = engine.scene || {}
-//   TODO: move scene data from global space to isolated space for improved lifecycle controll, or use var scene as lifecycle controller. dose need preformance tests.
+//   TODO: 
+	// add lifecycle for data per scene to remove redundend loading
 engine.scene.data = (function () {
 	const info = {
+		viewport: {
+			color : [],
+			alpha : [],
+		},
+		camera : [],
 		files: [],		
 		async init() {
 			await new Promise((resolve) => {
@@ -21,7 +27,7 @@ engine.scene.data = (function () {
 	async function init() {
 		// Entrypoint for filtered loading
 		let seen = new Set()
-		for (let src of engine.scene.data.info.files) {
+		for (let src of engine.scene.data.info.files[0]) {
 			await new Promise((resolve) => {
 				let [category] = src.split('/')
 				if (!seen.has(category)) {

@@ -5,7 +5,6 @@
  */
 
 // TODO: 
-	// add engine benchmark and preformance values here
 	// update with binding to show stats
 engine = {}
 engine.STATS = engine.STATS ||{}

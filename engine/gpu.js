@@ -10,7 +10,7 @@ engine.gpu = (function() {
 	let _format = null
 	let _context = null
 	/* GPU ISTRUCTIONS */
-	let _instructions = null
+	let _instructions = null // RETHINK NAMESPACE ? CAVANS SETTIGNS
 	/* GPU RESOURCES */
 	var _bindings = null
 	var _sampler = null
@@ -30,7 +30,7 @@ engine.gpu = (function() {
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
 		_instructions = []
-		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {
+		for (const canvas of document.getElementsByTagName('canvas')) {
 			/* canvas instructions */
 			let _instructionset = canvas.getAttribute('webgpuengine')
 			if (!_instructionset) {
@@ -40,7 +40,7 @@ engine.gpu = (function() {
 			_instructions.push(_instructionset.split(/[|]/).map(sets => sets.trim()).filter(Boolean))
 			for(let _instruction of _instructions[_instructions.length -1]) {
 				_instruction = _instruction.split(/[()]/).map(call => call.trim()).filter(Boolean)
-				//console.log(_instruction)
+
 				// TODO:
 					// decide on data structure		
 					/* generated idea 
@@ -54,9 +54,7 @@ engine.gpu = (function() {
 							isNaN(val) ? val : Number(val)
 						)
 						]
-					})
-
-					console.log(instructions)*/
+					})*/
 			}
 			/* canvas */
 			_context.push(canvas.getContext('webgpu'))

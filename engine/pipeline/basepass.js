@@ -33,8 +33,8 @@ engine.pipeline.basepass = (function () {
 		const viewProjectionMatrix = engine.utils.math.multiply(projectionMatrix, viewMatrix)
 		_data.metadata = {}	
 		_data.metadata.canvasSize = [context.canvas.width, context.canvas.height]
-		_data.metadata.canvasColor = engine.scene.data.info.viewport.color
-		_data.metadata.canvasAlpha = engine.scene.data.info.viewport.alpha
+		_data.metadata.canvasColor = engine.scene.data.info.viewport.color[0]
+		_data.metadata.canvasAlpha = engine.scene.data.info.viewport.alpha[0]
 		_data.metadata.viewProjectionMatrix = viewProjectionMatrix
 		_data.metadata.lightNum = _scene.lights.length		
 		// materials		
