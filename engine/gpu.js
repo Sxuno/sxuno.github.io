@@ -30,7 +30,7 @@ engine.gpu = (function() {
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
 		_instructions = []
-		for (const canvas of document.getElementsByTagName('canvas')) {
+		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {
 			/* canvas instructions */
 			let _instructionset = canvas.getAttribute('webgpuengine')
 			if (!_instructionset) {
