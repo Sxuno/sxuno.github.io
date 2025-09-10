@@ -10,6 +10,8 @@ archive/
 scene.blend
 scene.blend1
 scene.blend1
+# media
+*.png~
 # webgpu-export template files
 scene.css
 scene.html
