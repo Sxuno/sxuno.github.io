@@ -168,10 +168,10 @@ var overlay = {
                 document.body.removeChild(media.cache.image)
             }, 1600)
         }
-        if(document.querySelector('#moddel') !== null) {
-            media.cache.moddel.classList.add('fadeOut')
+        if(document.querySelector('#model') !== null) {
+            media.cache.model.classList.add('fadeOut')
             setTimeout(() => {
-                document.body.removeChild(media.cache.moddel)
+                document.body.removeChild(media.cache.model)
             }, 1600)
         }
         if(document.querySelector('#video') !== null) {
@@ -186,7 +186,7 @@ var overlay = {
 var media = {
     cache : {
         image : false,
-        moddel : false,
+        model : false,
         video : false
     },
     height: 315*2.5,
@@ -221,36 +221,36 @@ var media = {
             }) 
         })
     },
-    moddel : async (name) => {
+    model : async (name) => {
         await overlay.load().then(() => {
 
-            media.cache.moddel = document.createElement('iframe')
-            media.cache.moddel.classList.add('overlay')
-            media.cache.moddel.classList.add('media')
+            media.cache.model = document.createElement('iframe')
+            media.cache.model.classList.add('overlay')
+            media.cache.model.classList.add('media')
 
-            media.cache.moddel.setAttribute('id', 'moddel')
-            media.cache.moddel.setAttribute('height', `${media.height}px`)
-            media.cache.moddel.setAttribute('width', `${media.width}px`)
-            media.cache.moddel.setAttribute('framborder', '0')
-            media.cache.moddel.setAttribute('src', 'https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed')
+            media.cache.model.setAttribute('id', 'model')
+            media.cache.model.setAttribute('height', `${media.height}px`)
+            media.cache.model.setAttribute('width', `${media.width}px`)
+            media.cache.model.setAttribute('framborder', '0')
+            media.cache.model.setAttribute('src', 'https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed')
 
-            media.cache.moddel.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
-            media.cache.moddel.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`
-            media.cache.moddel.style.opacity = `0`
+            media.cache.model.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
+            media.cache.model.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`
+            media.cache.model.style.opacity = `0`
 
-            document.body.appendChild(media.cache.moddel)
+            document.body.appendChild(media.cache.model)
 
-            media.cache.moddel.onload = () => {
+            media.cache.model.onload = () => {
                 
                 overlay.func()
 
                 overlay.cache.background.classList.add('fadeIn')
                 overlay.cache.func.classList.add('fadeIn')
-                media.cache.moddel.classList.add('fadeIn')
+                media.cache.model.classList.add('fadeIn')
 
                 window.addEventListener("resize", () => {
-                    media.cache.moddel.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
-                    media.cache.moddel.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`    
+                    media.cache.model.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
+                    media.cache.model.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`    
                 }) 
             }   
         })
