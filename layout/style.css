@@ -6,11 +6,25 @@ html, body { height: 100%; margin: 0px; display: flex; flex-direction: column;}
 h3, h4 { margin-top: 0px;}
 header h1 { width: 100%; max-width: 1080px; min-width: 433px; margin: auto; font-size: 28px;}
 header {display: flex;}
-header nav {width: 100%; z-index: 200;}
+
+/* BETA */
+
 header nav img {width: 24px; height: 24px; position: relative; top: 5px;}
 header nav label {position: absolute; right: 10px; height: 24px;}
 header nav label img {width: 20px; height: 20px;}
-main { max-width: 1080px; width: 100%; margin: auto; flex-grow: 1; flex: 1 0 auto;}
+
+body {display: flex;flex-direction: column;}
+
+header nav {width: 100%; z-index: 200; position: absolute; top:0px; left: 0px;}
+nav a {display: flex;}
+nav img {width: 24px; height: 24px; position: relative; top: 5px; left: 0px;}
+nav label {position: absolute; top: 0px;right: 10px; height: 24px;}
+nav label img {width: 20px; height: 20px;}
+footer {width:100%;}
+main { max-width: 1080px; width: 100%; margin: 0px auto; flex-grow: 1; flex: 1 0 auto;}
+main header {display: flex; flex-direction: column; position: absolute; left: 0px;}
+
+
 .grid-wrap { display: flex; flex-wrap: wrap; }
 .col10 { flex: 0 0 10%; padding: 5px 5px 5px 0px; }
 .col25 { flex: 1 1 25%; padding: 5px 0px; }
