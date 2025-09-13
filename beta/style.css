@@ -12,18 +12,20 @@ nav img {width: 24px; height: 24px; position: relative; top: 5px; left: 0px;}
 nav label {position: absolute; top: 0px;right: 10px; height: 24px;}
 nav label img {width: 20px; height: 20px;}
 footer {width:100%;}
-main {margin: 0px auto; flex-grow: 1; flex: 1 0 auto;}
+main {width: 100%; margin: 0px auto; flex-grow: 1; flex: 1 0 auto;}
 main header {display: flex; flex-direction: column; position: absolute;}
 
 /* 2768 generated */
 /* TODO: implement conflict free */
 #betalayout {
   display: flex;
+  align-items: flex-start;
   justify-content: center;
   box-sizing: border-box;
   flex-wrap: wrap; /* wrap when window shrinks */
 }
 
+body main section article {width: 100%;}
 #betalayout > section {
   flex: 1;
   display: flex;
@@ -31,36 +33,45 @@ main header {display: flex; flex-direction: column; position: absolute;}
   align-items: center;
 }
 
-/* 3462 REWORKED */
-main {flex-direction: column;align-items: center;}
-body main section article{width: 100%;}
-body main section {width: 100%;}
-
+/* Stack vertically on small screens */
 @media (max-width: 540px) {
     body header h1 {text-align: center;}
     body main {width: 360px;}
-    body main header {width: 360px;text-align: center;}
+    #betalayout header {width: 360px;text-align: center;}
+    #betalayout {flex-direction: column;align-items: center;}
 }
 @media (max-width: 720px) {
     body header h1 {text-align: center;}
-    body main {max-width: 480px;}
-    body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+    body main {width: 100%;}
+    #betalayout header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+    #betalayout {flex-direction: column; align-items: center;}   
 }
-@media (max-width: 1443px) {
+@media (max-width: 1079px) {
     body header h1 {text-align: center;}
-    body main {width: 720px;}
-    body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+    body main {width: 100%;}
+    #betalayout header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+    #betalayout {flex-direction: column; align-items: center;}   
+}
+@media (min-width: 1080px) {
+    body header h1 {text-align: center;}
+    body main {width: 1080px;}
+    main {flex-direction: column; align-items: center;}  
+    #betalayout header {left: 0px; top: 32px; position:absolute}
+    #betalayout {flex-direction: column; align-items: center;}   
 }
 @media (min-width: 1444px) {
     body header h1 {text-align: center;}
-    body main {min-width: 1080px;}
-    body main header {left: 0px;top: 32px; position:absolute;}
+    body main {width: 100%;}
+    #betalayout header {left: 0px;}
+    #betalayout {flex-direction: column; align-items: center;}
 }
 @media (max-height: 640px) {
-    body main header {position:relative;}
+    #betalayout header {position:relative;}
 }
+    
 
-/* 6481 shared */
+
+/* 6279 shared */
 * { color-scheme: dark; font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif; user-select: none; }
 
 a:link, a:visited, a:hover, a:active, a:focus { color: rgb(0, 128, 255); text-decoration: none; }
@@ -79,7 +90,7 @@ footer label { display: flex; flex-wrap: wrap;margin-top: 8px;padding-right: 5px
 footer label p {width: 6px; height: 6px; border-radius: 50%; background-color: rgb(0, 128, 255);margin: 8px 5px 0px 5px} 
 footer img {width : 32px; height: 32px; float: right; padding: 0px; z-index: 1; position: relative; bottom: 5px;}
 /* githubpage */
-#githubpage { min-width:210px; padding-top: 10%; z-index: 100; /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
+#githubpage { width:210px; padding-top: 10%; z-index: 100; /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
 main h1 {font-size: 54px;padding: 10px 0px;margin: 0px;}
 main a {display: block;color: white;text-decoration: none;}
 label {font-style: italic;color: grey;}
