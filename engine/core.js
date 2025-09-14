@@ -12,7 +12,6 @@ engine.STATS.gpu = null
 engine.STATS.delta = {}
 engine.STATS.frametime = null
 engine.STATS.delta = performance.now()
-
 // TEST
 engine.STATS.test = (function()  {
 	let _gpu = null
@@ -27,7 +26,6 @@ engine.STATS.test = (function()  {
 			}
 		}
 })()
-
 /* Scripts */
 // TODO: split to justInTime principle
 for (var [index, src] of Object.entries(
@@ -47,8 +45,6 @@ for (var [index, src] of Object.entries(
 			'engine/shader/shadows.js',
 			'engine/shader/lights.js',
 			'engine/shader/compose.js',
-			'engine/scene/data.js',
-			'engine/scene/graph.js',
 		]
 	})()
 )) {
@@ -95,5 +91,33 @@ engine.debug = {
 	},
 	log(fstring) { console.log(fstring)}
 }
-// TODO: move init orchestration here as system integration controll point.
 engine.core = engine.core || {}
+/* 95117 core script loader */
+engine.core.script = async function(path){
+	var _scripts = []
+	switch(typeof(path)) {
+		case 'string':
+			_scripts.push([path])
+			break
+		case 'array':
+			_scripts.push(path)
+			break
+		default:
+			console.error(`${typeof(path)} not supported`)
+		break
+	}
+	for(let script of _scripts) {
+		await new Promise((resolve)=> {
+			let _script = document.createElement('script')
+			_script.src = script
+			_script.onload = resolve
+			document.head.appendChild(_script)
+		})
+	}
+}
+/* 118123 scene init */
+engine.scene = engine.scene || {}
+engine.scene.init = async function(){
+	await engine.core.script('engine/scene/data.js')
+	await engine.core.script('engine/scene/graph.js')
+}

@@ -4,10 +4,9 @@
  * See LICENSE.txt for details.
  */
 
-engine.scene = engine.scene || {}
-//   TODO: 
-	// add lifecycle for data per scene to remove redundend loading
 engine.scene.data = (function () {
+	//   TODO: 
+	// add lifecycle for data per scene to remove redundend loading
 	const info = {
 		viewport: {
 			color : [],

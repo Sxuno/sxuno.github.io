@@ -16,6 +16,7 @@ engine.runtime = (function () {
 		
 		await engine.bindings.init()
 		engine.debug.start('load scene')
+		await engine.scene.init()
 		await engine.scene.data.info.init()
 		await engine.scene.data.init()
 		await engine.scene.graph.init()

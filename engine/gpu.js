@@ -4,13 +4,16 @@
  * See LICENSE.txt for details.
  */
 engine.gpu = (function() {
+	var _gpu = null
 	/* GPU DEFAULTS */
 	var _adapter = null
 	var _device = null
 	let _format = null
 	let _context = null
-	/* GPU ISTRUCTIONS */
-	let _instructions = null // RETHINK NAMESPACE ? CAVANS SETTIGNS
+	/* GPU CONTEXT */	
+	let _instructions = null
+	let _config = null
+	let _setup = null
 	/* GPU RESOURCES */
 	var _bindings = null
 	var _sampler = null
@@ -29,9 +32,11 @@ engine.gpu = (function() {
 		_device =  await _adapter.requestDevice()
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
+		_config = []
 		_instructions = []
-		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {
-			/* canvas instructions */
+		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {			
+			/* 3849 canvas instructions */
+			_config.push([])
 			let _instructionset = canvas.getAttribute('webgpuengine')
 			if (!_instructionset) {
 				console.warn(`canvas ${canvas.getAttribute('id') || (canvas.setAttribute('id', index),'with generated id '+canvas.getAttribute('id')+',')} has no instructionset.`)
@@ -40,33 +45,45 @@ engine.gpu = (function() {
 			_instructions.push(_instructionset.split(/[|]/).map(sets => sets.trim()).filter(Boolean))
 			for(let _instruction of _instructions[_instructions.length -1]) {
 				_instruction = _instruction.split(/[()]/).map(call => call.trim()).filter(Boolean)
-
-				// TODO:
-					// decide on data structure		
-					/* generated idea 
-					let instructions = input
-					.split('|')
-					.map(chunk => {
-						let [name, args] = chunk.split(/[()]/)
-						return [
-						name.trim(),
-						args.split(',').map(a => a.trim()).filter(Boolean).map(val =>
-							isNaN(val) ? val : Number(val)
-						)
-						]
-					})*/
-			}
-			/* canvas */
+				_config[_config.length -1 ].push([_instruction[0], _instruction[1].split(/[,]/).map(arg => arg.trim()).filter(Boolean)])
+			}		
+			/* 5060 canvas context */
 			_context.push(canvas.getContext('webgpu'))
 			_context[_context.length -1].configure({
 				device: _device,
 				format: _format,
 				alphaMode: 'premultiplied',
 			})
+			_setup = {
+				setup:(args)=>{return _config[args]},
+				set:(args)=>{return 'set('+args+')'},
+				canvas : _context.length,
+			}
+			context.push(_setup)
 		}
+		/* 6481 context lookup */
+		context = context.map((element, contextkey) => {
+			for (var [entry, arg] of Object.entries(element)) {
+				switch(typeof(arg)) {
+					case 'function':
+						let cache = element[entry]
+						element[entry] = function(...args) { 
+							return cache.apply(this, args)
+						}
+						break
+					case 'number':
+						return element[entry] = _context[contextkey]
+					default: 
+						break
+				}
+
+			}
+		})
 		console.log(`GPU init ${performance.now() - engine.STATS.delta} ms`)    
 		return {_device, _format, _context}
 	}
+	/* 8586 context lookup */
+	var context = []
 	// binding descriptor
 	const bindings = {}
 		bindings.show = function () {
@@ -306,6 +323,6 @@ engine.gpu = (function() {
 			})
 			return texture.createView()
 		}
-	return { init, binding, bindings, buffer, view }
+	return { init, context, binding, bindings, buffer, view }
 
 })()
