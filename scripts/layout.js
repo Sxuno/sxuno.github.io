@@ -292,8 +292,7 @@ var media = {
 }
 /* Runtime */
 document.addEventListener('DOMContentLoaded', (event) => {
-    console.time(event.type)
-        //console.log(window.api)
+    // console.time(event.type)
         window.api.roadmap.render(window.api.roadmap.data)
-    console.timeEnd(event.type)
+    // console.timeEnd(event.type)
 })

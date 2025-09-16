@@ -4,69 +4,113 @@
  * See LICENSE.txt for details.
  */
 
-// TODO: 
-	// update with binding to show stats
-engine = {}
-engine.STATS = engine.STATS ||{}
-engine.STATS.gpu = null
-engine.STATS.delta = {}
-engine.STATS.frametime = null
-engine.STATS.delta = performance.now()
-// TEST
-engine.STATS.test = (function()  {
+engine = (function() {
+	/* engine defaults */
+	let _readyState = null
+	let _scripts = null // ? maybe for later
+	let _event = null
+	/* engine STATS */
 	let _gpu = null
-	const gpu = {}
-		gpu.get = function() {
-			return _gpu
-		}
-		gpu.set = function(bool) {
-			bool ? _gpu = bool : _gpu = !_gpu // TODO: make to xor bitwise
-			if(engine.bindings?.gpu?.set) {
-				engine.bindings.gpu.set(_gpu)
+	let _delta = null
+	let _frametime = null
+
+	const STATS = {}
+		STATS.gpu = {
+			get : function() {
+				return Boolean(_gpu ? _gpu : 0)
+			},
+			set : function(bool) {
+				bool ? _gpu = 1 : _gpu = 0
+				// BINDING TEST
+				if(engine.bindings?.gpu?.set) {
+					engine.bindings.gpu.set(_gpu)
+				}
+				return engine.STATS.gpu.get(_gpu)
 			}
 		}
-})()
-/* Scripts */
-// TODO: split to justInTime principle
-for (var [index, src] of Object.entries(
-	(() => {
-		return [
-			'engine/gpu.js',
-			'engine/runtime.js',
-			'engine/utils/math.js',
-			'engine/bindings.js',
-			'engine/pipeline/depthpass.js',
-			'engine/pipeline/basepass.js',
-			'engine/pipeline/shadowpass.js',
-			'engine/pipeline/lightpass.js',
-			'engine/pipeline/composepass.js',
-			'engine/shader/shared.js',
-			'engine/shader/geometry.js',
-			'engine/shader/shadows.js',
-			'engine/shader/lights.js',
-			'engine/shader/compose.js',
-		]
-	})()
-)) {
-	let script = document.createElement('script')
-	script.src = src
-	document.head.appendChild(script)
-}
-// TODO: update to access module inits through eg engine.core.init.gpu() etc
-engine.init = (method) => {
-  	(async () => {
-		try {
-		if (document.readyState === 'loading') {
-			await new Promise(resolve => {
-				window.addEventListener('load', resolve, { once: true }) // instead of DOMContentloaded to avoid a manual timeoutloop
-			})
+		
+		STATS.delta = {
+			get: function() {
+				return _delta ? _delta : performance.now()
+			}
 		}
-		console.log('WEBSIDE init '+ engine.STATS.delta + ' ms')
+		STATS.frametime = {
+			get: function() {
+				return _frametime
+			}
+		}
+
+	const core = {}
+		/* 3761 core script loader */
+		core.script = async function(path){
+			let scripts = []
+			/* 4054 ready state switch */
+			switch(typeof(path)) {
+				case 'string':
+					scripts = [path]
+					break
+				case 'object':
+					scripts = path
+					break
+				default:			
+					console.error(`script ${path} not supported`)
+					break
+			}
+			for(let script of scripts) {
+				events.push([`register ${script}`])
+				await new Promise((resolve)=> {
+					let _script = document.createElement('script')
+					_script.src = script
+					_script.onload = resolve
+					document.head.appendChild(_script)				
+				})				
+			}
+		}	
+	async function init(method) {
+		/* 6672 ready state switcher */
+		switch(method) {
+			default:
+				_readyState = 'loading'
+				_event = 'load'
+				break
+		}
+		// ? change await position	
+		await new Promise(resolve => {window.addEventListener(_event, resolve, { once: true})})
+		await engine.core.script('engine/utils/math.js')
+		await engine.core.script('engine/bindings.js')
+		await engine.core.script('engine/gpu.js')
 		const {_device, _format, _context} = await engine.gpu.init()
+		await engine.core.script('engine/runtime.js')
+		// 8092 TODO: change to called by dependency
+		await engine.core.script([
+					'engine/pipeline/depthpass.js',
+					'engine/pipeline/basepass.js',
+					'engine/pipeline/shadowpass.js',
+					'engine/pipeline/lightpass.js',
+					'engine/pipeline/composepass.js',
+					'engine/shader/shared.js',
+					'engine/shader/geometry.js',
+					'engine/shader/shadows.js',
+					'engine/shader/lights.js',
+					'engine/shader/compose.js',
+				])
+
 		engine.runtime.init(_device, _context[0], _format)
-		} catch (err) {console.error(err)}
- 	})()
-}
+	}
+	var events = []
+	/* 97102 scene init */
+	const scene = {}
+	scene.init = async function(){
+		await engine.core.script('engine/scene/data.js')
+		await engine.core.script('engine/scene/graph.js')
+	}
+
+	
+	console.info(`Engine ready`)
+	_delta = performance.now()
+	return {init, STATS, core, scene, events}
+})()
+/* TODO: Rework */
 engine.debug = {
 	enabled: true,
 	timers: {},
@@ -90,34 +134,4 @@ engine.debug = {
 		this.end(label)
 	},
 	log(fstring) { console.log(fstring)}
-}
-engine.core = engine.core || {}
-/* 95117 core script loader */
-engine.core.script = async function(path){
-	var _scripts = []
-	switch(typeof(path)) {
-		case 'string':
-			_scripts.push([path])
-			break
-		case 'array':
-			_scripts.push(path)
-			break
-		default:
-			console.error(`${typeof(path)} not supported`)
-		break
-	}
-	for(let script of _scripts) {
-		await new Promise((resolve)=> {
-			let _script = document.createElement('script')
-			_script.src = script
-			_script.onload = resolve
-			document.head.appendChild(_script)
-		})
-	}
-}
-/* 118123 scene init */
-engine.scene = engine.scene || {}
-engine.scene.init = async function(){
-	await engine.core.script('engine/scene/data.js')
-	await engine.core.script('engine/scene/graph.js')
 }

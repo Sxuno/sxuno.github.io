@@ -20,15 +20,15 @@ engine.gpu = (function() {
 
 	async function init() {
 		if (!navigator) {
-			engine.STATS.gpu = false
+			engine.STATS.gpu.set(false)
 			throw new Error('WebGPU not supported')
 		}
 		_adapter = await navigator.gpu.requestAdapter()
 		if (!_adapter) {
-			engine.STATS.gpu = false
+			engine.STATS.gpu.set(false)
 			throw new Error('GPU not supported')
 		}
-		engine.STATS.gpu = true
+		engine.STATS.gpu.set(true)
 		_device =  await _adapter.requestDevice()
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_context = []
@@ -79,7 +79,7 @@ engine.gpu = (function() {
 
 			}
 		})
-		console.log(`GPU init ${performance.now() - engine.STATS.delta} ms`)    
+		console.info(`GPU init ${performance.now() - engine.STATS.delta.get()} ms`)    
 		return {_device, _format, _context}
 	}
 	/* 8586 context lookup */
@@ -138,8 +138,7 @@ engine.gpu = (function() {
 				data[22] = 0
 				data[23] = 0
 			}
-			else {
-				
+			else {			
 				data[20] = metadata.canvasColor[0]
 				data[21] = metadata.canvasColor[1]
 				data[22] = metadata.canvasColor[2]
@@ -315,13 +314,13 @@ engine.gpu = (function() {
 			// TODO: 
 				// register with name to context or register to geometry buffer
 				// for dependency fallback method
-			texture = _device.createTexture({
+			view.texture = _device.createTexture({
 				label: name,
 				size: 	[_context[0].canvas.width, _context[0].canvas.height],
 				format: _context[0].getCurrentTexture().format,
 				usage:	GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING
 			})
-			return texture.createView()
+			return view.texture.createView()
 		}
 	return { init, context, binding, bindings, buffer, view }
 
