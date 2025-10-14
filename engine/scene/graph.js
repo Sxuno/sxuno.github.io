@@ -10,10 +10,14 @@ engine.scene.graph = (function() {
 	let _data = {} // for later
 
 	async function init() {
-		_raw.camera = engine.scene.data.cameras.find(camera => camera.name === engine.scene.data.info.camera[0])
-		_raw.meshes = engine.scene.data.meshes
-		_raw.materials = engine.scene.data.materials
-		_raw.lights = engine.scene.data.lights
+		_raw.camera = engine.scene.data.camera.find(camera => camera.name === engine.scene.info[0].camera) // hardcoded for now
+		_raw.meshes = engine.scene.data.mesh
+		_raw.materials = engine.scene.data.material
+		_raw.lights = engine.scene.data.light
+		/* TODO:
+			per scene
+			frame aware
+		*/
 	}
 	function raw() { return _raw }
 	return { init, raw}

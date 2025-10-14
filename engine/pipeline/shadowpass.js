@@ -5,7 +5,6 @@
  */
 
 engine.pipeline = engine.pipeline || {}
-// TODO: Add pipline after gpu.view update
 engine.pipeline.shadowpass = (function () {
     let _buffer = null
 
@@ -19,6 +18,5 @@ engine.pipeline.shadowpass = (function () {
     function draw(encoder) {
         
     }
-
     return { init, draw, buffer}
 })()

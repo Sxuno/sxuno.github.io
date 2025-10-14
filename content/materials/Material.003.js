@@ -1,1 +1,1 @@
-engine.scene.data.materials.push({name:'Material.003',rgb:[0.1409907042980194,0.1409907042980194,0.1409907042980194],culling:false})
+engine.scene.cache={name:'Material.003',rgb:[0.1409907042980194,0.1409907042980194,0.1409907042980194],culling:false,object:'material'}

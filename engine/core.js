@@ -27,8 +27,7 @@ engine = (function() {
 				}
 				return engine.STATS.gpu.get(_gpu)
 			}
-		}
-		
+		}		
 		STATS.delta = {
 			get: function() {
 				return _delta ? _delta : performance.now()
@@ -39,7 +38,6 @@ engine = (function() {
 				return _frametime
 			}
 		}
-
 	const core = {}
 		/* 3761 core script loader */
 		core.script = async function(path){
@@ -74,14 +72,18 @@ engine = (function() {
 				_event = 'load'
 				break
 		}
-		// ? change await position	
-		await new Promise(resolve => {window.addEventListener(_event, resolve, { once: true})})
-		await engine.core.script('engine/utils/math.js')
+		await new Promise(resolve => {window.addEventListener(_event, resolve, { once: true})}) // ? change await position	
+	
 		await engine.core.script('engine/bindings.js')
+		await engine.bindings.init()
+
 		await engine.core.script('engine/gpu.js')
-		const {_device, _format, _context} = await engine.gpu.init()
+		const {_device, _format} = await engine.gpu.init()	
+
 		await engine.core.script('engine/runtime.js')
-		// 8092 TODO: change to called by dependency
+		await engine.core.script('engine/utils/math.js')
+
+		// 8092 TODO: change to called on demand
 		await engine.core.script([
 					'engine/pipeline/depthpass.js',
 					'engine/pipeline/basepass.js',
@@ -95,23 +97,52 @@ engine = (function() {
 					'engine/shader/compose.js',
 				])
 
-		engine.runtime.init(_device, _context[0], _format)
+		engine.runtime.init(_device, _format)
 	}
-	var events = []
-	/* 97102 scene init */
+	/* 102107 scene init */
 	const scene = {}
-	scene.init = async function(){
-		await engine.core.script('engine/scene/data.js')
-		await engine.core.script('engine/scene/graph.js')
-	}
+		scene.init = async function(){
+				await engine.core.script('content/info.js')
+				await engine.core.script('engine/scene/graph.js')
+		}
+		scene.info = []
+		/* 109133 scene load (deferred unique lazy object loading) */
+		scene.load = async function(name){
+			let _scene = scene.info.findIndex(entry => entry.name === name)
+			if (_scene == -1) {
+				if(name) {console.warn(`scene ${name} dose not exist.`)}				
+			}
+			else if (!scene.info[_scene].content) {
+				for (let _src of scene.info[_scene].files) {
+					await engine.core.script(`content/${_src}.js`)
+					scene.data[scene.cache.object] = scene.data[scene.cache.object] || []
+					if (!scene.data[scene.cache.object].some(entry => entry.name === scene.cache.name)) {
+						scene.data[scene.cache.object].push(scene.cache)
+					}
+					scene.info[_scene].content = scene.info[_scene].content || []
+					scene.info[_scene].content[scene.cache.object] = scene.info[_scene].content[scene.cache.object] || []
+					scene.info[_scene].content[scene.cache.object].push({
+						'id': scene.data[scene.cache.object].findIndex(entry => entry.name === scene.cache.name),
+						'name': scene.cache.name,
+					})				
+					scene.cache = null
+				}
+			}
+			console.info(`Scene load ${name} ${performance.now()} ms`)  
+		}
+		scene.cache = null
+		scene.data = {}	
+	/* events */
+	var events = []
 
-	
 	console.info(`Engine ready`)
 	_delta = performance.now()
 	return {init, STATS, core, scene, events}
 })()
-/* TODO: Rework */
+
+/* debug */
 engine.debug = {
+	// TODO: rethink
 	enabled: true,
 	timers: {},
 	start(label) {

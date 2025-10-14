@@ -25,7 +25,7 @@ engine.pipeline.basepass = (function () {
 				// rework to preallocated TypedArrays for faster read write 
 				// prepare for layout aware geometry buffer
 		_data = {}
-		// info (meta)
+		/* info (meta) */
 		engine.debug.start('basepass data')
 		const projectionMatrix = engine.utils.math.perspective (0.398, context.canvas.width / context.canvas.height, _scene.camera['near'], _scene.camera['far'])
 		const viewTransform = engine.utils.math.composeTRS(_scene.camera['location'], _scene.camera['rotation'], /*_scene.camera['scale'] # UNIFORM ONLY */ [1, 1, 1]) 
@@ -33,16 +33,16 @@ engine.pipeline.basepass = (function () {
 		const viewProjectionMatrix = engine.utils.math.multiply(projectionMatrix, viewMatrix)
 		_data.metadata = {}	
 		_data.metadata.canvasSize = [context.canvas.width, context.canvas.height]
-		_data.metadata.canvasColor = engine.scene.data.info.viewport.color[0]
-		_data.metadata.canvasAlpha = engine.scene.data.info.viewport.alpha[0]
+		_data.metadata.canvasColor = engine.scene.info[0].viewport.color
+		_data.metadata.canvasAlpha = engine.scene.info[0].viewport.alpha
 		_data.metadata.viewProjectionMatrix = viewProjectionMatrix
 		_data.metadata.lightNum = _scene.lights.length		
-		// materials		
+		/* materials */	
 		_data.material = {}
 		_data.material.rgb = {}
 		_data.material.rgb.lookup = []
 		for (const material of _scene.materials) {_data.material.rgb.lookup.push(material.rgb)} 
-		// DATA SHARED SoA
+		/* DATA SHARED SoA */
 		_data.mesh = {}
 		_data.mesh.vertex = []
 		_data.mesh.vertexMaterial = []
@@ -75,9 +75,6 @@ engine.pipeline.basepass = (function () {
 		_buffer.material = {}
 		_buffer.material.color = engine.gpu.buffer.material.create(_data.material.rgb.lookup) // GPUBufferUsage.STORAGE		
 		/* BUFFER SHARED */
-		
-		// engine.gpu.buffer.geometry.create(_data, 'debug') 
-
 		// BUFFER Geomentry
 		_buffer.vertex = engine.gpu.buffer.vertex.create( _data.mesh.vertex) // GPUBufferUsage.VERTEX	
 		_buffer.vertexMaterial = engine.gpu.buffer.vertex.color.create(_data.mesh.vertexMaterial) // GPUBufferUsage.VERTEX	
@@ -85,7 +82,7 @@ engine.pipeline.basepass = (function () {
 		_buffer.materialSlot = engine.gpu.buffer.material.slot.create(_data.mesh.materialSlot) // GPUBufferUsage.STORAGE
 		_buffer.materialSlotOffset = engine.gpu.buffer.material.slot.offset.create(_data.mesh.materialSlotOffset) // GPUBufferUsage.STORAGE
 		_buffer.modelMatrix = engine.gpu.buffer.modelMatrix.create(_data.mesh.modelMatrix) // GPUBufferUsage.STORAGE
-		// BINDGROUP
+		/* BINDGROUP */
 		_bindgrouplayout = device.createBindGroupLayout({
 			entries: [
 				{binding: 0, visibility: GPUShaderStage.VERTEX, buffer: {type: 'uniform'}},
@@ -106,10 +103,10 @@ engine.pipeline.basepass = (function () {
 				{binding: 4, resource: {buffer: _buffer.material.color}},
 			],
 		})
-		// PIPELINES
+		/* PIPELINES */
 		_pipelinelayout = device.createPipelineLayout({bindGroupLayouts: [_bindgrouplayout]})		
 		_pipeline = {}
-		// cullmode back
+		/* cullmode back */
 		_pipeline.culling = device.createRenderPipeline({
 			layout: _pipelinelayout,
 			vertex: {
@@ -134,7 +131,7 @@ engine.pipeline.basepass = (function () {
 			primitive: {topology: 'triangle-list', cullMode: 'back', frontFace: 'ccw'},
 			depthStencil: {format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less'}
     	})
-		// cullmode none
+		/* cullmode none */
 		_pipeline.noculling = device.createRenderPipeline({
 			layout: _pipelinelayout,
 			vertex: {
@@ -191,7 +188,7 @@ engine.pipeline.basepass = (function () {
 		passEncoder.setVertexBuffer(0, _buffer.vertex)
 		passEncoder.setVertexBuffer(1, _buffer.vertexMaterial)
 		passEncoder.setIndexBuffer(_buffer.index, 'uint32')
-		// drawcall loop
+		/* drawcall loop */
 		let indexCount = 0
 		let indexOffset = 0
 		let instanceOffset = 0

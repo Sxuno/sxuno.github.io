@@ -5,39 +5,6 @@
  */
 engine.shader = engine.shader || {}
 engine.shader.geometry = engine.shader.geometry || {}
-engine.shader.geometry.fragment = `
-struct VertexOut {
-    @builtin(position) Position : vec4<f32>,
-    @location(0) color : vec4<f32>,
-};
-
-fn tonemap(x: vec3<f32>) -> vec3<f32> {
-    // Khronos neutral (AgX) tonemapper
-    let A = 0.22;
-    let B = 0.30;
-    let C = 0.10;
-    let D = 0.20;
-    let E = 0.01;
-    let F = 0.30;
-
-    let numerator = x * (A * x + C * B) + D * E;
-    let denominator = x * (A * x + B) + D * F;
-    let result = (numerator / denominator) - (E / F);
-
-    return clamp(result, vec3<f32>(0.0), vec3<f32>(1.0));
-}
-
-fn toSRGB(rgb: vec3<f32>) -> vec3<f32> {
-    return pow(rgb, vec3<f32>(1.0 / 2.2));
-}
-
-@fragment
-fn main(input: VertexOut) -> @location(0) vec4<f32> {
-    let linear = input.color.rgb;
-    let agxColor = tonemap(linear);
-    let finalColor = toSRGB(agxColor);
-    return vec4<f32>(finalColor, input.color.a);
-}`
 engine.shader.geometry.vertex = `
 struct Metadata {
     viewProj: mat4x4<f32>,
@@ -71,4 +38,37 @@ fn main(input: VertexIn, @builtin(vertex_index) vertexIndex: u32, @builtin(insta
     out.color = materials[materialSlot[materialSlotOffset[instanceIndex]]];
 
 	return out;
+}`
+engine.shader.geometry.fragment = `
+struct VertexOut {
+    @builtin(position) Position : vec4<f32>,
+    @location(0) color : vec4<f32>,
+};
+
+fn tonemap(x: vec3<f32>) -> vec3<f32> {
+    // Khronos neutral (AgX) tonemapper
+    let A = 0.22;
+    let B = 0.30;
+    let C = 0.10;
+    let D = 0.20;
+    let E = 0.01;
+    let F = 0.30;
+
+    let numerator = x * (A * x + C * B) + D * E;
+    let denominator = x * (A * x + B) + D * F;
+    let result = (numerator / denominator) - (E / F);
+
+    return clamp(result, vec3<f32>(0.0), vec3<f32>(1.0));
+}
+
+fn toSRGB(rgb: vec3<f32>) -> vec3<f32> {
+    return pow(rgb, vec3<f32>(1.0 / 2.2));
+}
+
+@fragment
+fn main(input: VertexOut) -> @location(0) vec4<f32> {
+    let linear = input.color.rgb;
+    let agxColor = tonemap(linear);
+    let finalColor = toSRGB(agxColor);
+    return vec4<f32>(finalColor, input.color.a);
 }`

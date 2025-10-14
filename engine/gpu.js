@@ -4,14 +4,12 @@
  * See LICENSE.txt for details.
  */
 engine.gpu = (function() {
-	var _gpu = null
 	/* GPU DEFAULTS */
 	var _adapter = null
 	var _device = null
 	let _format = null
 	let _context = null
-	/* GPU CONTEXT */	
-	let _instructions = null
+	/* GPU CONTEXT */
 	let _config = null
 	let _setup = null
 	/* GPU RESOURCES */
@@ -20,70 +18,60 @@ engine.gpu = (function() {
 
 	async function init() {
 		if (!navigator) {
-			engine.STATS.gpu.set(false)
+			engine.STATS.gpu = false
 			throw new Error('WebGPU not supported')
 		}
 		_adapter = await navigator.gpu.requestAdapter()
 		if (!_adapter) {
-			engine.STATS.gpu.set(false)
+			engine.STATS.gpu = false
 			throw new Error('GPU not supported')
 		}
-		engine.STATS.gpu.set(true)
+		engine.STATS.gpu = true
 		_device =  await _adapter.requestDevice()
 		_format = navigator.gpu.getPreferredCanvasFormat()
+
+		/* 3475 context setup */
 		_context = []
 		_config = []
-		_instructions = []
-		for (const [index, canvas] of Object.entries(document.getElementsByTagName('canvas'))) {			
-			/* 3849 canvas instructions */
-			_config.push([])
-			let _instructionset = canvas.getAttribute('webgpuengine')
-			if (!_instructionset) {
-				console.warn(`canvas ${canvas.getAttribute('id') || (canvas.setAttribute('id', index),'with generated id '+canvas.getAttribute('id')+',')} has no instructionset.`)
-				_instructionset = `scene(0)|resolution(${parseInt(getComputedStyle(canvas).width)},${parseInt(getComputedStyle(canvas).height)})`
-			}
-			_instructions.push(_instructionset.split(/[|]/).map(sets => sets.trim()).filter(Boolean))
-			for(let _instruction of _instructions[_instructions.length -1]) {
-				_instruction = _instruction.split(/[()]/).map(call => call.trim()).filter(Boolean)
-				_config[_config.length -1 ].push([_instruction[0], _instruction[1].split(/[,]/).map(arg => arg.trim()).filter(Boolean)])
-			}		
-			/* 5060 canvas context */
+		_setup = []
+
+		for (const [index, canvas] of Object.entries(document.querySelectorAll('canvas[webgpuengine]'))) {
+			/* 3844 context canvas */
 			_context.push(canvas.getContext('webgpu'))
-			_context[_context.length -1].configure({
+			_context[index].configure({
 				device: _device,
 				format: _format,
 				alphaMode: 'premultiplied',
 			})
-			_setup = {
-				setup:(args)=>{return _config[args]},
-				set:(args)=>{return 'set('+args+')'},
-				canvas : _context.length,
-			}
-			context.push(_setup)
-		}
-		/* 6481 context lookup */
-		context = context.map((element, contextkey) => {
-			for (var [entry, arg] of Object.entries(element)) {
-				switch(typeof(arg)) {
-					case 'function':
-						let cache = element[entry]
-						element[entry] = function(...args) { 
-							return cache.apply(this, args)
-						}
-						break
-					case 'number':
-						return element[entry] = _context[contextkey]
-					default: 
-						break
-				}
+			/* 4571 context config */
+			_config.push(String(canvas.getAttribute('webgpuengine')))
 
+			_setup.push([])
+			_setup[index].config = {}
+
+			for (let instructionset of String(_config[index]).split(/[|]/).map(instructionsets => instructionsets.trim()).filter(Boolean)) {
+				if (typeof(_config[index]) == 'string'){_config[index] = []}
+
+				_config[index].push(instructionset.split(/[()]/).map(instructions => instructions.trim()).filter(Boolean))
+
+				let category = _config[index][_config[index].length-1][0]
+				let args = _config[index][_config[index].length-1][1]
+
+				_setup[index].config[category] = args
+				/* TODO: add category switch */
 			}
-		})
-		console.info(`GPU init ${performance.now() - engine.STATS.delta.get()} ms`)    
-		return {_device, _format, _context}
+			if(!_setup[index].config.scene) {
+				console.warn(`canvas with id ${canvas.id} missing scene information.`)
+			}
+			/* 7273 context extension - config */
+			_context[index].config = _setup[index].config			
+		}
+		// expose context
+		engine.gpu.context = _context
+
+		console.info(`GPU init ${performance.now()} ms`)    
+		return {_device, _format}
 	}
-	/* 8586 context lookup */
-	var context = []
 	// binding descriptor
 	const bindings = {}
 		bindings.show = function () {
@@ -110,7 +98,7 @@ engine.gpu = (function() {
 					}
 				}
 			}
-			// register binding
+			/* register binding */
 			_sampler = _device.createSampler({
 				label: `sampe method ${method}`,
 				magFilter: method,
@@ -138,7 +126,7 @@ engine.gpu = (function() {
 				data[22] = 0
 				data[23] = 0
 			}
-			else {			
+			else {
 				data[20] = metadata.canvasColor[0]
 				data[21] = metadata.canvasColor[1]
 				data[22] = metadata.canvasColor[2]
@@ -156,12 +144,12 @@ engine.gpu = (function() {
 			_device.queue.writeBuffer(cachedBuffer, 0, typedArray)
 			return cachedBuffer			
 		}
-		// depth buffer
+		/* depth buffer */
 		buffer.depth = buffer.depth || {}
 		buffer.depth.create = function() {
 			throw new Error('depth create method not supported yet')
 		}
-		// material buffer
+		/* material buffer */
 		buffer.material = buffer.material ||{}
 		buffer.material.create = function(materialData, usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST) {
 			const data = []
@@ -178,7 +166,7 @@ engine.gpu = (function() {
 			_device.queue.writeBuffer(cachedBuffer, 0, typedArray)
 			return cachedBuffer
 		}
-		// geometry buffer
+		/* geometry buffer */
 		buffer.geometry = buffer.geometry || {}
 		buffer.geometry.create = function(geometryData, usage) {
 			if (usage != 'debug') {
@@ -199,20 +187,19 @@ engine.gpu = (function() {
 			 // materialSlotOffset
 			 // modelMatrix
 		}
-		// light buffer
+		/* light buffer */
 		buffer.light = buffer.light || {}
 		buffer.light.create = function(lightData, usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST) {
-			
 			const data = []
 			for (const light of lightData) {
 				data.push(
-					light.location[0], 
-					light.location[1], 
-					light.location[2], 
+					light.location[0],
+					light.location[1],
+					light.location[2],
 					light.distance,
-					light.color[0], 
-					light.color[1], 
-					light.color[2], 
+					light.color[0],
+					light.color[1],
+					light.color[2],
 					light.power,
 				)
 			}
@@ -305,15 +292,12 @@ engine.gpu = (function() {
 			_device.queue.writeBuffer(cachedBuffer, 0, typedArray)
 			return cachedBuffer
 		}
-	// view textures
+	/* view textures */
 	const view = {}
 		// TODO: 
-			// add context aware combined resize observer
+			// add context aware resize observer
 			// debug output as createView vs texture
 		view.create = function(name) {
-			// TODO: 
-				// register with name to context or register to geometry buffer
-				// for dependency fallback method
 			view.texture = _device.createTexture({
 				label: name,
 				size: 	[_context[0].canvas.width, _context[0].canvas.height],
@@ -322,6 +306,5 @@ engine.gpu = (function() {
 			})
 			return view.texture.createView()
 		}
-	return { init, context, binding, bindings, buffer, view }
-
+	return { init, binding, bindings, buffer, view }
 })()

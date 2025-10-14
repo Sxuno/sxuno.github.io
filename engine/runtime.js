@@ -9,26 +9,45 @@ engine.runtime = (function () {
 	let _format = null
 	let _context = null
 
-	async function init(device, context, format) {
+	async function init(device, format) {
 		_device = device
 		_format = format
-		_context = context
+		_context = engine.gpu.context[0]
 		
-		await engine.bindings.init()
 		engine.debug.start('load scene')
+
 		await engine.scene.init()
-		await engine.scene.data.info.init()
-		await engine.scene.data.init()
-		await engine.scene.graph.init()
+		for (let index in engine.gpu.context) {
+			await engine.scene.load(engine.gpu.context[index].config.scene)					
+		}
+		/* TODO: rethink scene graph in multiscene support context */
+			await engine.scene.graph.init()
+			/* 
+				scene info frame
+				scene info delta
+				scene info buffer
+
+				execution:
+					get sences by name
+						check frame delta
+					per dif create buffers and call pipline
+			*/
+
 		engine.debug.end('load scene')
 
 		engine.debug.start('pass init')
-		await engine.pipeline.depthpass.init(_device, _context)
-		await engine.pipeline.basepass.init(_device, _context)
-		await engine.pipeline.shadowpass.init(_device, _context)
-		await engine.pipeline.lightpass.init(_device, _context)
-		await engine.pipeline.composepass.init(_device, _context)
+		/* TODO: make it data driven and context dependend instead of 'giving' context,
+				may move to  core.js > pipeline init (dose not exist yet) */
+			await engine.pipeline.depthpass.init(_device, _context)
+			await engine.pipeline.basepass.init(_device, _context)
+			await engine.pipeline.shadowpass.init(_device, _context)
+			await engine.pipeline.lightpass.init(_device, _context)
+			await engine.pipeline.composepass.init(_device, _context)
+
 		engine.debug.end('pass init')
+
+		/* TODO: add 'frame bindings' init call method,
+				for privatscope DOM update scheduling */
 
 		requestAnimationFrame(frame)
 	}
@@ -45,8 +64,6 @@ engine.runtime = (function () {
 		engine.pipeline.composepass.draw(encoder, _context)
 
 		_device.queue.submit([encoder.finish()])
-
-		//engine.bindings.exec()
 
 		requestAnimationFrame(frame)
 	}

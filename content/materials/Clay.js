@@ -1,1 +1,1 @@
-engine.scene.data.materials.push({name:'Clay',rgb:[0.4721905589103699,0.49275267124176025,0.5576820373535156],culling:false})
+engine.scene.cache={name:'Clay',rgb:[0.4721905589103699,0.49275267124176025,0.5576820373535156],culling:false,object:'material'}
