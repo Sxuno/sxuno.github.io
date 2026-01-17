@@ -31,7 +31,7 @@ window.api.roadmap = {}
                 }
             },
             {
-            'label': 'in development',
+            'label': '2026 in development',
             'rows': {
                 'Integrations'  : ['Material Color', 'Backface culling', 'Background RGB', 'Light Points', 'Keyframes', 'Shadows',],
                 'Technologies'  : ['RGB Shader','Deferred Rendering', 'Defered Lightning', 'GPU-driven rendering', 'Draw call batching' ],

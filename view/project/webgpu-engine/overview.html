@@ -20,9 +20,104 @@
 		</header>
 		<main id = 'webgpu-engine'>
 			<h1>WebGPU Engine</h1>
+			<label>part of Bender Plugin <a href = './../webgpu-export/roadmap.html'>WebGPU-export</a></label>
 			<section id = 'description'>
 				<h2>Description</h2>
-				<label>currently part of Bender Plugin <a href = './../webgpu-export/roadmap.html'>WebGPU-export</a></label>
+					<div>
+						An Javascript Engine which uses Webgpu, it is an datadriven engine which is build for CDN data delivery
+						to offer<br />
+						<div class = 'grid-wrap'>
+							<div class = 'col10'>
+							</div>	
+							<div class = 'col50'>
+								<br />
+								local development in file context<br />
+								<br />
+								exploration of possible content delivery optimizations<br/>
+								exploration of possible CDN delivery of scenedata<br />
+								exploration of possible kioskmode for local presentation networks<br />
+								<br />
+							</div>
+						</div>
+					</div>
+			</section>
+			<section id = 'features'>
+				<h2>Features</h2>
+				<div>
+					Multicanvas support through custom html tags,<br />
+					partial Multiscene canvas swapchain integration,<br />
+					partial datadriven buffer creation,<br >
+					planned for dynamic htmltag engine bridge<br />
+					<br />
+					<label>planned after bindlesbuffer support in webgpu through Khronos Group</label>
+
+				</div>
+			</section>
+			<section id = 'preformance'>
+				<h2>Preformance</h2>
+				<div>
+					static rendering with inital buffer load log
+
+					Tagparsing through string parsing to avoid eval
+					SoA Buffercache reflects different scenes
+						partial bached drawcalls for backfaceculling
+					nLight support through uniform meta buffer
+				</div>
+			</section>
+            <section id = 'specifications'>
+                <h2>Specifications</h2>
+				<div>
+					Handels data through blender export to *.js parsing system <br />
+					with option of appending multiple exports to view in taged canvas.<br />
+					<br />
+					partial documentation with comments<br />
+					<br />
+					current license model<br />
+					<div class = 'grid-wrap'>
+						<div class = 'col25'>
+							webgpu-engine<br />
+							webgpu-engine-docs <br />
+							<br />
+						</div>	
+						<div class = 'col50'>
+							opensource<br />
+							copyright reserved<br />
+							<br />
+						</div>
+					</div>
+					<label>decoupled from webgpu-export gpl3</label>
+				</div>
+			</section>
+			<section id = 'download'>
+				<h2>Planed releases</h2>
+				<nav>
+					<h3>Github</h3>
+					<div class = 'grid-wrap'>
+						<div class = 'col10'>
+							source: 
+						</div>
+						<div class = 'col33'>
+							<a href = '#//github.com/sxuno/webgpu-engine/' target = '_blank' rel = 'noopener noreferrer'>Access request</a>
+						</div>
+					</div>
+					<div class = 'grid-wrap'>
+						<div class = 'col10'>
+						release:
+						</div>
+						<div class = 'col33'>
+							<a href = '#//github.com/sxuno/webgpu-engine/releases' target='_self' rel='noopener noreferrer'>Access request</a><br /><br />
+						</div>
+					</div>
+					<h3>Blender Addons</h3>
+					<div class = 'grid-wrap'>
+						<div class = 'col10'>
+						release:
+						</div>
+						<div class = 'col33'>
+							<a href = 'https://extensions.blender.org/add-ons/' target = '_blank' rel = 'noopener noreferrer'>in planning</a>
+						</div>
+					</div>
+				</nav>
 			</section>
 		</main>
 		<footer>

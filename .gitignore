@@ -1,5 +1,7 @@
 # Dev Stats
 .VSCodeCounter/
+# Project
+README.md
 # Builder
 svg-builder.py
 /media/*/*.html
@@ -10,11 +12,12 @@ archive/
 scene.blend
 scene.blend1
 scene.blend1
-# media
+# mediaw
 *.png~
 # webgpu-export template files
 scene.css
 scene.html
 # whitepapers
+view/project/orbitalcontrollsystem/overview.html
 view/project/webgpu-engine/whitepaper.md
 view/project/webgpu-export/whitepaper.md
