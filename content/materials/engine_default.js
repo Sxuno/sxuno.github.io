@@ -1,1 +1,1 @@
-engine.scene.cache={name:'engine_default',rgb:[1.0,0.0,1.0],culling:false,object:'material'}
+engine.scene.cache={name:'engine_default',object:'material',rgb:[1.0,0.0,1.0],culling:false}

@@ -1,0 +1,1 @@
+engine.scene.cache={name:'blue',object:'material',rgb:[0.0,0.0004121685342397541,0.8000074625015259],culling:false}

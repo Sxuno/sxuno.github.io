@@ -139,7 +139,6 @@ engine = (function() {
 	_delta = performance.now()
 	return {init, STATS, core, scene, events}
 })()
-
 /* debug */
 engine.debug = {
 	// TODO: rethink

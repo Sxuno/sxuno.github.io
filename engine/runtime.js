@@ -23,16 +23,15 @@ engine.runtime = (function () {
 		/* TODO: rethink scene graph in multiscene support context */
 			await engine.scene.graph.init()
 			/* 
-				scene info frame
-				scene info delta
-				scene info buffer
-
+				scene info frame (controlled by runtime renderer #second.(framenumber per second or keyframe size))
+				scene info delta (controlled by runtime logic #timeline #keyframes)
+				scene info buffer (lookup throug index arry?)
+					buffer lifetime = gpu.buffer.get(context) buffer throu context? or scene?
 				execution:
 					get sences by name
 						check frame delta
 					per dif create buffers and call pipline
 			*/
-
 		engine.debug.end('load scene')
 
 		engine.debug.start('pass init')

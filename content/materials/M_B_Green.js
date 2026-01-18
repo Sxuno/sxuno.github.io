@@ -1,1 +1,0 @@
-engine.scene.cache={name:'M_B_Green',rgb:[0.08565327525138855,0.7612717747688293,0.003845340572297573],culling:false,object:'material'}

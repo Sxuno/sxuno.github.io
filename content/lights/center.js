@@ -1,0 +1,1 @@
+engine.scene.cache={name:'center',object:'light',type:'POINT',color:[1.0,0.8784322738647461,0.8274513483047485],location:[-0.20414765179157257,2.5115737915039062,7.300456523895264],rotation:[0.0,0.0,0.0],scale:[1.0,1.0,1.0],power:600.0,distance:40.0}
