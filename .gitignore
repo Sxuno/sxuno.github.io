@@ -1,24 +1,33 @@
+### Development Settings ###
 # Dev Stats
 .VSCodeCounter/
 # Project
 README.md
-# Builder
+# Archive
+archive/
+
+### SVG Builder ###
 svg-builder.py
 /media/*/*.html
 !media/*/*.svg
-# Archive
-archive/
+
+### Webgpu Export User Files ###
 # Blender
 scene.blend
 scene.blend1
 scene.blend1
-# mediaw
-*.png~
 # webgpu-export template files
 scene.css
 scene.html
-# Projects
+### exclude autosaves ###
+# media
+*.png~
+
+### Projects ###
 project/*/*
+!project/DisplaySubsystem.html
+#!project/OrbitalControllSystem.html
 !project/webgpu-export.html
 !project/webgpu-engine.html
-#!project/OrbitalControllSystem.html
+
+
