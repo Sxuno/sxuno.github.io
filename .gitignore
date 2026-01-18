@@ -8,8 +8,8 @@ archive/
 
 ### SVG Builder ###
 svg-builder.py
-/media/*/*.html
-!media/*/*.svg
+view/media/*/*.html
+!view/media/*/*.svg
 
 ### Webgpu Export User Files ###
 # Blender
