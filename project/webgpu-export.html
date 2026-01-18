@@ -11,20 +11,28 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta charset="UTF-8">
 
-		<link rel="icon" type="image/x-ico" href="./../view/media/icon/menu.svg">
-		<link rel="stylesheet" href="./../view/layout/style.css">
-		<script src="./../view/scripts/layout.js"></script>
+		<link rel="icon" type="image/x-ico" href="./../media/icon/menu.svg">
+		<link rel="stylesheet" href="./../theme/default/style.css">
+		<script src="./../view/roadmap.js"></script>
 	</head>
 	<body>
 		<header>
-			<nav><img src = './../view/media/icon/menu.svg' /><label>English <img src = './../view/media/icon/settings.svg' /></label></nav>			
+			<nav>
+				<label class = 'left'>
+					<img src = './../media/icon/menu.svg' />
+					Home
+				</label>
+				<label class = 'right'>
+					English <img src = './../media/icon/settings.svg' />
+				</label>
+			</nav>
 		</header>
 		<main id = 'webgpu-export'>
 			<h1>Blender WebGPU Export</h1>
 			<section id = 'preview'>
 				<h2>Preview</h2>
 				<!-- TODO: make it seperate images which enlarge xor show label text // for mobile make them colapse and rotate with uniform scale-->
-				<img src = './../view/media/image/webgpu-export-preview.png' />  
+				<img src = './../media/image/webgpu-export-preview.png' />  
 			</section>
 			<section id = 'description'>
 				<h2>Description</h2>
@@ -144,7 +152,7 @@
 					<div>
 						planed for Webgpu on linux with firefox.<br />
 						<br /> 
-						<a href="./../view/index.html">Static Live Code Sample</a>
+						<a href="./../index.html">Static Live Code Sample</a>
 						<label>Webgpu must be aktive and supported</label>
 					</div>
 			</section>

@@ -16,9 +16,9 @@
 }
 .webgpu {
 	position: absolute;
-	width: 1600px;
-	height: 960px;
-	top: 0px;
-	left: 50px;
+	width: 50%;
+	height: 50%;
+	top: 25%;
+	left: 25%;
 	z-index: 0;
 }

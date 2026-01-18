@@ -2,14 +2,15 @@
 # Dev Stats
 .VSCodeCounter/
 # Project
-README.md
+*.md
+*.htm
 # Archive
 archive/
 
 ### SVG Builder ###
 svg-builder.py
-view/media/*/*.html
-!view/media/*/*.svg
+/media/*/*.html
+!/media/*/*.svg
 
 ### Webgpu Export User Files ###
 # Blender
@@ -24,7 +25,6 @@ scene.html
 *.png~
 
 ### Projects ###
-project/*/*
 !project/DisplaySubsystem.html
 #!project/OrbitalControllSystem.html
 !project/webgpu-export.html

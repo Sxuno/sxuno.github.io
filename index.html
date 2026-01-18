@@ -14,25 +14,38 @@
 		<meta charset="UTF-8">
 
 		<link rel="icon" type="image/x-icon" href="media/icon/site.svg">
-		<link rel="stylesheet" href="view/layout/style.css">
-		<link rel = 'stylesheet' href = 'view/layout/engine.css'>
+		<link rel="stylesheet" href="theme/default/style.css">
+		<link rel = 'stylesheet' href = 'theme/default/engine.css'>
 
-		<script src="view/scripts/layout.js"></script>
 		<script src = 'engine/core.js'></script>
 	</head>
 	<body>
 		<header>
-			<nav><img src = './view/media/icon/menu.svg' /><label>English <img src = './view/media/icon/settings.svg' /></label></nav>
+			<nav>
+				<label class = 'left'>
+					<img src = './media/icon/menu.svg' />
+					Home
+				</label>
+				<label class = 'right'>
+					English <img src = './media/icon/settings.svg' />
+				</label>
+			</nav>
 		</header>
 		<main id = 'githubpage'>
 			<h1>
 				SXuno
 			</h1>
+			<section id="blogs">
+				<h2>Biolog</h2>
+				<a href = '#' >Summery</a>
+				<a href = '#'>New</a>
+
+			</section>
 			<section id="projects" class="webgpu-engine">
 				<h2>Projects</h2>
 				<div class = 'scrollcontainer'>
 					<div class = 'containeritem'>
-						<a href="./project/DsiplaySubsystem.html">DisplaySubsystem</a>
+						<a href="./project/DisplaySubsystem.html">DisplaySubsystem</a>
 						<label>UE5 GameInstanceSubsystem</label>
 					</div>
 					<div class = 'containeritem'>
@@ -48,16 +61,18 @@
 			</section>
 			<section id = 'worksamples'>
 				<h2>Samples</h2>
-				<a href = './view/worksample/3Dmodels.html'>3D models</a>
+				<a href = '#/view/workflow.html'>Workflow</a>
+				<a href = '#/view/worksample.html'>Worksample</a>
+				<a href = '#/view/workspace.html'>Workspace</a>
 				<br />
 				<br />
 			</section>
 			<nav class="network">
 				<ul>
-					<li><a href="https://www.artstation.com/sxuno" target="_blank"><img src="view/media/logo/artstation.svg"></a></li>
-					<li><a href="https://github.com/Sxuno" target="_blank"><img src="view/media/logo/github.svg"></a></li>
-					<li><a href="https://sketchfab.com/sxuno" target="_blank"><img src="view/media/logo/sketchfab.svg"></a></li>
-					<li><a href="https://www.linkedin.com/in/sxuno/" target="_blank"><img src="view/media/logo/linkedin.svg"></a></li>
+					<li><a href="https://www.artstation.com/sxuno" target="_blank"><img src="media/logo/artstation.svg"></a></li>
+					<li><a href="https://github.com/Sxuno" target="_blank"><img src="media/logo/github.svg"></a></li>
+					<li><a href="https://sketchfab.com/sxuno" target="_blank"><img src="media/logo/sketchfab.svg"></a></li>
+					<li><a href="https://www.linkedin.com/in/sxuno/" target="_blank"><img src="media/logo/linkedin.svg"></a></li>
 				</ul>
 			</nav>
 		</main>
@@ -68,7 +83,7 @@
 			<small>
 			copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 			</small>
-			<label><p webgpuengine = 'bind(background-color, STATS.gpu.set, #FFF)'></p>webgpu <img src = './view/media/logo/webgpu.svg' webgpuengine = 'bind(visibility, STATS.gpu.set, true)' /></label>			
+			<label><p webgpuengine = 'bind(background-color, STATS.gpu.set, #FFF)'></p>webgpu <img src = './media/logo/webgpu.svg' webgpuengine = 'bind(visibility, STATS.gpu.set, true)' /></label>			
 		</footer>
 	</body>
 </html>
