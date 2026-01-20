@@ -17,7 +17,7 @@
 /* Roadmap */
 window.api = {}
 window.api.roadmap = {}
-/*if (window.location.protocol === 'file:') {*/
+/*if (window.location.protocol === 'file:') {
     window.api.roadmap.data = 
     {
         'versions': 
@@ -25,17 +25,17 @@ window.api.roadmap = {}
             {
             'label': 'Version 0.1.0dev',
             'rows': {
-                'Integrations'  : ['Render Resolution', 'Mesh Data'],
-                'Technologies'  : ['Device Setup', 'Renderpass'],
-                'Features'      : ['Export Generator','Standalone Distribution']
+                'Integrations'  : ['Render Resolution', 'Mesh Data','Backface culling','Light Points','Background RGBA',],
+                'Technologies'  : ['Device Setup', 'Renderpass', 'Deferred Rendering', 'Defered Lightning'],
+                'Features'      : ['Export Generator','Html Distribution', 'Template Preview',]
                 }
             },
             {
             'label': '2026 in development',
             'rows': {
-                'Integrations'  : ['Material Color', 'Backface culling', 'Background RGB', 'Light Points', 'Keyframes', 'Shadows',],
-                'Technologies'  : ['RGB Shader','Deferred Rendering', 'Defered Lightning', 'GPU-driven rendering', 'Draw call batching' ],
-                'Features'      : ['Template Preview', 'Shading Modes', 'Multicanvas', 'Camera Movement', 'Debug View'],
+                'Integrations'  : ['Material Color', 'Keyframes', 'Shadows', 'Pointclouds', 'Particlesytems'],
+                'Technologies'  : ['RGB Shader', 'GPU-driven rendering', 'Draw call batching' ],
+                'Features'      : ['Shading Modes', 'Multicanvas', 'Camera Movement', 'Debug View'],
                 }
             },
             {
@@ -49,7 +49,7 @@ window.api.roadmap = {}
         ]
     }
     if (!window.api.roadmap.data) {throw new Error('Roadmap data missing')}
-/*}
+}
 
 if (window.location.protocol !== 'file:') {
     fetch('roadmap.json')

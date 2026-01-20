@@ -3,6 +3,7 @@
 .VSCodeCounter/
 # Project
 *.md
+!README.md
 *.htm
 # Archive
 archive/
@@ -17,6 +18,7 @@ svg-builder.py
 scene.blend
 scene.blend1
 scene.blend1
+
 # webgpu-export template files
 scene.css
 scene.html
