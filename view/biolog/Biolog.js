@@ -1,2 +1,2 @@
-intent = ''
-motivation = ''
+intent = 'intent'
+motivation = 'motivation'
