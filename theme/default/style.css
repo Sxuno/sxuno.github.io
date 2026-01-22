@@ -101,8 +101,8 @@ label a { display: inline;}
 .network ul li {float: left;padding-right: 20px;}
 .network ul li a img {height: 32px;width: 32px;}
 /* worskpace */
-#workspace {width: 100%}
-#workspace.div {background-image: url("./../../media/image/Template.png") ;}
+#Workspace {width: 100%}
+#Workspace.div {background-image: url("./../../media/image/Template.png") ;}
 
 
 /*** PROJECTS ***/
