@@ -1,6 +1,5 @@
-# sxuno.github.io.vsc-workspace
+# sxuno.github.io
 ## Project structure
-## Chanelog
 ### Biolog
 ### Projects
     Blender
