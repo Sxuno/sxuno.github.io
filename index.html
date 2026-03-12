@@ -8,7 +8,7 @@
 		<meta name="author" content="Stefan Wienold">
 		<meta name="language" content = 'en'>
 
-		<meta name="robots" content="index, nofollow">
+		<meta name="robots" content="index, follow">
 
 		<meta name="viewport" content="width=device-width">
 		<meta charset="UTF-8">
@@ -17,6 +17,7 @@
 		<link rel="stylesheet" href="theme/default/style.css">
 		<link rel = 'stylesheet' href = 'theme/default/engine.css'>
 
+		<script src = 'system/framework.js'></script>
 		<script src = 'engine/core.js'></script>
 	</head>
 	<body>
@@ -37,7 +38,7 @@
 			</h1>
 			<section id="blogs">
 				<h2>Biolog</h2>
-				<a href = './view/biolog/Portfolio.html'>Portfolio</a>
+				<a href = './view/biolog/CV.html'>CV</a>
 				<a href = './view/biolog/Intent.html'>Intent</a>
 				<a href = './view/biolog/Motivation.html'>Motivation</a>
 			</section>
@@ -58,8 +59,6 @@
 						<a href="./project/OrbitalControllSystem.html">OrbitalControllSystem</a>
 						<label>UE Project Content</label>
 					</div>
-
-
 				</div>
 				<label><a href='./view/projects.html'>more</a></label>
 			</section>
@@ -73,14 +72,18 @@
 			</section>
 			<nav class="network">
 				<ul>
+				<!--
 					<li><a href="https://www.artstation.com/sxuno" target="_blank"><img src="media/logo/artstation.svg"></a></li>
+				-->
 					<li><a href="https://github.com/Sxuno" target="_blank"><img src="media/logo/github.svg"></a></li>
 					<li><a href="https://sketchfab.com/sxuno" target="_blank"><img src="media/logo/sketchfab.svg"></a></li>
+				<!--
 					<li><a href="https://www.linkedin.com/in/sxuno/" target="_blank"><img src="media/logo/linkedin.svg"></a></li>
+				-->
 				</ul>
 			</nav>
 		</main>
-		<canvas class = 'webgpu' width = '3200' height = '1920' webgpuengine = 'scene(scene)'></canvas>
+		<canvas class = 'webgpu' width = '320' height = '192' webgpuengine = 'scene(scene)'></canvas>
 		<!-- note: inline size = rendersize / css size canvas size -->
 		<script>engine.init()</script>
 		<footer>
