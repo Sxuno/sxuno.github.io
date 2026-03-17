@@ -1,19 +1,29 @@
 # sxuno.github.io
+
+## Description
+
+this page is all about my personal journey and projects i create,  
+everything this page uses and presents is created from scratch based on  
+an autoditactive rnd workflow.  
+Tools and workflows created for it are avaliable to use for anyone intressted.  
+
+### note
+This repository contains experimental samples for the WebGPU-Engine project.
+
+The code is provided for demonstration and personal experimentation only.
+See LICENSE for details.
+
 ## Project structure
-### Biolog
-### Projects
-    Blender
->
-    Unreal
+
+```
+    content         >>> 3d content files
+    engine          >>> webgpu-engine
+    projects        >>> static html project files
+    system          >>> framework system
+    theme           >>> style system
+    user            >>> session and cookie system
+    views           >>> static html files
+```
 
 ## Workspace Tools
-### SVG-BUILDER
-### Changelog
-#### Update
-    run command
-
-Linux 
-```sh
-
-python3 svg-builder.py
-```
+📎 [`Githubpage/webgpu-engine`](https://sxuno.github.io/project/webgpu-engine.html)  
