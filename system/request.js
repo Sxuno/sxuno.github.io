@@ -1,11 +1,6 @@
-
+// System routing
 
 function AccessRequest () {
-
-    // set cockie
-    // track connection session
-    // set lifetime
-    // set autorefresh through cockie check
 
     // -- enviorment test --
     // display canvas overlay with parsed template.hml

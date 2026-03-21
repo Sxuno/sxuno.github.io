@@ -1,5 +1,5 @@
 /*
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */
@@ -17,7 +17,8 @@ engine.gpu = (function() {
 	var _sampler = null
 
 	async function init() {
-		if (!navigator) {
+
+		if (!navigator.gpu) {
 			engine.STATS.gpu = false
 			throw new Error('WebGPU not supported')
 		}
@@ -61,7 +62,7 @@ engine.gpu = (function() {
 				/* TODO: add category switch */
 			}
 			if(!_setup[index].config.scene) {
-				console.warn(`canvas with id ${canvas.id} missing scene information.`)
+				console.warn(`canvas with id ${canvas.id} missing scene configuration.`)
 			}
 			/* 7273 context extension - config */
 			_context[index].config = _setup[index].config			
@@ -72,11 +73,6 @@ engine.gpu = (function() {
 		console.info(`GPU init ${performance.now()} ms`)    
 		return {_device, _format}
 	}
-	// binding descriptor
-	const bindings = {}
-		bindings.show = function () {
-			return _bindings
-		}
 	const binding = {}
 		binding.sampleTexture = function (method) {
 			_bindings = _bindings || {}
@@ -306,5 +302,5 @@ engine.gpu = (function() {
 			})
 			return view.texture.createView()
 		}
-	return { init, binding, bindings, buffer, view }
+	return { init, binding, buffer, view }
 })()

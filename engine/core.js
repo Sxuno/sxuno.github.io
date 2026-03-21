@@ -1,19 +1,46 @@
 /*
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */
 
 engine = (function() {
 	/* engine defaults */
-	let _readyState = null
-	let _scripts = null // ? maybe for later
+	let _path = null
+	let _scripts = null // whitelist?
 	let _event = null
+	let _readyState = null
 	/* engine STATS */
 	let _gpu = null
 	let _delta = null
 	let _frametime = null
 
+	/* 1841 PATH */
+	// TODO: 
+	// 		declaration within PATH
+	//		free internal namespace
+	_path = {}
+	_path.document = window.location.href.split('/')
+	_path.script = document.currentScript.src.split('/')
+	_path.root = []
+	_path.engine = ['.']
+
+	for (let index in _path.document) {
+		if (_path.script[index] ===  _path.document[index]) {
+			_path.root.push(_path.document[index])
+		} else if (index < _path.document.length-1) {
+			_path.engine.push('..')
+		}
+	}
+	_path.engine.push(..._path.script.slice(_path.root.length, _path.script.length-2)) // -2 for engine root folder
+	_path.engine = _path.engine.join('/')
+
+	_path.shader = './engine/shader/'
+	_path.content = './content/'
+
+	const PATH = _path
+
+	/* STATS */
 	const STATS = {}
 		STATS.gpu = {
 			get : function() {
@@ -40,28 +67,54 @@ engine = (function() {
 		}
 	const core = {}
 		/* 3761 core script loader */
+		// TODO: Rethink
 		core.script = async function(path){
 			let scripts = []
-			/* 4054 ready state switch */
 			switch(typeof(path)) {
 				case 'string':
 					scripts = [path]
 					break
 				case 'object':
-					scripts = path
+					if (Array.isArray(path)) {
+						scripts = path
+					} else {
+						console.error(`script path object type ${typeof(path)} not supported`)
+					}
 					break
 				default:			
-					console.error(`script ${path} not supported`)
+					console.error(`script path type ${typeof(path)} not supported`)
 					break
 			}
 			for(let script of scripts) {
 				events.push([`register ${script}`])
 				await new Promise((resolve)=> {
 					let _script = document.createElement('script')
-					_script.src = script
-					_script.onload = resolve
-					document.head.appendChild(_script)				
-				})				
+					let path = script.split("/") // INTERNAL FORMAT IMUTABLE switch to _path after PATH rework
+					switch(path[0]) {
+						case 'engine':
+							switch(path[1]) {
+								case 'shader':
+									_script.src = _path.shader+path[2]
+									break
+								default:
+									_script.src = _path.engine+'/'+script
+									break
+							}
+							break
+						case 'content':
+							_script.src = _path.content+path.slice(1).join('/')
+							break
+						default:
+							_script.src = 'invalid'
+							console.warn(`PATH ${script} not supported`)
+							break
+					}				
+					if (_script.src !== 'invalid') {
+						_script.onload = resolve
+						_script.onerror = resolve
+						document.head.appendChild(_script)
+					}
+				})
 			}
 		}	
 	async function init(method) {
@@ -84,6 +137,7 @@ engine = (function() {
 		await engine.core.script('engine/utils/math.js')
 
 		// 8092 TODO: change to called on demand
+		// shader loaded by pipline?
 		await engine.core.script([
 					'engine/pipeline/depthpass.js',
 					'engine/pipeline/basepass.js',
@@ -110,7 +164,7 @@ engine = (function() {
 		scene.load = async function(name){
 			let _scene = scene.info.findIndex(entry => entry.name === name)
 			if (_scene == -1) {
-				if(name) {console.warn(`scene ${name} dose not exist.`)}				
+				if(name) {console.warn(`scene ${name} dose not exist.`)}
 			}
 			else if (!scene.info[_scene].content) {
 				for (let _src of scene.info[_scene].files) {
@@ -124,11 +178,11 @@ engine = (function() {
 					scene.info[_scene].content[scene.cache.object].push({
 						'id': scene.data[scene.cache.object].findIndex(entry => entry.name === scene.cache.name),
 						'name': scene.cache.name,
-					})				
+					})
 					scene.cache = null
 				}
 			}
-			console.info(`Scene load ${name} ${performance.now()} ms`)  
+			console.info(`Scene load ${name} ${performance.now()} ms`)
 		}
 		scene.cache = null
 		scene.data = {}	
@@ -137,7 +191,7 @@ engine = (function() {
 
 	console.info(`Engine ready`)
 	_delta = performance.now()
-	return {init, STATS, core, scene, events}
+	return {init, PATH, STATS, core, scene, events}
 })()
 /* debug */
 engine.debug = {
