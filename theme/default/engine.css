@@ -22,3 +22,6 @@
 	margin: 0px auto;
 	z-index: 0;
 }
+.event.GPUEnabled{
+	visibility: hidden;
+}

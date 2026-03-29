@@ -13,6 +13,15 @@
 
 		<link rel="icon" type="image/x-ico" href="./../media/icon/menu.svg">
 		<link rel="stylesheet" href="./../theme/default/style.css">
+		<link rel = 'stylesheet' href = './../theme/default/engine.css'>
+
+		<script src = './../system/framework.js'></script>
+		<script src = './../engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../content/'
+			engine.PATH.shader = './../engine/shader/'
+		</script>
 	</head>
 	<body>
 		<header>
@@ -35,6 +44,7 @@
 			<small>
 				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../media/logo/webgpu.svg' /></label>
 		</footer>
 	</body>
 </html>

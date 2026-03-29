@@ -13,11 +13,20 @@
 
 		<link rel="icon" type="image/x-ico" href="./../../media/icon/worksample.svg">
 		<link rel="stylesheet" href="./../../theme/default/animations.css">
+
 		<link rel="stylesheet" href="./../../theme/default/style.css"> 
-		
-		<script src="./../../user/interface/window.js"></script>
-		<!-- TODO: dynamic loading depending on root document -->
-			<script src="./worksample.js"></script>
+		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
+
+		<script src = './../../system/framework.js'></script>
+		<script src = './../../engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../../content/'
+			engine.PATH.shader = './../../engine/shader/'
+		</script>
+
+		<script src="./../../system/window.js"></script>
+
 		
 		<style>
 			/* media description */
@@ -123,6 +132,7 @@
 			<small>
 				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>	
 		</footer>
 	</body>
 </html>
