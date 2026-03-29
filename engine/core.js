@@ -5,20 +5,32 @@
  */
 
 engine = (function() {
+	/**************/
+	/*** PRIVAT ***/
+	/**************/
+	let _debug = true
+	let _name = 'WebGPU Engine'
+	let _version = '0.1.4-dev'
+	/* LOG */
+	const log = {}
+	log.info = function(msg) {
+		if (_debug) {
+			console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} ${msg}`)
+		}			
+	}
+
 	/* engine defaults */
 	let _path = null
 	let _scripts = null // whitelist?
 	let _event = null
-	let _readyState = null
+	let _eventdispatcher = new EventTarget()
+	let _readystate
 	/* engine STATS */
 	let _gpu = null
 	let _delta = null
 	let _frametime = null
 
-	/* 1841 PATH */
-	// TODO: 
-	// 		declaration within PATH
-	//		free internal namespace
+	/* 1838 PATH */
 	_path = {}
 	_path.document = window.location.href.split('/')
 	_path.script = document.currentScript.src.split('/')
@@ -37,6 +49,11 @@ engine = (function() {
 
 	_path.shader = './engine/shader/'
 	_path.content = './content/'
+	/**************/
+	/*** PUBLIC ***/
+	/**************/
+	const name = _name
+	const version = _version
 
 	const PATH = _path
 
@@ -66,7 +83,7 @@ engine = (function() {
 			}
 		}
 	const core = {}
-		/* 3761 core script loader */
+		/* 66118 core script loader */
 		// TODO: Rethink
 		core.script = async function(path){
 			let scripts = []
@@ -85,16 +102,15 @@ engine = (function() {
 					console.error(`script path type ${typeof(path)} not supported`)
 					break
 			}
-			for(let script of scripts) {
-				events.push([`register ${script}`])
+			for(let script of scripts) {				
 				await new Promise((resolve)=> {
 					let _script = document.createElement('script')
-					let path = script.split("/") // INTERNAL FORMAT IMUTABLE switch to _path after PATH rework
+					let path = script.split("/") // INTERNAL FORMAT IMUTABLE
 					switch(path[0]) {
 						case 'engine':
 							switch(path[1]) {
 								case 'shader':
-									_script.src = _path.shader+path[2]
+									_script.src = _path.shader+path.slice(2).join('/')
 									break
 								default:
 									_script.src = _path.engine+'/'+script
@@ -113,32 +129,49 @@ engine = (function() {
 						_script.onload = resolve
 						_script.onerror = resolve
 						document.head.appendChild(_script)
+						events.push([`register ${script} pass`])
+					} else {
+						events.push([`register ${script} fail`])
 					}
 				})
 			}
-		}	
-	async function init(method) {
-		/* 6672 ready state switcher */
-		switch(method) {
-			default:
-				_readyState = 'loading'
-				_event = 'load'
-				break
 		}
-		await new Promise(resolve => {window.addEventListener(_event, resolve, { once: true})}) // ? change await position	
-	
-		await engine.core.script('engine/bindings.js')
-		await engine.bindings.init()
+	/* init */
+	const init = (function(){
+		log.info('Engine init')
+		let _autoinit = document.currentScript.getAttribute('data-autoinit') ? true : false
+		let _event = document.currentScript.getAttribute('data-autoinit') || 'load'
+		if (_autoinit &&_event !== 'load' && _event !== 'DOMContentLoaded'){
+			console.warn(`data-autoinit event ${_event} not supported.`)
+			_event = 'load'			
+		}
+		window.addEventListener(_event, loadhandler)
+		/* loadhandler */
+		async function loadhandler(event) {
+			if(typeof(event) !== 'object') {
+				if (_autoinit) {
+					console.warn('data-autoinit override')
+				}
+				window.removeEventListener(_event, loadhandler)
+				if(typeof(event) === 'string') {
+					window.addEventListener(event, loadhandler)
+					return
+				}
+			}
+			if(!_readystate) {
+				_eventdispatcher.dispatchEvent(new Event('InitCore'))
+				await engine.core.script('engine/bindings.js')
+				await engine.bindings.init()
 
-		await engine.core.script('engine/gpu.js')
-		const {_device, _format} = await engine.gpu.init()	
+				await engine.core.script('engine/gpu.js')
+					const {_device, _format} = await engine.gpu.init()	
+				_eventdispatcher.dispatchEvent(new Event('GPUEnabled'))
+				await engine.core.script('engine/runtime.js')
+				await engine.core.script('engine/utils/math.js')
 
-		await engine.core.script('engine/runtime.js')
-		await engine.core.script('engine/utils/math.js')
-
-		// 8092 TODO: change to called on demand
-		// shader loaded by pipline?
-		await engine.core.script([
+					// 8092 TODO: change to called on demand
+					// shader loaded by pipline?
+				await engine.core.script([
 					'engine/pipeline/depthpass.js',
 					'engine/pipeline/basepass.js',
 					'engine/pipeline/shadowpass.js',
@@ -151,8 +184,12 @@ engine = (function() {
 					'engine/shader/compose.js',
 				])
 
-		engine.runtime.init(_device, _format)
-	}
+				engine.runtime.init(_device, _format)
+			}
+			_readystate = true
+		}
+		return loadhandler
+	})()
 	/* 102107 scene init */
 	const scene = {}
 		scene.init = async function(){
@@ -188,10 +225,12 @@ engine = (function() {
 		scene.data = {}	
 	/* events */
 	var events = []
+	/* eventdispatcher */
+	const eventdispatcher = _eventdispatcher
 
 	console.info(`Engine ready`)
 	_delta = performance.now()
-	return {init, PATH, STATS, core, scene, events}
+	return {name, version, eventdispatcher, init, PATH, STATS, core, scene, events }
 })()
 /* debug */
 engine.debug = {
