@@ -2,16 +2,15 @@
 
 ## Description
 
-this page is all about my personal journey and projects i create,  
+this page ([sxuno.github.io](https://sxuno.github.io)) is all about my personal journey and projects i create,  
 everything this page uses and presents is created from scratch based on  
 an autoditactive rnd workflow.  
 Tools and workflows created for it are avaliable to use for anyone intressted.  
 
 ### note
 This repository contains experimental samples for the WebGPU-Engine project.
-
-The code is provided for demonstration and personal experimentation only.
-See LICENSE for details.
+The code is provided for demonstration and personal experimentation only.  
+See [LICENSE](./LICENSE.txt) for details.
 
 ## Project structure
 
@@ -26,4 +25,5 @@ See LICENSE for details.
 ```
 
 ## Workspace Tools
-📎 [`Githubpage/webgpu-engine`](https://sxuno.github.io/project/webgpu-engine.html)  
+📎 [Blender Webgpu Export](https://sxuno.github.io/project/webgpu-export.html)  
+📎 [WebGPU Engine](https://sxuno.github.io/project/webgpu-engine.html)
