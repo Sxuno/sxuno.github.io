@@ -132,7 +132,7 @@ var media = {
 			media.cache.image.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
 			media.cache.image.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`
 			
-			media.cache.image.style.backgroundImage = `url('./../media/image/${name}.png')`
+			media.cache.image.style.backgroundImage = `url('./../../media/image/${name}.png')` //TODO: dynamic paths
 			
 			document.body.appendChild(media.cache.image)
 			/* -------------------------------------------------------------*/
