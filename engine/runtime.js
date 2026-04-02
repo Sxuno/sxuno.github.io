@@ -1,5 +1,5 @@
 /*
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */
@@ -36,7 +36,11 @@ engine.runtime = (function () {
 
 		engine.debug.start('pass init')
 		/* TODO: make it data driven and context dependend instead of 'giving' context,
-				may move to  core.js > pipeline init (dose not exist yet) */
+				may move to  core.js > pipeline init (dose not exist yet) 
+				batch switch 
+					per pipline # synced framerequest 
+					per context # individual framerequest
+				*/
 			await engine.pipeline.depthpass.init(_device, _context)
 			await engine.pipeline.basepass.init(_device, _context)
 			await engine.pipeline.shadowpass.init(_device, _context)
