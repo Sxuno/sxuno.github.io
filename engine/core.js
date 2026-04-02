@@ -84,7 +84,6 @@ engine = (function() {
 						case 'engine':
 							switch(path[1]) {
 								case 'shader':
-									console.log(PATH.shader)
 									script.src = PATH.shader+path.slice(2).join('/')
 									break
 								default:
