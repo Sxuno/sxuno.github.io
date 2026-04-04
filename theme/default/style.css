@@ -8,7 +8,7 @@ h3, h4 { margin-top: 0px;}
     body header h1 {text-align: center;}
     body main {width: 360px;}
     body main header {width: 360px;text-align: center;}
-    #githubpage {width: 360px;}
+
 }
 @media (max-width: 720px) {
     body header h1 {text-align: center;}
