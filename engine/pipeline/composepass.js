@@ -1,5 +1,5 @@
 /*
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */

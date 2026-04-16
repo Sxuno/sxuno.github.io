@@ -4,13 +4,15 @@
  * See LICENSE.txt for details.
  */
 
-engine.GUI = engine.GUI || {}
-engine.GUI.controller = (function(){
-	
+engine.GUI = (function() {
+
 	// =======
 	// PRIVATE
 	// =======
-	
+
+	let _widgets
+	let _zIndex
+
 	let _readystate
 
 	// ======
@@ -19,26 +21,46 @@ engine.GUI.controller = (function(){
 
 	const init = (function() {
 		// init
-		engine.log.info('init GUI controller')
-		async function loadhandler(GUI){}
-		// context loader
+		engine.log.event('init GUI')
+		async function loadhandler(context){
+			// context loader  // .add gui config hook
+			console.log(engine.GUI)
+		}
 		return loadhandler
 	})()
+
+	const controller = {
+		init : (function() {
+			// init
+			engine.log.event('init GUI controller')
+			async function loadhandler(module){
+				// context loader // .add gui path hook
+			}		
+			return loadhandler
+		})()
+	}
+
+	const widget = {
+		init : (function() {
+			// init
+			engine.log.event('init GUI widget')
+			async function loadhandler(widget){}
+			// context loader
+			return loadhandler
+		})()
+	}
 
 	// ======
 	// EXPORT
 	// ======
 
 	// DECLARE VAR
-	let controller = {
-		init: init,
-		mode : 'orbital',
-		pointerlock : false,
-		cursor : true,
-		listener : 'click'
+	let GUI = {
+		init,
+		controller,
+		widget
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
-	return controller
-
+	return GUI
 })()

@@ -1,5 +1,5 @@
 /*
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */
@@ -13,22 +13,24 @@ engine.pipeline.basepass = (function () {
 	let _descriptor = null
 	let _renderTarget = null
 
-	let _scene = null
 	let _data = null
 	let _buffer = null
-	let _opQueue = null // for later
+	// temp
+	let hi = 0 // context switch
+	let _scene = engine.scene.graph.raw()
+	let _sd = engine.scene.data
 
 	async function init(device, context) {
-		_scene = engine.scene.graph.raw() // TEMP	
+
+		_scene = engine.scene.graph.raw()
+		_sd = engine.scene.data
 		// DATA GLOBAL
-			// TODO:
-				// rework to preallocated TypedArrays for faster read write 
-				// prepare for layout aware geometry buffer
 		_data = {}
 		/* info (meta) */
-		engine.debug.start('basepass data')
-		const projectionMatrix = engine.utils.math.perspective (0.398, context.canvas.width / context.canvas.height, _scene.camera['near'], _scene.camera['far'])
-		const viewTransform = engine.utils.math.composeTRS(_scene.camera['location'], _scene.camera['rotation'], /*_scene.camera['scale'] # UNIFORM ONLY */ [1, 1, 1]) 
+		engine.debug?.timer.start('basepass data')
+		const projectionMatrix = engine.utils.math.perspective (0.398, context.canvas.width / context.canvas.height, _sd.camera[_scene[hi].camera[0]]['near'], _sd.camera[_scene[hi].camera[0]]['far'])
+
+		const viewTransform = engine.utils.math.composeTRS(_sd.camera[_scene[hi].camera[0]]['location'], _sd.camera[_scene[hi].camera[0]]['rotation'], /* .camera['scale'] # UNIFORM ONLY */ [1, 1, 1]) 
 		const viewMatrix = engine.utils.math.mat4InverseUniform(viewTransform)
 		const viewProjectionMatrix = engine.utils.math.multiply(projectionMatrix, viewMatrix)
 		_data.metadata = {}	
@@ -36,12 +38,14 @@ engine.pipeline.basepass = (function () {
 		_data.metadata.canvasColor = engine.scene.info[0].viewport.color
 		_data.metadata.canvasAlpha = engine.scene.info[0].viewport.alpha
 		_data.metadata.viewProjectionMatrix = viewProjectionMatrix
-		_data.metadata.lightNum = _scene.lights.length		
+		_data.metadata.lightNum = _scene[hi].lights.length		
 		/* materials */	
 		_data.material = {}
 		_data.material.rgb = {}
 		_data.material.rgb.lookup = []
-		for (const material of _scene.materials) {_data.material.rgb.lookup.push(material.rgb)} 
+		for(let i = 0, len = _scene[hi].materials.length; i < len; i++) {
+			_data.material.rgb.lookup.push(_sd.material[_scene[hi].materials[i]].rgb)
+		}
 		/* DATA SHARED SoA */
 		_data.mesh = {}
 		_data.mesh.vertex = []
@@ -52,7 +56,8 @@ engine.pipeline.basepass = (function () {
 		_data.mesh.modelMatrix = []
 		let materialSlotOffset = 0
 		let vertexOffset = 0
-		for (const mesh of _scene.meshes) {
+		for(let i = 0, len = _scene[hi].meshes.length; i < len; i++) {
+			let mesh = _sd.mesh[_scene[hi].meshes[i]]
 			for (const vertex of mesh.vertices) {_data.mesh.vertex.push(vertex)}
 			_data.mesh.vertexMaterial.push(mesh.vertex_materials)					
 
@@ -67,7 +72,7 @@ engine.pipeline.basepass = (function () {
 			_data.mesh.materialSlotOffset.push(materialSlotOffset)		
 			materialSlotOffset += mesh.materials.length			
 		}
-		engine.debug.end('basepass data')
+		engine.debug?.timer.end('basepass data')
 		// BUFFER GLOBAL
 			// TODO: update to call buffer through buffer id <context<buffer> instead of multible vars
 		_buffer = {}
@@ -179,9 +184,7 @@ engine.pipeline.basepass = (function () {
 		get() {return _buffer}
 	}
 	function draw(encoder) {
-		if (_scene.opQueue != null) {
-			console.log(_scene.opQueue)
-		}
+		
 		// pointer based method (low-level)
 		const passEncoder = encoder.beginRenderPass(_descriptor)
 		passEncoder.setBindGroup(0, _bindgroup)
@@ -192,20 +195,21 @@ engine.pipeline.basepass = (function () {
 		let indexCount = 0
 		let indexOffset = 0
 		let instanceOffset = 0
-		for (let i = 0; i < _scene.meshes.length; i++) {
+		for (let i = 0; i < _scene[hi].meshes.length; i++) {
 			let culling = true
-			for(const index of _scene.meshes[i].materials) {
-				if (!_scene.materials[index].culling) {
+			for(let j = 0; j < _scene[hi].materials.length; j++) {
+				if (!_sd.material[_scene[hi].materials[j]].culling) {
 					culling = false
 					break
 				}
 			}
 			let pipeline = culling ? _pipeline.culling : _pipeline.noculling
 			passEncoder.setPipeline(pipeline)
-			indexCount = _scene.meshes[i].indices.length
+			
+			indexCount = _sd.mesh[_scene[hi].meshes[i]].indices.length
 			instanceOffset = i
 			passEncoder.drawIndexed(indexCount, 1, indexOffset, 0, instanceOffset)
-			indexOffset += _scene.meshes[i].indices.length
+			indexOffset += _sd.mesh[_scene[hi].meshes[i]].indices.length
 		} 
 		passEncoder.end()
 	}

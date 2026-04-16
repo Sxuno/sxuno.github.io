@@ -31,31 +31,74 @@ engine = (function() {
 		shader : ['engine', 'shader'],
 		content : ['content']
 	}
-	for(let index in _path.document) {
-		if (_path.script[index] === _path.document[index] ) {
-			_path.root.push(_path.document[index])
-		} else if (index < _path.document.length-1) {
+	for(let i = 0; i < _path.document.length; i++)/*(let index in _path.document)*/{
+		if (_path.script[i] === _path.document[i] ) {
+			_path.root.push(_path.document[i])
+		} else if (i < _path.document.length-1) {
 			_path.engine.push('..')
 		}
 	}
 	_path.engine.push(..._path.script.slice(_path.root.length, _path.script.length-2)) // -2 : parent folder as root
-
-	/* 4154 LOG */
+	/* 4154 LOG */ // TODO: view(s) class .add _maxlength 100? 
 	const log = {
 		infos : true,
-		info : function(msg) {
+		info : function(string) {
 			if (log.infos) {
-				console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n \t ${msg}`)
+				console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
 			}			
 		},
+		events : true,
+		event : function(string) {
+			console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
+		},
 		warnings : true,
-		warn : function(msg) {
+		warn : function(string) {
 			if (log.warnings) {
-				console.warn(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} ${msg}`)
+				console.warn(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} ${string}`)
 			}
+		},
+		view : [],
+		views : {
+			infos : [],
+			events : [],
+			warnings : [],
 		}
 	}
-
+	/* 5880 debug */
+	if (_debug) {
+		_debug = {
+			log : function(string, object) {
+				console.log(`\t\t[DEBUG] ${string}`)
+				if(object) {
+					console.log(typeof(object))
+					console.log(object)
+				}
+			},
+			time : function(label) {
+				if(engine.debug.timers[label]) {
+					const delta = performance.now() - engine.debug.timers[label]
+					console.log(`\t\t[DEBUG] ${label}: ${delta.toFixed(2)} ms`)
+				}
+			},
+			timer : {
+				start : function(label) {
+					if(engine.debug.timers[label] !== undefined) {
+						engine.log.warn(`timer ${label} already in use`)
+						return
+					}
+					engine.debug.timers[label] = performance.now()
+				},
+				end : function(label) {
+					if(engine.debug.timers[label]) {
+						const delta = performance.now() - engine.debug.timers[label]
+						console.log(`\t\t[DEBUG] ${label}: ${delta.toFixed(2)} ms`)
+						delete engine.debug.timers[label]
+					}
+				},
+			},
+			timers : {},
+		}
+	}
 	/* engine STATS */
 	let _gpu = null
 	let _delta = null
@@ -76,27 +119,27 @@ engine = (function() {
 					console.error(`script path type ${typeof(path)} not supported`)
 					break
 			}
-			for (let src of scripts) {
+			for (let i = 0; i < scripts.length; i++)/*(let src of scripts)*/{
 				await new Promise((resolve)=> {
 					let script = document.createElement('script')
-					let path = src.split('/')
-					switch(path[0]) {
+					let src = scripts[i].split('/')
+					switch(src[0]) {
 						case 'engine':
-							switch(path[1]) {
+							switch(src[1]) {
 								case 'shader':
-									script.src = PATH.shader+path.slice(2).join('/')
+									script.src = PATH.shader+src.slice(2).join('/')
 									break
 								default:
-									script.src = _path.engine.join('/')+'/'+path.join('/')
+									script.src = _path.engine.join('/')+'/'+src.join('/')
 								break
 							}
 							break
 						case 'content':
-							script.src = PATH.content+path.slice(1).join('/')
+							script.src = PATH.content+src.slice(1).join('/')
 							break
 						default:
 							script.src = 'invalid'
-							log.warn(`script path ${src} invalid.`)
+							log.warn(`script path ${scripts[i]} invalid.`)
 						break
 					}
 					if (script.src !== 'invalid') {
@@ -109,40 +152,7 @@ engine = (function() {
 		}
 	}
 
-	/* 102107 scene init */
-	const scene = {
-		init : async function(){
-			await core.script('content/info.js')
-			await core.script('engine/scene/graph.js')
-		},
-		info : [],
-		/* 109133 scene load (deferred unique lazy object loading) */
-		load : async function(name){
-			let _scene = scene.info.findIndex(entry => entry.name === name)
-			if (_scene == -1) {
-				if(name) {console.warn(`scene ${name} dose not exist.`)}
-			}
-			else if (!scene.info[_scene].content) {
-				for (let _src of scene.info[_scene].files) {
-					await core.script(`content/${_src}.js`)
-					scene.data[scene.cache.object] = scene.data[scene.cache.object] || []
-					if (!scene.data[scene.cache.object].some(entry => entry.name === scene.cache.name)) {
-						scene.data[scene.cache.object].push(scene.cache)
-					}
-					scene.info[_scene].content = scene.info[_scene].content || []
-					scene.info[_scene].content[scene.cache.object] = scene.info[_scene].content[scene.cache.object] || []
-					scene.info[_scene].content[scene.cache.object].push({
-						'id': scene.data[scene.cache.object].findIndex(entry => entry.name === scene.cache.name),
-						'name': scene.cache.name,
-					})
-					scene.cache = null
-				}
-			}
-			log.info(`Scene load ${name} ${performance.now()} ms`)
-		},
-		cache : null,
-		data : {}	
-	}
+
 
 	// ============================
 	// PUBLIC
@@ -150,7 +160,7 @@ engine = (function() {
 
 	/* init */
 	const init = (function(){
-		log.info('Engine init')
+		log.event('init Engine')
 		let _autoinit = document.currentScript.getAttribute('data-autoinit') ? true : false
 		let _event = document.currentScript.getAttribute('data-autoinit') || 'load'
 		if (_autoinit &&_event !== 'load' && _event !== 'DOMContentLoaded'){
@@ -158,7 +168,7 @@ engine = (function() {
 			_event = 'load'			
 		}
 		window.addEventListener(_event, eventlistener)
-		/* eventhandler */
+		/* eventlistener */
 		async function eventlistener(event) {
 			if(typeof(event) !== 'object') {
 				if (_autoinit) {
@@ -172,15 +182,19 @@ engine = (function() {
 			}
 			if(!_readystate) {
 				_eventdispatcher.dispatchEvent(new Event('InitCore'))
+				await core.script('engine/GUI/controller.js')
+				await core.script('engine/runtime.js')
 				if(navigator?.gpu) {
-					await core.script('engine/bindings.js')
-					await engine.bindings.init()
-
 					await core.script('engine/gpu.js')
-					const {_device, _format} = await engine.gpu.init()	
+				}
+				await core.script('engine/scene/controller.js')
+				await core.script('engine/scene/graph.js')
+			
+				await core.script('engine/input/controller.js')
+				await core.script('engine/utils/math.js')
+
+				if(navigator?.gpu) {
 					_eventdispatcher.dispatchEvent(new Event('GPUEnabled'))
-					await core.script('engine/runtime.js')
-					await core.script('engine/utils/math.js')
 					await core.script([
 						'engine/pipeline/depthpass.js',
 						'engine/pipeline/basepass.js',
@@ -194,7 +208,7 @@ engine = (function() {
 						'engine/shader/compose.js',
 					])
 
-					engine.runtime.init(_device, _format)
+					engine.runtime.init()
 				}
 
 			}
@@ -202,13 +216,11 @@ engine = (function() {
 		}
 		return eventlistener
 	})()
-
 	/* PATH */
 	const PATH = {
 		shader : _path.shader.join('/')+'/',
 		content : _path.content.join('/')+'/',
 	}
-
 	/* STATS */
 	const STATS = {
 		gpu : {
@@ -252,36 +264,9 @@ engine = (function() {
 		init : init,
 		PATH : PATH,
 		STATS : STATS,
-		scene : scene,
 	}
 	// CONDITIONAL
+	if(_debug != false) {engine.debug = _debug}
 	// RETURN VAR
 	return engine
 })()
-
-/* debug */
-engine.debug = {
-	// TODO: rethink
-	enabled: true,
-	timers: {},
-	start(label) {
-		if (!this.enabled) return
-		this.timers[label] = performance.now()
-	},
-	end(label) {
-		if (!this.enabled || !this.timers[label]) return
-		const delta = performance.now() - this.timers[label]
-		console.log(`[DEBUG] ${label}: ${delta.toFixed(2)}ms`)
-		delete this.timers[label]
-	},
-	timer(label, fn) {
-		if (!this.enabled) {
-			fn()
-			return
-		}
-		this.start(label)
-		fn()
-		this.end(label)
-	},
-	log(fstring) { console.log(fstring)}
-}

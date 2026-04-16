@@ -29,68 +29,30 @@ engine.gpu = (function() {
 	// ======
 
 	const init = (function() {
-		// init
+		// init dependencies
+		engine.log.event('init gpu')
+		engine.eventdispatcher.dispatchEvent(new Event('InitGPU'))
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_features = new Array
-		for (const feature of navigator.gpu.wgslLanguageFeatures.values()) {
-			_features.push(feature)
+		for (const value of navigator.gpu.wgslLanguageFeatures.values()) {
+			_features.push(value)
 		}
-		async function loadhandler(context) {
+		async function loadhandler(context){
 			// context loader
-			if (!navigator.gpu) {
-				engine.STATS.gpu = false
-				throw new Error('WebGPU not supported')
-			}
-			_adapter = await navigator.gpu.requestAdapter()
-			if (!_adapter) {
-				engine.STATS.gpu = false
-				throw new Error('GPU not supported')
-			}
-			engine.STATS.gpu = true
-			_device =  await _adapter.requestDevice()
-			_limits = _device.limits
-
-			/* 3475 context setup */
-			_context = []
-			_config = []
-			_setup = []
-
-			for (const [index, canvas] of Object.entries(document.querySelectorAll('canvas[webgpuengine]'))) {
-				/* 3844 context canvas */
-				_context.push(canvas.getContext('webgpu'))
-				_context[index].configure({
-					device: _device,
-					format: _format,
-					alphaMode: 'premultiplied',
-				})
-				/* 4571 context config */
-				_config.push(String(canvas.getAttribute('webgpuengine')))
-
-				_setup.push([])
-				_setup[index].config = {}
-
-				for (let instructionset of String(_config[index]).split(/[|]/).map(instructionsets => instructionsets.trim()).filter(Boolean)) {
-					if (typeof(_config[index]) == 'string'){_config[index] = []}
-
-					_config[index].push(instructionset.split(/[()]/).map(instructions => instructions.trim()).filter(Boolean))
-
-					let category = _config[index][_config[index].length-1][0]
-					let args = _config[index][_config[index].length-1][1]
-
-					_setup[index].config[category] = args
-					/* TODO: add category switch */
+			engine.log.info('gpu init')
+			engine.debug.timer.start('gpu init')
+			if (!_device) {
+				_adapter = await navigator.gpu.requestAdapter()
+				if(_adapter){
+					_device = await _adapter.requestDevice()
+					_limits = _device.limits
 				}
-				if(!_setup[index].config.scene) {
-					console.warn(`canvas with id ${canvas.id} missing scene configuration.`)
-				}
-				/* 7273 context extension - config */
-				_context[index].config = _setup[index].config			
 			}
-			// expose context
-			engine.gpu.context = _context
-
-			engine.log.info(`GPU init ${performance.now()} ms`)    
-			return {_device, _format}
+			if (_device) {
+				engine.gpu.device = _device
+				engine.gpu.format = _format
+			}
+			engine.debug.timer.end('gpu init')
 		}
 		return loadhandler
 	})()
@@ -332,8 +294,8 @@ engine.gpu = (function() {
 		create : function(name) {
 			view.texture = _device.createTexture({
 				label: name,
-				size: 	[_context[0].canvas.width, _context[0].canvas.height],
-				format: _context[0].getCurrentTexture().format,
+				size: [engine.gpu.context[0].canvas.width, engine.gpu.context[0].canvas.height],
+				format: engine.gpu.context[0].getCurrentTexture().format,
 				usage:	GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING
 			})
 			return view.texture.createView()
