@@ -1,19 +1,38 @@
 engine.scene.info.push({
-	'name':'scene',
-	'camera':'Camera',
+	'name':'rgb-spheres',
+	'camera':'rgb-spheres--Camera',
 	'viewport':{
 		'color':[0.05087608844041824, 0.05087608844041824, 0.05087608844041824],
 		'alpha':true,
 	},
 	'files':[
-		'cameras/Camera',
-		'meshes/Sphere',
-		'meshes/Blue',
+		'cameras/rgb-spheres--Camera',
+		'meshes/Sphere.001',
 		'meshes/Sphere.002',
+		'meshes/Sphere.003',
 		'materials/engine_default',
 		'materials/red',
 		'materials/blue',
 		'materials/green',
-		'lights/center'
+		'lights/rgb-spheres--Light'
+	],
+})
+engine.scene.info.push({
+	'name':'rgb-cubes',
+	'camera':'rgb-cubes--Camera',
+	'viewport':{
+		'color':[0.05087608844041824, 0.05087608844041824, 0.05087608844041824],
+		'alpha':true,
+	},
+	'files':[
+		'cameras/rgb-cubes--Camera',
+		'meshes/Cube.001',
+		'meshes/Cube.002',
+		'meshes/Cube.003',
+		'materials/engine_default',
+		'materials/green',
+		'materials/red',
+		'materials/blue',
+		'lights/rgb-cubes--Light'
 	],
 })

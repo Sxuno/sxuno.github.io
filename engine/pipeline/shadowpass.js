@@ -16,8 +16,8 @@ engine.pipeline.shadowpass = (function () {
         let hi = 0
         let _scene = engine.scene.graph.raw()
         let _ldata = new Array
-        for (let i = 0, len  = _scene[hi].lights.length; i < len; i ++){
-            _ldata.push(engine.scene.data.light[_scene[hi].lights[i]])
+        for (let i = 0, len  = _scene[hi].light.length; i < len; i ++){
+            _ldata.push(engine.scene.data.light[_scene[hi].light[i]])
         }
 
         _buffer.lights = engine.gpu.buffer.light.create(_ldata)

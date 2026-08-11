@@ -30,30 +30,16 @@ engine.scene.graph = (function() {
 				engine.log.event(`scene grahp init`)
 
 				engine.debug.timer.start('scene graph content')
-				_descriptor = new Array
-				for(let i = 0, len = engine.runtime.context.length; i < len; i++) { // TODO: .add autocontentkey declaration
-					let count
+				_descriptor = new Array 
+				for(let i = 0, len = engine.runtime.context.length; i < len; i++) {
 					_descriptor[i] = new Object
-
-					count = engine.scene.info[i].content.camera.length
-					_descriptor[i].camera = new Uint16Array(count)
-					for (let c = 0, len = count; c < len; c++) {
-					_descriptor[i].camera[c] = engine.scene.info[i].content.camera[c].id
-					}
-					count = engine.scene.info[i].content.mesh.length
-					_descriptor[i].meshes = new Uint16Array(count)
-					for (let c = 0, len = count; c < len; c++){
-						_descriptor[i].meshes[c] = engine.scene.info[i].content.mesh[c].id
-					}
-					count = engine.scene.info[i].content.material.length
-					_descriptor[i].materials = new Uint16Array(count)
-					for (let c = 0, len = count; c < len; c++) {
-						_descriptor[i].materials[c] = engine.scene.info[i].content.material[c].id
-					}
-					count = engine.scene.info[i].content.light.length
-					_descriptor[i].lights = new Uint16Array(count)
-					for (let c = 0, len = count; c < len; c++) {
-						_descriptor[i].lights[c] = engine.scene.info[i].content.light[c].id
+					let id = engine.scene.info.findIndex(scene => scene.name === engine.runtime.context[i].scene)
+					for (let group in engine.scene.info[id].content) {
+						let entries = engine.scene.info[id].content[group].length
+						_descriptor[i][group] = new Uint16Array(entries)
+						for (let e = 0; e < entries; e++) {
+							_descriptor[i][group][e] = engine.scene.info[id].content[group][e].id
+						}
 					}
 				}
 				engine.debug.timer.end('scene graph content')

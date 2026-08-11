@@ -38,13 +38,13 @@ engine.pipeline.basepass = (function () {
 		_data.metadata.canvasColor = engine.scene.info[0].viewport.color
 		_data.metadata.canvasAlpha = engine.scene.info[0].viewport.alpha
 		_data.metadata.viewProjectionMatrix = viewProjectionMatrix
-		_data.metadata.lightNum = _scene[hi].lights.length		
+		_data.metadata.lightNum = _scene[hi].light.length		
 		/* materials */	
 		_data.material = {}
 		_data.material.rgb = {}
 		_data.material.rgb.lookup = []
-		for(let i = 0, len = _scene[hi].materials.length; i < len; i++) {
-			_data.material.rgb.lookup.push(_sd.material[_scene[hi].materials[i]].rgb)
+		for(let i = 0, len = _scene[hi].material.length; i < len; i++) {
+			_data.material.rgb.lookup.push(_sd.material[_scene[hi].material[i]].rgb)
 		}
 		/* DATA SHARED SoA */
 		_data.mesh = {}
@@ -56,8 +56,8 @@ engine.pipeline.basepass = (function () {
 		_data.mesh.modelMatrix = []
 		let materialSlotOffset = 0
 		let vertexOffset = 0
-		for(let i = 0, len = _scene[hi].meshes.length; i < len; i++) {
-			let mesh = _sd.mesh[_scene[hi].meshes[i]]
+		for(let i = 0, len = _scene[hi].mesh.length; i < len; i++) {
+			let mesh = _sd.mesh[_scene[hi].mesh[i]]
 			for (const vertex of mesh.vertices) {_data.mesh.vertex.push(vertex)}
 			_data.mesh.vertexMaterial.push(mesh.vertex_materials)					
 
@@ -195,10 +195,10 @@ engine.pipeline.basepass = (function () {
 		let indexCount = 0
 		let indexOffset = 0
 		let instanceOffset = 0
-		for (let i = 0; i < _scene[hi].meshes.length; i++) {
+		for (let i = 0; i < _scene[hi].mesh.length; i++) {
 			let culling = true
-			for(let j = 0; j < _scene[hi].materials.length; j++) {
-				if (!_sd.material[_scene[hi].materials[j]].culling) {
+			for(let j = 0; j < _scene[hi].material.length; j++) {
+				if (!_sd.material[_scene[hi].material[j]].culling) {
 					culling = false
 					break
 				}
@@ -206,10 +206,10 @@ engine.pipeline.basepass = (function () {
 			let pipeline = culling ? _pipeline.culling : _pipeline.noculling
 			passEncoder.setPipeline(pipeline)
 			
-			indexCount = _sd.mesh[_scene[hi].meshes[i]].indices.length
+			indexCount = _sd.mesh[_scene[hi].mesh[i]].indices.length
 			instanceOffset = i
 			passEncoder.drawIndexed(indexCount, 1, indexOffset, 0, instanceOffset)
-			indexOffset += _sd.mesh[_scene[hi].meshes[i]].indices.length
+			indexOffset += _sd.mesh[_scene[hi].mesh[i]].indices.length
 		} 
 		passEncoder.end()
 	}
