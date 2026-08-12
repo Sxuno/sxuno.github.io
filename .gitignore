@@ -1,12 +1,18 @@
 ### Development Settings ###
 # Dev Stats
 .VSCodeCounter/
+
 # Project
 *.md
 !README.md
+!**/docs/**/*.md
 *.htm
+
 # Archive
 archive/
+
+# Updater
+updater.sh
 
 ### SVG Builder ###
 svg-builder.py
