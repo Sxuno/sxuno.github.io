@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+    <head>
+        <title>WebGPU Export Technical Paper</title>
+
+		<meta name="description" content="Art, coding and moddeling portfolio">
+		<meta name="keywords" content="SXuno, Portfolio, Artstaion, Github, Sketfab, LinkedIn">
+        <meta name="author" content="Stefan Wienold">
+		<meta name="language" content = 'en'>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+
+        <link rel="icon" type="image/x-ico" href="./../../media/icon/menu.svg">
+        <link rel="stylesheet" href="./../../theme/default/style.css">
+        <style>
+            .category {border-bottom: 1px grey solid;}
+            .colum {border-left: 1px grey solid;}
+        </style>
+
+        <script src = './../../system/framework.js'></script>
+        <script src = './../../engine/core.js'></script>
+        <script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../../content/'
+			engine.PATH.shader = './../../engine/shader/'
+		</script>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <label class = 'left'>
+                    <img src = './../../media/icon/menu.svg' />
+                    <a href='./../../index.html'>Home</a>
+                </label>
+                <label class = 'right'>
+                    English <img src = './../../media/icon/settings.svg' />
+                </label>
+            </nav>
+        </header>
+        <main id = 'paper'>
+            <label><br />AI SUMMERY :: REWORK IN PROGRESS</label>
+            <h1>                
+                Blender WebGPU-Export:
+                Offloading 3D Optimization from Client to Export
+            </h1>
+            <section id = 'overview'>
+                Web 3D export formats (glTF/FBX) prioritize broad compatibility, not delivery or engine‑specific efficiency.<br />
+                WebGPU‑Export produces delivery‑aware assets—meshlets, quantized base meshes, and compact reconstruction (delta) layers—packaged<br />
+                into chunked manifests so clients stream a tiny base and progressively refine geometry on demand,<br />
+                enabling Nanite‑style scalability over networks.<br />
+                <br />
+            </section>
+            <section id = 'thesis'>
+                <h2>Core Thesis</h2>
+                Generic exporters miss opportunities for delivery‑aware optimization.<br/>
+                This project moves engine‑specific optimizations like quantization, meshlets, chunking, progressive reconstruction<br />
+                into the export stage so clients render faster, use less memory, and scale across diverse devices and network conditions.<br />
+                <br />
+            </section>
+            <section id = 'problem'>
+                <h2>The Problem: Client-Side Bottleneck</h2>
+                Traditional Pipeline<br />
+                [Blender] → (glTF/FBX) → [Client] → (Optimize: Strips, LODs, Quantization) → Render<br />
+                Issues: <br />
+                - client dose all heavy lifting (CPU/GPU load).<br />
+                - no preprocessing by default -> inefficient rendering.<br />
+                <br />
+                WebGPU-Export Pipeline<br />
+                [Blender] → (WebGPU-Export Addon: Optimize) → [Client] → Render Immediately<br />
+                Advantages<br />
+                - Client only renders (no optimization delays).<br />
+                - Works with any renderer adopting import logic.<br />
+                <br />
+            </section>
+            <section id = 'technicalapproach'>
+                <div class = 'grid-wrap'>
+                    <div class = 'col25'>
+                        <div class = 'category'>Optimization</div>
+                        <div>
+                            Triangle Strips<br />
+                            Quantization<br />
+                            Spacial LOD<br />
+                            File Chunking<br />
+                            Metadata Embedding<br />
+                        </div>
+                    </div>
+                    <div class = 'col25'>
+                        <div class = 'category'>Status</div>
+                        <div class = 'colum'>
+                            Prototyping<br />
+                            Not Started<br />
+                            Design Phase<br />
+                            Planned<br />
+                            Partial<br />
+                        </div>
+                    </div>
+                    <div class = 'col25'>
+                        <div class = 'category'>Impact</div>
+                        <div class = 'colum'>
+                            30-60% fewer vertices<br />
+                            50% smaller buffers<br />
+                            2-10x faster load times<br />
+                            streaming improvment<br />
+                            no heavy runtime optimization<br />
+                        </div>
+                    </div>
+                    <div class = 'col25'>
+                        <div class = 'category'>Approach</div>
+                        <div class = 'colum'>
+                            Blender Python ('bmesh')<br />
+                            16-bit attributes<br />
+                            Spatial hashing<br />
+                            Spacial partitioning<br />
+                            JSON sidecar files<br />
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                        Note: Metrics are mathematically calculated projections based on existing optimization algorithms and expected scene characteristics.<br />
+                        <br />
+                    </div>
+                </div>
+            </section>
+            <section id = 'whyitmatters'>
+                <h2>Why this Matters</h2>
+                <div>
+                    1. Performance: Eliminates client-side optimization delays.<br />
+                    2. Scalability: Critical for mobile/larg-scale scenes.<br />
+                    3. Future-Proof: As web 3D grows, client-side optimization becomes untenable.<br />
+                    <br />
+                </div> 
+            </section>
+            <section id = 'challenges'>
+                <h2>Challanges</h2>
+                <div>
+                    - WebGPU Compatibility: Mapping optimized data to strict buffer requirements.<br />
+                    - Validation: Ensuring automated optimization match manual quality.<br />
+                    <br />
+                </div>
+            </section>
+            <section id = 'nextsteps'>
+                <h2>Next Steps (2026)</h2>
+                <div>
+                    1. Finalize triangle strip conversion prototype.<br />
+                    2. Implement Quantization for normals/UVs.<br />
+                    3. Design file chunking with light dedoublication<br />
+                    4. Open-source for community testing.<br />
+                    <br /> 
+                </div>
+            </section>
+            <section id = 'conclusion'>
+                <h2>Conclusion</h2>
+                <div>
+                    This project redefines web 3D optimization by shifting work from client to export.<br />
+                    The proof-of-concept phase targets triangle strip conversion and file chunking, with broader optimizations to follow.
+                </div>
+            </section>
+        </main>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+            <label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>
