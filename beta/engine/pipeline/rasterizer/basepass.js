@@ -60,16 +60,16 @@ engine.pipeline.rasterizer.basepass = (function () {
 
 
 				let t = {
-            label: 'Composepass',
-            layout: '_pipeline.getBindGroupLayout(0)',
-            entries: [
-                { binding: 0, resource: 'engine.gpu.binding.sampleTexture(nearest)'},
-                { binding: 1, resource: 'engine.pipeline.basepass.buffer.get().albedo '},
-                { binding: 2, resource: 'engine.pipeline.lightpass.buffer.get().createView({label: composepass bindgroup resource[2]: lightpass buffer view})' },
-                { binding: 3, resource: '{buffer: engine.pipeline.basepass.buffer.get().metadata}' }
-            ]
-        }
-		console.log(t)
+					label: 'Composepass',
+					layout: '_pipeline.getBindGroupLayout(0)',
+					entries: [
+						{ binding: 0, resource: 'engine.gpu.binding.sampleTexture(nearest)'},
+						{ binding: 1, resource: 'engine.pipeline.basepass.buffer.get().albedo '},
+						{ binding: 2, resource: 'engine.pipeline.lightpass.buffer.get().createView({label: composepass bindgroup resource[2]: lightpass buffer view})' },
+						{ binding: 3, resource: '{buffer: engine.pipeline.basepass.buffer.get().metadata}' }
+					]
+				}
+				console.log(t)
 
 			}
 		}

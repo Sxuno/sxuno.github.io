@@ -305,28 +305,16 @@ engine.pipeline = (function() {
 					engine.debug?.log(`link renderer [${_context[i].renderer}] to buffer [${s}]`)
 					r = _pointer[s][1][c][1].findIndex(renderer => renderer[0] === _context[i].renderer)
 				}
-	
-				v = _pointer[s][1][c][1][r][1].findIndex(view => view[0] === _context[i].view)
-				
-				if(v === -1) {
-					_pointer[s][1][c][1][r][1].push([_context[i].view, ['buffer']]) // _buffer.length
-					engine.debug?.log(`link view [${_context[i].view}] to buffer [${s}]`)
-					v = _pointer[s][1][c][1][r][1].findIndex(view => view[0] === _context[i].view)
-				}
+
 				// renderer init context
-				_context[i].buffer = [s,c,r,v] // TODO REMOVE VIEW from POINTER => USE BUFFER STRUCT as composepass view arg ::: possible switch?
+				// REMOVED VIEW from POINTER => USE BUFFER STRUCT with view as composepass arg
+				_context[i].buffer = [s,c,r] 
 				await controller[_context[i].renderer].init(_context[i])
-				// TODO : BUFFER OBJECT
-				//
-				// 	.frame[n+1]
-				//				.meta
-				//				.depth
-				//				.geometry
-				//				.compose
-				
+				// TODO : BUFFER OBJECT				
 			}
 			// engine.debug?.log('pointer', _pointer)
-			 engine.debug?.log('buffer object', _buffer)
+			 engine.debug?.log('buffer pointer', _pointer)
+			 console.log('case undefined missing.')
 		}
 	}
 	// BUFFER
@@ -337,22 +325,16 @@ engine.pipeline = (function() {
 			console.log(buffer)
 		}
 	}	
-	const buffer = (pointer) => {
-		console.log(pointer)
-		let type 
-		switch(true) { // switch to extend detection
-			case typeof(pointer) === 'string': 
-				break
-			case typeof(pointer) === 'object' && Array.isArray(pointer):
-				console.log(Array.isArray(pointer))
-				type = 'Array'
-				break
-			default : 
-				//console.log(typeof(pointer))
-			
-			return type 
+	const buffer = (binding, resource) => {
+		if (typeof(resource) === 'undefined' && typeof(binding) === 'undefined'){
+			return _buffer
+		} else {
+			if (typeof(resource === 'number') && typeof(binding) === 'object' && Array.isArray(binding)) {
+			console.log(`buffer ${resource}`)
+			_pointer[binding[0]][1][binding[1]][1][binding[2]][1] = resource
+			// console.log(_pointer[binding[0]][1][binding[1]][1][binding[2]][1])
+			}	
 		}
-		return _buffer
 	}
 	
 	// ======

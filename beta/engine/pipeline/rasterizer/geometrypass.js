@@ -12,7 +12,7 @@ engine.pipeline.rasterizer.geometrypass = (function () {
 	// PRIVATE
 	// =======
 
-	let _Buffer
+	let _buffer
 	let _width
 	let _height
 

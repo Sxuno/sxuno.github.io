@@ -12,36 +12,31 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	// PRIVATE
 	// =======
 
-	let _label
-	let _size
-	let _format
-	let _usage
+	let _bindgrouplayout
+	let _bindgroup
+	let _pipelinelayout
+	let _pipeline
+	let _descriptor
+	let _renderTarget
 
-	let _buffer
-	let _width
-	let _height
+	let _readystate // dependencie solver
 
-	let _readystate
+	const bind = {'depthpass': 'matrix'}
+	const group = {binding: 0 , resource: bind} // scene or camera
+	const layout = new Array() // like when visible
 
-	function create() {
-		return engine.gpu.device.createTexture({
-
-		})
+	const descriptor = () => {return _descriptor}
+	const renderTarget = async (context) => {
+		let x = context.width
+		let y = context.height
+		group.binding = context.buffer // for gpu buffer descriptor
+		_descriptor = (!_descriptor)? new Object : _descriptor
+		_descriptor = group
+		engine.gpu.resource.init(_descriptor)
 	}
-
 	// ======
 	// PUBLIC
 	// ======
-
-	// Note: compose buffers
-	const buffer = {
-		zBuffer : {
-			create : () => {}
-		},
-		gbuffer : {
-			create : () => {}
-		}
-	}
 
 	const init = (function() {
 		// init dependencies
@@ -57,12 +52,14 @@ engine.pipeline.rasterizer.depthpass = (function () {
 				console.warn('rasterizer depthpass init (context)')
 				console.log('depthpass init(context)')
 				console.log('resource binding')
-				//console.log(context.buffer)
 
-				engine.gpu.resource.init(context)
+				context['width'] = (!context.width) ? context.canvas.width : context.width
+				context['height'] = (!context.height) ? context.canvas.height : context.height
+				console.log('resolution '+context.width+'x'+context.height)
+				await renderTarget(context)
+				
 
 				//engine.pipeline.buffer(context.buffer)
-
 			}
 		}
 		return loadhandler
@@ -75,7 +72,7 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	// ======
 
 	// DECLARE VAR
-	let depthpass = {init, draw, buffer}
+	let depthpass = {init, draw, }
 	// CONDITIONAL
 	// RETURN VAR
 	return depthpass
