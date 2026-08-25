@@ -1,41 +1,38 @@
-### Development Settings ###
-# Dev Stats
-.VSCodeCounter/
-# Archive
-archive/
-# bash
-*.sh
-# markdown
-*.md
+### IGNORE ALL ###
+/*
 
-!README.md
-
-### SVG Builder ###
-svg-builder.py
-/media/*/*.html
+### BETA ###
+!/beta/
+### ENGINE ###
+!/engine/
+### MEDIA ###
 !/media/*/*.svg
-
-### Webgpu Export User Files ###
-# Blender
-scene.blend
-scene.blend1
-scene.blend1
-scene.css
-scene.html
-
-### Projects ###
-/project/*
-!**/project/**/docs/**/*.md
-
-# Explicitly include selected projects
+!/media/*/*.png
+### PROJECTS ###
 !/project/webgpu-export.html
-!/project/webgpu-export/
+!/project/webgpu-export/docs/**.md
+!/project/webgpu-export/*.zip
+!/project/webgpu-export/*.html
 
 !/project/webgpu-engine.html
-!/project/webgpu-engine/
+!/project/webgpu-engine/*.html
+!/project/webgpu-engine/docs/**.md
 
 !/project/database-manager.html
 
 !/project/vsc-UnrealRefSense.html
 
 !/project/OrbitalControllSystem.html
+### system ###
+!/system/
+### theme ###
+!/theme/
+### user ###
+!/user/
+### view ###
+!/view/**.html
+### Defaults ###
+!README.md
+!LICENSE.txt
+### Githubpage ###
+!index.html
