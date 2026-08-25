@@ -134,6 +134,8 @@ label a { display: inline;}
         #webgpu-export #demo canvas {border: 1px solid grey; border-radius: 20px;}
     /* webgpu-engine */
     #webgpu-engine {width:1080px;}
+        /* proof of concept */
+        #webgpu-engine #demo canvas {border-radius: 20px; width: 400; height: 300px}
 
 /* worksamples */
 #worksample_3Dmodels {width:1080px;}
