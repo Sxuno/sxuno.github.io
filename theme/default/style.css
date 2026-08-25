@@ -130,6 +130,8 @@ label a { display: inline;}
     .timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; font-family: Arial, Helvetica, sans-serif; }
         /* paper */
         #paper {width: 800px}
+        /* demo */
+        #webgpu-export #demo canvas {border: 1px solid grey; border-radius: 20px;}
     /* webgpu-engine */
     #webgpu-engine {width:1080px;}
 
