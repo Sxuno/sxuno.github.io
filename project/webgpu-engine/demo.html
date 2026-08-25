@@ -1,63 +1,85 @@
 <!DOCTYPE html>
-<title>LIVE CODE :: Buffer mapping process</title>
+<html lang = 'en'>
+	<head>
+		<title>LIVE CODE :: Buffer mapping process</title>
 
-<meta name="description" content="Art, coding and moddeling portfolio">
-<meta name="keywords" content="SXuno, Portfolio, Github, Sketfab, LinkedIn">
-<meta name="author" content="Stefan Wienold">
-<meta name="language" content = 'en'>
+		<meta name="description" content="Art, coding and moddeling portfolio">
+		<meta name="keywords" content="SXuno, Portfolio, Github, Sketfab, LinkedIn">
+		<meta name="author" content="Stefan Wienold">
+		<meta name="language" content = 'en'>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
 
-<link rel="icon" type="image/x-ico" href="./../../media/icon/worksample.svg">
-<link rel="stylesheet" href="./../../theme/default/style.css">
-<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
+		<link rel="icon" type="image/x-ico" href="./../../media/icon/worksample.svg">
+		<link rel="stylesheet" href="./../../theme/default/style.css">
+		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
 
-<style>
-	* {color-scheme: dark;}
-	body {
-		display: flex; 
-		flex-direction: column; 
-		width: 512px;
-		margin: 5px auto;
-	}
-	canvas {
-		border : 1px solid grey;
-		margin: 5px;
-	}
-</style>
+		<style>
+			canvas {
+				border : 1px solid grey;
+				margin: 5px;
+				width : 300px;
+				height: 150px;
+			}
+		</style>
 
-<script src = './../../system/framework.js'></script>
+		<script src = './../../system/framework.js'></script>
+		<script src = './../../beta/engine/core.js' data-autoinit></script>
 
-<script src = './../../beta/engine/core.js' data-autoinit></script>
+		<!-- SETUP -->
+		<script>
+			// PATH custom config
+			engine.PATH.content = './../../content/'
+			engine.PATH.shader = './../build/shadercache/'
 
-<!-- DEBUG FUNCTIONS-->
-<script>
-	// PATH custom config
-	engine.PATH.content = './../../content/'
-	engine.PATH.shader = './../build/shadercache/'
+			// engine.eventdispatcher.addEventListener('InitCore', () => {console.warn('Event InitCore callback')})
+			engine.eventdispatcher.addEventListener('InitGPU', () => {
+				document.querySelector('.event.GPUEnabled').style.visibility = 'visible'
+			})
+			// engine.init()
+			// engine.init('load')
+			// engine.init('DOMContentLoaded')
 
-	engine.eventdispatcher.addEventListener('InitCore', () => {console.warn('Event InitCore callback')})
+			/* Document ReadyState Log */
+			document.onreadystatechange = () => {console.log(`${Temporal.Now.plainTimeISO()} ${document.readyState}`)}
+		</script>
+	</head>
+	<body>
+		<header>
+			<nav>
+				<label class = 'left'>
+					<img src = './../../media/icon/menu.svg' />
+					<a href='./../../index.html'>Home</a>
+				</label>
+				<label class = 'right'>
+					English <img src = './../../media/icon/settings.svg' />
+				</label>
+			</nav>
+		</header>
+		<main id = 'webgpu-engine'>
+			<h1><a href = './../webgpu-engine.html'>WebGPU Engine</a><label>live code demo</label></h1>
+			<section id = 'demo' style = 'display: flex; flex-direction: column;'>
+				<titel>Buffer mapping process</titel>
+				<label>engine.gpu.resource.init() see developer console</label>
 
-	// engine.init()
-	// engine.init('load')
-	// engine.init('DOMContentLoaded')
+				<canvas scene = 'rgb-cubes'></canvas>
+				<canvas scene = 'rgb-cubes' camera = 'default' view = 'unlit'></canvas>
+				<canvas scene = 'rgb-cubes' camera = 'default' view = 'depth'></canvas>
 
-    /* Document ReadyState Log */
-	document.onreadystatechange = () => {console.log(`${Temporal.Now.plainTimeISO()} ${document.readyState}`)}
-</script>
+				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'lit'></canvas>
+				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'unlit'></canvas>
+				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'depth'></canvas>
 
-<titel>Buffer mapping process</titel>
-<label>engine.gpu.resource.init() see developer console</label>
-
-<canvas scene = 'rgb-cubes'></canvas>
-<canvas scene = 'rgb-cubes' camera = 'default' view = 'unlit'></canvas>
-<canvas scene = 'rgb-cubes' camera = 'default' view = 'depth'></canvas>
-
-<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'lit'></canvas>
-<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'unlit'></canvas>
-<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'depth'></canvas>
-
-<canvas scene = 'rgb-spheres' ></canvas>
-<canvas scene = 'rgb-spheres' camera = 'false' view = 'unlit'></canvas>
-<canvas scene = 'rgb-spheres' camera = 'default' view = 'depth'></canvas>
+				<canvas scene = 'rgb-spheres' ></canvas>
+				<canvas scene = 'rgb-spheres' camera = 'false' view = 'unlit'></canvas>
+				<canvas scene = 'rgb-spheres' camera = 'default' view = 'depth'></canvas>
+			</section>
+		</main>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
