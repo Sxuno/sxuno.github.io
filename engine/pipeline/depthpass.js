@@ -1,14 +1,16 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
 
 engine.pipeline = engine.pipeline || {}
 engine.pipeline.depthpass = (function () {
     let _ZBuffer
-    let _width = 0
-    let _height = 0
+    let _width 
+    let _height 
 
     function _createZBuffer(device, width, height) {
         return device.createTexture({
@@ -19,20 +21,25 @@ engine.pipeline.depthpass = (function () {
         })
     }
     async function init(device, context) {
-        _width = context.canvas.width
-        _height = context.canvas.height
-        _ZBuffer = _createZBuffer(device, _width, _height)
+        _ZBuffer = new Array(engine.scene.graph.descriptor().length)
+        _width = new Array(engine.scene.graph.descriptor().length)
+        _height = new Array(engine.scene.graph.descriptor().length)
+        for (let i = 0; i < engine.scene.graph.descriptor().length; i++ ) {
+            _width[i] = context[i].canvas.width
+            _height[i] = context[i].canvas.height
+            _ZBuffer[i] = _createZBuffer(device, _width[i], _height[i])
+        }
     }
     const buffer = { get() { return _ZBuffer } }
     function draw(device, context) {
-        const width = context.canvas.width
-        const height = context.canvas.height
-        if (width !== _width || height !== _height) {
-            _width = width
-            _height = height
-            _ZBuffer.destroy?.()
-            _ZBuffer = _createZBuffer(device, _width, _height)
+        let width = context.canvas.width
+        let height = context.canvas.height
+        if (width !== _width[context.scene] || height !== _height[context.scene]) {
+            _width[context.scene] = width
+            _height[context.scene] = height
+            _ZBuffer[context.scene].destroy?.()
+            _ZBuffer[context.scene] = _createZBuffer(device, _width[context.scene], _height[context.scene])
         }
     }
-    return { init, draw, buffer,  }
+    return { init, draw, buffer }
 })()

@@ -1,7 +1,9 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
 engine.gpu = (function() {
 
@@ -24,6 +26,8 @@ engine.gpu = (function() {
 	var _bindings = null
 	var _sampler = null
 
+	let _readystate
+
 	// ======
 	// PUBLIC
 	// ======
@@ -39,20 +43,24 @@ engine.gpu = (function() {
 		}
 		async function loadhandler(context){
 			// context loader
-			engine.log.info('gpu init')
-			engine.debug.timer.start('gpu init')
-			if (!_device) {
-				_adapter = await navigator.gpu.requestAdapter()
-				if(_adapter){
-					_device = await _adapter.requestDevice()
-					_limits = _device.limits
+			if(!_readystate) {
+				engine.log.info('gpu init')
+				engine.debug?.timer.start('gpu init')
+				if (!_device) {
+					_adapter = await navigator.gpu.requestAdapter()
+					if(_adapter){
+						_device = await _adapter.requestDevice()
+						_limits = _device.limits
+					}
 				}
+				if (_device) {
+					engine.gpu.device = _device
+					engine.gpu.format = _format
+				}
+				engine.debug?.timer.end('gpu init')
+			} else {
+				// runtimehook
 			}
-			if (_device) {
-				engine.gpu.device = _device
-				engine.gpu.format = _format
-			}
-			engine.debug.timer.end('gpu init')
 		}
 		return loadhandler
 	})()
@@ -313,7 +321,7 @@ engine.gpu = (function() {
 		buffer : buffer,
 		view : view,
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	if(_features.includes('readonly_and_readwrite_storage_textures')) {
 		gpu.features = gpu.features || []
 		gpu.features.push('readonly_and_readwrite_storage_textures')

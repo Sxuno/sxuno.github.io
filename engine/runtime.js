@@ -1,7 +1,9 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
 
 engine.runtime = (function () {
@@ -16,8 +18,11 @@ engine.runtime = (function () {
 	let _context
 	let _visibility
 	let _scene
+	let _camera
 	let _view
 	// FRAME
+	let _devicePixelRatio
+	let _resolutionScale
 	let _frameID
 
 	let _readystate
@@ -35,32 +40,55 @@ engine.runtime = (function () {
 				let _intersect = false
 				const resolver = () => {if(_resize && _intersect)resolve()}
 				observer.resize = new ResizeObserver(entries => {
-					for (const entry of entries) {
-						engine.debug?.log(`Canvas ID ${_canvas.findIndex(element => element === entry.target)} size: ${entry.contentRect.width} x ${entry.contentRect.height}`) // DEBUG Datapoints
-					} 
+					for (let i = 0; i < entries.length; i++) {
+						let entry = _canvas.findIndex(element => element === entries[i].target)
+						engine.debug?.log(`Canvas ID ${entry} size: ${entries[i].contentRect.width} x ${entries[i].contentRect.height}`)
+					}
 					_resize = true
 					resolver()
 				})
 				observer.intersect = new IntersectionObserver(entries => {
-					let canvasID
-					for(const index in entries) {
-						canvasID = _canvas.findIndex(element => element === entries[index].target)
-						if(canvasID != -1) {
-							engine.debug?.log(`Canvas ID ${canvasID} ${entries[index].isIntersecting ? 'visible' : 'hidden'}`)
-							_visibility[canvasID] = entries[index].isIntersecting
+					for (let i = 0; i < entries.length; i++) {
+						let entry = _canvas.findIndex(element => element === entries[i].target)
+						if(entry != -1) {
+							engine.debug?.log(`Canvas ID ${entry} ${entries[i].isIntersecting ? 'visible' : 'hidden'}`)
+							_visibility[entry] = entries[i].isIntersecting
 						}
 					}
 					_intersect = true
 					resolver()
 				})
-				_canvas.forEach(element => {
-					observer.intersect.observe(element)
-					observer.resize.observe(element)
-				})
+				for(let i = 0, len = _canvas.length; i < len; i++) {
+					observer.resize.observe(_canvas[i])
+					observer.intersect.observe(_canvas[i])
+				}
 			})
 		},
 		intersect : null,
 		resize : null,
+	}
+
+	function render() {
+		let now = performance.now()
+		engine.STATS.frametime = now - engine.STATS.delta
+		engine.STATS.delta = now
+		engine.STATS.fps = 1/(engine.STATS.frametime/1000)
+		for(let c = 0; c < _context.length; c++) {
+			let encoder = _device.createCommandEncoder()
+			// Defered Drawcalls
+			engine.pipeline.depthpass.draw(_device, _context[c], c)
+			engine.pipeline.basepass.draw(encoder, _context[c], c)
+			engine.pipeline.shadowpass.draw(encoder)
+			engine.pipeline.lightpass.draw(encoder, _context[c], c)
+			engine.pipeline.composepass.draw(encoder, _context[c], c)
+
+			_device.queue.submit([encoder.finish()])
+		}
+
+
+		engine.STATS.framedelta = performance.now() - engine.STATS.delta
+
+		_frameID = requestAnimationFrame(render)
 	}
 
 	// ======
@@ -73,22 +101,32 @@ engine.runtime = (function () {
 		engine.eventdispatcher.dispatchEvent(new Event('InitRuntime'))
 		// CONTEXT
 		_descriptor = new Array
-		_canvas = Array.from(document.querySelectorAll('canvas[scene]'))		
+		_canvas = Array.from(document.querySelectorAll('canvas[scene]'))
 		_context = new Array(_canvas.length)
 		_visibility = new Array(_canvas.length)
 		_scene = new Array(_canvas.length)
+		_camera = new Array(_canvas.length)
 		_view = new Array(_canvas.length)
 
-		for(let i = 0, len = _canvas.length; i < len; i++) {
-			_scene[i] = _canvas[i].getAttribute('scene')
-			_view[i] = _canvas[i].getAttribute('camera')
+		_devicePixelRatio = window.devicePixelRatio ?? 1
+		_resolutionScale = 2
 
-			let _contextID = _descriptor.findIndex(context => context.scene === _scene[i])
-			if(_contextID === -1){
-				_descriptor.push({scene: _scene[i], canvas: [i], view: [i]})
+		for(let i = 0, len = _canvas.length; i < len; i++) {
+			// RESOLUTION SETUP // TODO : .add engine.config.resolutionscale // allow per scene?
+			_canvas[i].width = _canvas[i].width * _devicePixelRatio * _resolutionScale
+			_canvas[i].height = _canvas[i].height * _devicePixelRatio * _resolutionScale
+
+			_scene[i] = _canvas[i].getAttribute('scene')
+			_camera[i] = _canvas[i].getAttribute('camera')
+			_view[i] = _canvas[i].getAttribute('view')
+
+			let scene = _descriptor.findIndex(context => context.scene === _scene[i])
+			if(scene === -1){
+				_descriptor.push({scene: _scene[i], canvas: [i], camera: [_camera[i]], view: [_view[i]]})
 			} else {
-				_descriptor[_contextID].canvas.push(i)
-				_descriptor[_contextID].view.push(i)
+				_descriptor[scene].canvas.push(i)
+				_descriptor[scene].camera.push(_camera[i])
+				_descriptor[scene].view.push(_view[i])
 			}
 		}
 		async function loadhandler() {
@@ -99,6 +137,7 @@ engine.runtime = (function () {
 				await observer.init()
 
 				await engine.gpu?.init()
+				await engine.scene?.init()
 				for(let i = 0, len = _canvas.length; i < len; i++) {
 					_context[i] = _canvas[i].getContext('webgpu')
 					_context[i].configure({
@@ -106,85 +145,47 @@ engine.runtime = (function () {
 						format: engine.gpu.format,
 						alphaMode: 'premultiplied',
 					})
+					_context[i].scene = _canvas[i].getAttribute('scene')
+					// Modulate pipeline instructions
+					let scene = _descriptor.findIndex(context => context.scene === _scene[i])
+					_context[i].scene = scene
+					let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])
+					if (camera === -1) { camera = engine.scene.data.camera.findIndex(camera => camera.name === engine.scene.info[engine.scene.info.findIndex(scene => scene.name === _scene[i])].camera)}
+					_context[i].camera = camera
+
 				}
-				engine.gpu.context = _context
-				engine.runtime.context = _descriptor
-				await engine.scene?.init()
-				await engine.scene.graph?.init()
+				engine.gpu.context = _context // deprecated
+				
+				// await engine.scene.graph?.init() // called by scene init
 			} else {
-				console.log('runtime context init')
+				// runtimehook
 			}
 			// OLD
 			_device = engine.gpu.device
 			_format = engine.gpu.format
-			/*
-			await engine.scene.init()			
-			for (let index in engine.gpu.context) {
-				await engine.scene.load(engine.gpu.context[index].config.scene)
-			}
-			*/
-			/* TODO: rethink scene graph in multiscene support context */
-				//await engine.scene.graph.init()
-				/* 
-					scene info frame (controlled by runtime renderer #second.(framenumber per second or keyframe size))
-					scene info delta (controlled by runtime logic #timeline #keyframes)
-					scene info buffer (lookup throug index arry?)
-						buffer lifetime = gpu.buffer.get(context) buffer throu context? or scene?
-					execution:
-						get sences by name
-							check frame delta
-						per dif create buffers and call pipline
-				*/
 
 			engine.debug?.timer.start('pass init')
-			/* TODO: make it data driven and context dependend instead of 'giving' context,
-					may move to  core.js > pipeline init (dose not exist yet) 
-					batch switch 
-						per pipline # synced framerequest 
-						per context # individual framerequest
-					*/
-				await engine.pipeline.depthpass.init(_device, _context[0])
-				await engine.pipeline.basepass.init(_device, _context[0])
-				await engine.pipeline.shadowpass.init(_device, _context[0])
-				await engine.pipeline.lightpass.init(_device, _context[0])
-				await engine.pipeline.composepass.init(_device, _context[0])
-
+				await engine.pipeline.depthpass.init(_device, _context)
+				await engine.pipeline.basepass.init(_device, _context)
+				await engine.pipeline.shadowpass.init(_device, _context)
+				await engine.pipeline.lightpass.init(_device, _context)
+				await engine.pipeline.composepass.init(_device, _context)
 			engine.debug?.timer.end('pass init')
-
-			/* TODO: add 'frame bindings' init call method,
-					for privatscope DOM update scheduling */
-
-			requestAnimationFrame(frame)
+			requestAnimationFrame(render)
 		}
 		return loadhandler
 	})()
 
-
-
-	function frame() {
-		engine.STATS.frametime = performance.now() - engine.STATS.delta
-		engine.STATS.delta = performance.now()
-
-		const encoder = _device.createCommandEncoder()
-		// Defered Drawcalls
-		engine.pipeline.depthpass.draw(_device, _context[0])
-		engine.pipeline.basepass.draw(encoder)
-		engine.pipeline.shadowpass.draw(encoder)
-		engine.pipeline.lightpass.draw(encoder)
-		engine.pipeline.composepass.draw(encoder, _context[0])
-
-		_device.queue.submit([encoder.finish()])
-
-		_frameID = requestAnimationFrame(frame)
+	const descriptor = function(context) {
+		return engine.scene.resolver(context, _descriptor)
 	}
-
 	// ======
 	// EXPORT
 	// ======
 
 	// DECLARE VAR
-	let runtime = {init}
-	// IF FEATURESET VAR.FEATURE
+	let runtime = {init, descriptor}
+	// CONDITIONAL
 	// RETURN VAR
 	return runtime
 })()

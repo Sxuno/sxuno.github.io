@@ -1,18 +1,21 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
 
 engine = (function() {
 
-	// ============================
+    // =======
 	// PRIVATE
-	// ============================
+	// =======
 
 	let _debug = true
 	let _name = 'WebGPU Engine'
-	let _version = '0.1.4-dev'
+	let _version = '0.1.5-dev'
+	let _extension = []
 
 	/* Readystate */
 	let _readystate
@@ -31,7 +34,7 @@ engine = (function() {
 		shader : ['engine', 'shader'],
 		content : ['content']
 	}
-	for(let i = 0; i < _path.document.length; i++)/*(let index in _path.document)*/{
+	for(let i = 0; i < _path.document.length; i++) {
 		if (_path.script[i] === _path.document[i] ) {
 			_path.root.push(_path.document[i])
 		} else if (i < _path.document.length-1) {
@@ -41,15 +44,17 @@ engine = (function() {
 	_path.engine.push(..._path.script.slice(_path.root.length, _path.script.length-2)) // -2 : parent folder as root
 	/* 4154 LOG */ // TODO: view(s) class .add _maxlength 100? 
 	const log = {
-		infos : true,
+		infos : false,
 		info : function(string) {
 			if (log.infos) {
 				console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
 			}			
 		},
-		events : true,
+		events : false,
 		event : function(string) {
-			console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
+			if (log.events) {
+				console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
+			}
 		},
 		warnings : true,
 		warn : function(string) {
@@ -99,64 +104,57 @@ engine = (function() {
 			timers : {},
 		}
 	}
-	/* engine STATS */
-	let _gpu = null
-	let _delta = null
-	let _frametime = null
 
-	/* 61106 core script loader */
-	const core = {
-		script : async function(path){
-			let scripts = []
-			switch(true) {
-				case typeof(path) === 'string':
-					scripts = [path]
+	/* 61106 script loader */
+	const script = async function(path){
+		let scripts = []
+		switch(true) {
+			case typeof(path) === 'string':
+				scripts = [path]
+				break
+			case typeof(path) === 'object' && Array.isArray(path):
+					scripts = path
 					break
-				case typeof(path) === 'object' && Array.isArray(path):
-						scripts = path
-						break
-				default:			
-					console.error(`script path type ${typeof(path)} not supported`)
-					break
-			}
-			for (let i = 0; i < scripts.length; i++)/*(let src of scripts)*/{
-				await new Promise((resolve)=> {
-					let script = document.createElement('script')
-					let src = scripts[i].split('/')
-					switch(src[0]) {
-						case 'engine':
-							switch(src[1]) {
-								case 'shader':
-									script.src = PATH.shader+src.slice(2).join('/')
-									break
-								default:
-									script.src = _path.engine.join('/')+'/'+src.join('/')
+			default:			
+				console.error(`script path type ${typeof(path)} not supported`)
+				break
+		}
+		for (let i = 0; i < scripts.length; i++) {
+			await new Promise((resolve)=> {
+				let script = document.createElement('script')
+				let src = scripts[i].split('/')
+				switch(src[0]) {
+					case 'engine':
+						switch(src[1]) {
+							case 'shader':
+								script.src = PATH.shader+src.slice(2).join('/')
 								break
-							}
+							default:
+								script.src = _path.engine.join('/')+'/'+src.join('/')
 							break
-						case 'content':
-							script.src = PATH.content+src.slice(1).join('/')
-							break
-						default:
-							script.src = 'invalid'
-							log.warn(`script path ${scripts[i]} invalid.`)
+						}
 						break
-					}
-					if (script.src !== 'invalid') {
-						script.onload = resolve
-						script.onerror = resolve
-						document.head.appendChild(script)
-					}
-				})
-			}
+					case 'content':
+						script.src = PATH.content+src.slice(1).join('/')
+						break
+					default:
+						script.src = 'invalid'
+						log.warn(`script path ${scripts[i]} invalid.`)
+					break
+				}
+				if (script.src !== 'invalid') {
+					script.onload = resolve
+					script.onerror = resolve
+					document.head.appendChild(script)
+				}
+			})
 		}
 	}
+	
 
-
-
-	// ============================
+	// ======
 	// PUBLIC
-	// ============================
+	// ======
 
 	/* init */
 	const init = (function(){
@@ -182,20 +180,20 @@ engine = (function() {
 			}
 			if(!_readystate) {
 				_eventdispatcher.dispatchEvent(new Event('InitCore'))
-				await core.script('engine/GUI/controller.js')
-				await core.script('engine/runtime.js')
+				await script('engine/GUI/controller.js')
+				await script('engine/runtime.js')
 				if(navigator?.gpu) {
-					await core.script('engine/gpu.js')
+					await script('engine/gpu.js')
 				}
-				await core.script('engine/scene/controller.js')
-				await core.script('engine/scene/graph.js')
+				await script('engine/scene/controller.js')
+				await script('engine/scene/graph.js')
 			
-				await core.script('engine/input/controller.js')
-				await core.script('engine/utils/math.js')
+				await script('engine/input/controller.js')
+				await script('engine/utils/math.js')
 
 				if(navigator?.gpu) {
 					_eventdispatcher.dispatchEvent(new Event('GPUEnabled'))
-					await core.script([
+					await script([
 						'engine/pipeline/depthpass.js',
 						'engine/pipeline/basepass.js',
 						'engine/pipeline/shadowpass.js',
@@ -207,48 +205,27 @@ engine = (function() {
 						'engine/shader/lights.js',
 						'engine/shader/compose.js',
 					])
-
 					engine.runtime.init()
 				}
-
-			}
-			_readystate = true
+				_readystate = true
+			}			
 		}
 		return eventlistener
 	})()
 	/* PATH */
 	const PATH = {
+		root : _path.engine.join('/')+'/engine/',
 		shader : _path.shader.join('/')+'/',
 		content : _path.content.join('/')+'/',
 	}
 	/* STATS */
 	const STATS = {
-		gpu : {
-			get : function() {
-				return Boolean(_gpu ? _gpu : 0)
-			},
-			set : function(bool) {
-				bool ? _gpu = 1 : _gpu = 0
-				// BINDING TEST
-				if(engine.bindings?.gpu?.set) {
-					engine.bindings.gpu.set(_gpu)
-				}
-				return engine.STATS.gpu.get(_gpu)
-			}
-		},	
-		delta : {
-			get: function() {
-				return _delta ? _delta : performance.now()
-			}
-		},
-		frametime : {
-			get: function() {
-				return _frametime
-			}
-		}
+		delta : null,
+		frametime : null, 
+		framedelta : null,
+		fps : null,
 	}
 
-	log.info(`Engine ready`)
 	_delta = performance.now()
 
 	// ======
@@ -257,8 +234,7 @@ engine = (function() {
 
 	// DECLARE VAR
 	engine = {
-		name : _name,
-		version : _version,
+		INFO : { name : _name, version : _version, extensions : _extension},
 		eventdispatcher : _eventdispatcher,
 		log : log,
 		init : init,

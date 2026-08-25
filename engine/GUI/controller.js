@@ -1,9 +1,10 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
-
 engine.GUI = (function() {
 
 	// =======
@@ -22,9 +23,14 @@ engine.GUI = (function() {
 	const init = (function() {
 		// init
 		engine.log.event('init GUI')
+		engine.eventdispatcher.dispatchEvent(new Event('InitGUI'))
 		async function loadhandler(context){
 			// context loader  // .add gui config hook
-			console.log(engine.GUI)
+			if(!_readystate) {
+				_readystate = true
+			} else {
+				// runtimehook
+			}
 		}
 		return loadhandler
 	})()
@@ -44,7 +50,9 @@ engine.GUI = (function() {
 		init : (function() {
 			// init
 			engine.log.event('init GUI widget')
-			async function loadhandler(widget){}
+			async function loadhandler(widget){
+				// context loader
+			}
 			// context loader
 			return loadhandler
 		})()

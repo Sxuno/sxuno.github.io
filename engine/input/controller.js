@@ -1,7 +1,9 @@
 /*
  * This file is part of WebGPU-Engine.
- * Licensed under the GNU General Public License v3.0 or later.
- * See LICENSE.txt for details.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org.
  */
 
 engine.input = engine.input || {}
@@ -20,8 +22,15 @@ engine.input.controller = (function(){
 	const init = (function() {
 		// init
 		engine.log.info('init input controller')
-		async function loadhandler(input){}
-		// context loader
+		engine.eventdispatcher.dispatchEvent(new Event('InitInput'))
+		async function loadhandler(input){
+			// context loader
+			if(!_readystate) {
+				_readystate = true
+			} else {
+				// runtimehook
+			}
+		}
 		return loadhandler
 	})()
 
