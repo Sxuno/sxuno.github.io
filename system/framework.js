@@ -7,15 +7,16 @@
 // ENGINE hooks
 document.addEventListener('DOMContentLoaded', () => {
 	
-	// engine event listener
+	// engine signal reciver
 	if (engine) {
-
+		// class based
 		engine.eventdispatcher.addEventListener('GPUEnabled', () => {
-			document.querySelector('.event.GPUEnabled').style.visibility = 'visible'
+			let vdom = document.querySelectorAll('.event.GPUEnabled')
+			for (let i = 0; i < vdom.length; i++) {
+				vdom[i].style.visibility = 'visible'
+			}
 		})
-
 	}
-
 })
 // SYSTEM functions
 system = (function () {

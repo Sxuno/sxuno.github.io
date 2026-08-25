@@ -144,7 +144,8 @@
 						</div>
 				</section>
 			</section>
-			<section id = 'roadmap'>
+			<!-- old -->
+			<!--<section id = 'roadmap'>
 				<h2>Roadmap</h2>
 				<div class = 'roadmap'>
 					<div class = 'legend'>
@@ -153,17 +154,97 @@
 						<div class = 'label'>Features</div>
 					</div>
 					<div class = 'timeline'>
-						<!-- window.api.roadmap.render() -->
+						<!-- window.api.roadmap.render() --><!--
+					</div>
+				</div>
+			</section>-->
+			<!-- new -->
+			<section id = 'roadmap'>
+				<h2><a href = './webgpu-export/roadmap.html'>Roadmap</a></h2>
+				<div class = 'roadmap'  style = 'display:flex;'>
+					<div>
+						<div>2025</div>
+						<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+							<h2>version<br/>ProofOfConcept<br/></h2>
+							<h3>integrations</h3>
+							- render resolution<br/>
+							- mesh data<br/>
+							- backface culling<br />
+							- light points<br />
+							- background RGBA<br />
+							- material color to vertex color<br />
+							<br />
+							<h3>technolgies</h3>
+							- device setup<br />
+							- renderpass<br />
+							- defered rendering<br />
+							- nLights<br />
+							<br />
+							<h3>features</h3>
+							- Export Generator<br/>
+							- Html Distribution<br/>
+							- template preview
+						</div>
+					</div>
+					<div style = 'margin-left: 24px'>
+						<div>2026 in development...</div>
+						<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+							<h2>version<br/>rc0.2.0-alpha<br/></h2>        
+							<h3>integrations</h3>
+							- material color<br/>
+							- keyframes<br/>
+							- pointclouds<br />
+							- particlesystems<br />
+							<br />
+							<h3>technolgies</h3>
+							- rgb shader<br />
+							- gpu-driven rendering<br />
+							- drawcall batching<br />
+							<br />
+							<h3>features</h3>
+							- shading modes<br/>
+							- multicanvas<br/>
+							- camera movement<br />
+							- debug views
+						</div>
+					</div>
+					<div style = 'margin-left: 24px'>
+						<div>in planning...</div>
+						<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+							<h2>version<br/>Future release<br/></h2>        
+							<h3>integrations</h3>
+							- textures<br/>
+							- normals<br/>
+							- emission<br />
+							- roughness<br />
+							- alpha<br />
+							<br />
+							<h3>technolgies</h3>
+							- instancing<br />
+							- frame interpolation<br />
+							- forward rendering<br />
+							<br />
+							<h3>features</h3>
+							- template showcase<br/>
+							- template benchmark<br/>
+							- bounding boxes<br />
+							- lod system
+						</div>
 					</div>
 				</div>
 			</section>
 			<section id = 'demo'>
 				<h2>Demo</h2>
 					<div>
-						planed for Webgpu on linux with firefox.<br />
-						<br /> 
-						<a href="./../index.html">Static Live Code Sample</a>
-						<label>Webgpu must be aktive and supported</label>
+						<div style = 'display: flex'>
+							<div>Blender Addon&nbsp;</div>
+							<a href="./webgpu-export/webgpu_export.zip">download</a>
+						</div>
+						<br />
+						<div class = 'event GPUEnabled' style = 'display: flex'>
+							<div>Live Code Sample&nbsp;</div>
+							<a href="./../demo.html">link</a>
+						</div>
 					</div>
 			</section>
 			<section id = 'download'>

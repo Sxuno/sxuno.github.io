@@ -1,1 +1,119 @@
-<!-- template file for data fetch -->
+<!DOCTYPE html>
+<html lang = 'en'>
+	<head>
+		<title>WebGPU Export</title>
+
+		<meta name="description" content="Art, coding and moddeling portfolio">
+		<meta name="keywords" content="SXuno, Portfolio, Artstaion, Github, Sketfab, LinkedIn">
+		<meta name="author" content="Stefan Wienold">
+		<meta name="language" content = 'en'>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8">
+
+		<link rel="icon" type="image/x-ico" href="./../../media/icon/menu.svg">
+		<link rel="stylesheet" href="./../../theme/default/style.css">
+		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
+
+		<script src = './../../system/framework.js'></script>
+		<script src = './../../engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../../content/'
+			engine.PATH.shader = './../../engine/shader/'
+		</script>
+	</head>
+	<body>
+		<header>
+			<nav>
+				<label class = 'left'>
+					<img src = './../../media/icon/menu.svg' />
+					<a href='./../../index.html'>Home</a>
+				</label>
+				<label class = 'right'>
+					English <img src = './../../media/icon/settings.svg' />
+				</label>
+			</nav>
+		</header>
+		<main id = 'webgpu-engine'>
+			<h1><a href = './../webgpu-export.html'>Blender WebGPU Export</a><label>Roadmap</label></h1>		
+			<section id = 'roadmap' style = 'display:flex;'>
+				<div>
+					<div>2025</div>
+					<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+						<h2>version<br/>ProofOfConcept<br/></h2>
+						<h3>integrations</h3>
+						- render resolution<br/>
+						- mesh data<br/>
+						- backface culling<br />
+						- light points<br />
+						- background RGBA<br />
+						- material color to vertex color<br />
+						<br />
+						<h3>technolgies</h3>
+						- device setup<br />
+						- renderpass<br />
+						- defered rendering<br />
+						- nLights<br />
+						<br />
+						<h3>features</h3>
+						- Export Generator<br/>
+						- Html Distribution<br/>
+						- template preview
+					</div>
+				</div>
+				<div style = 'margin-left: 24px'>
+					<div>2026 in development...</div>
+					<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+						<h2>version<br/>rc0.2.0-alpha<br/></h2>        
+						<h3>integrations</h3>
+						- material color<br/>
+						- keyframes<br/>
+						- pointclouds<br />
+						- particlesystems<br />
+						<br />
+						<h3>technolgies</h3>
+						- rgb shader<br />
+						- gpu-driven rendering<br />
+						- drawcall batching<br />
+						<br />
+						<h3>features</h3>
+						- shading modes<br/>
+						- multicanvas<br/>
+						- camera movement<br />
+						- debug views
+					</div>
+				</div>
+				<div style = 'margin-left: 24px'>
+					<div>in planning...</div>
+					<div style = 'border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;'>
+						<h2>version<br/>Future release<br/></h2>        
+						<h3>integrations</h3>
+						- textures<br/>
+						- normals<br/>
+						- emission<br />
+						- roughness<br />
+						- alpha<br />
+						<br />
+						<h3>technolgies</h3>
+						- instancing<br />
+						- frame interpolation<br />
+						- forward rendering<br />
+						<br />
+						<h3>features</h3>
+						- template showcase<br/>
+						- template benchmark<br/>
+						- bounding boxes<br />
+						- lod system
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>
