@@ -1,18 +1,14 @@
 ### Development Settings ###
 # Dev Stats
 .VSCodeCounter/
-
-# Project
-*.md
-!README.md
-!**/docs/**/*.md
-*.htm
-
 # Archive
 archive/
+# bash
+*.sh
+# markdown
+*.md
 
-# Updater
-updater.sh
+!README.md
 
 ### SVG Builder ###
 svg-builder.py
@@ -24,18 +20,22 @@ svg-builder.py
 scene.blend
 scene.blend1
 scene.blend1
-
-# webgpu-export template files
 scene.css
 scene.html
-### exclude autosaves ###
-# media
-*.png~
 
 ### Projects ###
-!project/DisplaySubsystem.html
-#!project/OrbitalControllSystem.html
-!project/webgpu-export.html
-!project/webgpu-engine.html
+/project/*
+!**/project/**/docs/**/*.md
 
+# Explicitly include selected projects
+!/project/webgpu-export.html
+!/project/webgpu-export/
 
+!/project/webgpu-engine.html
+!/project/webgpu-engine/
+
+!/project/database-manager.html
+
+!/project/vsc-UnrealRefSense.html
+
+!/project/OrbitalControllSystem.html
