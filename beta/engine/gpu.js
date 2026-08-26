@@ -49,7 +49,7 @@ engine.gpu = (function(){
 			if (id === -1) {
 				_resource.push(context.resource)
 				_binding.push(context.binding.join(''))
-				
+				id = _binding.length-1
 			}
 			console.log(`binding ${id}x${_binding[_binding.length-1]}`)
 			// console.log(engine.runtime.context().flatMap((item, index) => item.scene === context.binding[0] ? index :[])) // for later

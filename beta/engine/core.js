@@ -13,7 +13,7 @@ engine = (function() {
 
 	let _debug = true
 	let _name = 'WebGPU Engine'
-	let _version = '0.2.0-dev'
+	let _version = '0.2.1-dev'
 	let _extension = []
 
 	/* Readstate */
@@ -72,9 +72,13 @@ engine = (function() {
 			log : function(string, object) {
 				console.log(`\t\t[DEBUG] ${string}`)
 				if(object) {
-					console.log(`@typeof ${typeof(object)}`)
-					console.log(object)
-				}
+					if(typeof(object) !== 'undefined') {
+						console.log(`\t@typeof ${typeof(object)}`)
+						console.log(object)
+					} else {
+						console.log(`\t@${string.replace(' ','')} undefined`)
+					}
+				} 
 			},
 			time : function(label) {
 				if(engine.debug.timers[label]) {

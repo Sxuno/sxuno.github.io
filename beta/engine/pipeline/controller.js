@@ -18,6 +18,7 @@ engine.pipeline = (function() {
 
 	let _readystate
 
+	// #1 - redundency tracker
 	async function load(src) {
 		await new Promise((resolve) => {
 			let script = document.createElement('script')
@@ -107,7 +108,7 @@ engine.pipeline = (function() {
 					if(typeof(engine.pipeline[namespace[0]][namespace[1]]) === 'undefined'){
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
 						await load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
-						// TODO: swtich = imidiate await || batch await after init complete
+						// TODO: switch = imidiate await || batch await after init complete
 						// DEBUG pass namespaces here
 					}
 				}
@@ -166,7 +167,7 @@ engine.pipeline = (function() {
 				}
 			}
 			const draw = function (context) {
-				console.log('raytracer')
+				// console.log('raytracer')
 			}
 			const passes = async function(view) {
 				// NOTE : Loop === placeholder : init batch
@@ -314,7 +315,6 @@ engine.pipeline = (function() {
 			}
 			// engine.debug?.log('pointer', _pointer)
 			 engine.debug?.log('buffer pointer', _pointer)
-			 console.log('case undefined missing.')
 		}
 	}
 	// BUFFER
