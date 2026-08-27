@@ -8,8 +8,12 @@
 !/engine/
 !/engine/**
 ### MEDIA ###
+!/media/
+/media/*
+!/media/image/
+/media/image/*
+!/media/image/*.png
 !/media/*/*.svg
-!/media/*/*.png
 ### PROJECTS ###
 !/project/webgpu-export.html
 !/project/webgpu-export/docs/**.md
