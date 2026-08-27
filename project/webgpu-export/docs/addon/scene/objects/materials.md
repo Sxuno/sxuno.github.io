@@ -5,7 +5,7 @@
 
 # Materials
 ### default
-`engine_default` will automaticly be create on export, can be overwritten.
+`engine_default` will automaticlly be create on export, can be overwritten.
 
 ### color
-<span style='color: orange;'>⚠ *note: rgb value colopesed from bdsf Node*</span>
+<span style='color: orange;'>⚠ *note: rgb value collapsed from BDSF Node*</span>

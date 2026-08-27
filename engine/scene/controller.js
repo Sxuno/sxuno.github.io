@@ -14,7 +14,7 @@ engine.scene = (function() {
 
 	let _metadata
 	let _priority
-	let _persistant
+	let _persistent
 	let _data
 
 	let _readystate

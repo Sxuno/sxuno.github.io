@@ -10,5 +10,5 @@ camera autamticly defaults to if active camera exists
 - no camera selected 
 
 ## error
-camera dose not exist
+camera does not exist
 - before execute export exit 

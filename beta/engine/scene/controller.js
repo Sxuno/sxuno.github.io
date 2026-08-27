@@ -72,7 +72,7 @@ engine.scene = (function() {
 			// context loader
 			if(!_readystate) {
 				engine.log.event('scene init')
-				// scene info // Change to metadata .add priority .preload image .persistant
+				// scene info // Change to metadata .add priority .preload image .persistent
 				engine.debug.timer.start('scene info')
 				engine.scene.info = new Array
 				await info()

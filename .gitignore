@@ -3,8 +3,10 @@
 
 ### BETA ###
 !/beta/
+!/beta/**
 ### ENGINE ###
 !/engine/
+!/engine/**
 ### MEDIA ###
 !/media/*/*.svg
 !/media/*/*.png
@@ -25,10 +27,13 @@
 !/project/OrbitalControllSystem.html
 ### system ###
 !/system/
+!/system/**
 ### theme ###
 !/theme/
+!/theme/**
 ### user ###
 !/user/
+!/user/**
 ### view ###
 !/view/**.html
 ### Defaults ###

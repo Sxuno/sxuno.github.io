@@ -1,6 +1,6 @@
 // system cookies (not engine)
 
-    // set cockie
+    // set cookie
     // set lifetime
     // set autorefresh through cockie check
 

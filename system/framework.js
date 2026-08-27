@@ -7,7 +7,7 @@
 // ENGINE hooks
 document.addEventListener('DOMContentLoaded', () => {
 	
-	// engine signal reciver
+	// engine signal receiver
 	if (engine) {
 		// class based
 		engine.eventdispatcher.addEventListener('GPUEnabled', () => {

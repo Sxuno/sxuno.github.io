@@ -79,13 +79,13 @@ engine.pipeline.basepass = (function () {
 				materialSlotOffset += mesh.materials.length
 			}
 			// BUFFER GLOBAL
-			// TODO: update to call buffer through buffer id <context<buffer> instead of multible vars
+			// TODO: update to call buffer through buffer id <context<buffer> instead of multiple vars
 			_buffer[i] = new Object
 			_buffer[i].metadata = engine.gpu.buffer.metadata.create(_data[i].metadata) // GPUBufferUsage.UNIFORM
 			_buffer[i].material = {}
 			_buffer[i].material.color = engine.gpu.buffer.material.create(_data[i].material.rgb.lookup) // GPUBufferUsage.STORAGE
 			/* BUFFER SHARED */
-			// BUFFER Geomentry
+			// BUFFER Geometry
 			_buffer[i].vertex = engine.gpu.buffer.vertex.create( _data[i].mesh.vertex) // GPUBufferUsage.VERTEX
 			_buffer[i].vertexMaterial = engine.gpu.buffer.vertex.color.create(_data[i].mesh.vertexMaterial) // GPUBufferUsage.VERTEX	
 			_buffer[i].index = engine.gpu.buffer.index.create(_data[i].mesh.index) // GPUBufferUsage.INDEX

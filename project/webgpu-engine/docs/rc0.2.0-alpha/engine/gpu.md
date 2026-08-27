@@ -21,7 +21,7 @@ webgpu device object
 
 ### format
 
-default: prefered Canvas Format
+default: preferred Canvas Format
 
 ### features
 

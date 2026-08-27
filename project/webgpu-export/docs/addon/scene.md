@@ -28,7 +28,7 @@ surface
 **cameras**  
 +docs/addon/scene/objects/[`cameras`](./scene/objects/cameras.md)  
 **mesh**  
-+docs/addon/scene/objects/[`mehses`](./scene/objects/meshes.md)  
++docs/addon/scene/objects/[`meshes`](./scene/objects/meshes.md)  
 **materials**  
 +docs/addon/scene/objects/[`materials`](./scene/objects/materials.md)  
 **lights**  

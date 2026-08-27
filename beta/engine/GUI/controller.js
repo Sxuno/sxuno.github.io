@@ -16,13 +16,13 @@ engine.GUI = (function() {
 	//		an element is an gui privat logic primitive
 	// 		an widget contains elements
 	//		an widget can contain node widgets
-	//		an widget can controll an widget
-	//		an widget can controll an element
+	//		an widget can control an widget
+	//		an widget can control an element
 	//		an element contains logic
 	// 		an element can contain node widgets
 	// 		an element can contain node elements
-	//		an element cant controll an widget
-	//		an element cant controll an element
+	//		an element cant control an widget
+	//		an element cant control an element
 
 	let _descriptor // [{widgets [elements]}]
 

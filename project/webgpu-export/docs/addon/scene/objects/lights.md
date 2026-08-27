@@ -7,7 +7,7 @@
 
 ### custom distance
 default value if none is given:
-10 meteres
+10 meters
 
 ### falloff 
 default inverse square physical accurate

@@ -4,8 +4,8 @@
 
 this page ([sxuno.github.io](https://sxuno.github.io)) is all about my personal journey and projects i create,  
 everything this page uses and presents is created from scratch based on  
-an autoditactive rnd workflow.  
-Tools and workflows created for it are avaliable to use for anyone intressted.  
+an autodidactic rnd workflow.  
+Tools and workflows created for it are available to use for anyone intrested.  
 
 ### note
 This repository contains experimental samples for the WebGPU-Engine project.

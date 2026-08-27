@@ -143,7 +143,7 @@ var media = {
 			/* -------------------------------------------------------------*/
 			/* Animations 													*/
 			/* -------------------------------------------------------------*/			
-			/* inerhits theme default animations 							*/
+			/* inherits theme default animations 							*/
 			/* -------------------------------------------------------------*/			
 			
 			/* 137140 browser native */
@@ -168,7 +168,7 @@ var media = {
 			media.cache.model.setAttribute('id', 'model')
 			media.cache.model.setAttribute('height', `${media.height}px`)
 			media.cache.model.setAttribute('width', `${media.width}px`)
-			media.cache.model.setAttribute('framborder', '0')
+			media.cache.model.setAttribute('frameborder', '0')
 			media.cache.model.setAttribute('src', 'https://sketchfab.com/models/ba7ab3443b8049fcb79f1389708a1494/embed')
 
 			media.cache.model.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
@@ -202,7 +202,7 @@ var media = {
 			media.cache.video.setAttribute('id', 'video')
 			media.cache.video.setAttribute('height', `${media.height}px`)
 			media.cache.video.setAttribute('width', `${media.width}px`)
-			media.cache.video.setAttribute('framborder', '0')
+			media.cache.video.setAttribute('frameborder', '0')
 			media.cache.video.setAttribute('src', 'https://www.youtube.com/embed/8atRYanX8yk?modestbranding=1&rel=0&showinfo=0')
 
 			media.cache.video.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`

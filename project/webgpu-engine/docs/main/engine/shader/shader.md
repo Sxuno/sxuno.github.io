@@ -5,7 +5,7 @@
 fullscreen quad to render offscreen textures on.
 ## depth
 <span style='color: orange;'>⚠ *note: placeholder for debug view depth*</span>
-## geomentry
+## geometry
 ```
 bindings:
 
