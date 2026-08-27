@@ -5,8 +5,8 @@
 # Camera
 
 ### fallback
-camera autamticly defaults to if active camera exists
-- no camera in limito filter
+camera automticly defaults to if active camera exists
+- no camera in filter limit
 - no camera selected 
 
 ## error

@@ -75,8 +75,8 @@ engine.eventdispater.addEventlistener('event', () => {callback})
 +docs/engine/pipeline/[`lightpass`](./engine/pipeline/lightpass.md)  
 +docs/engine/pipeline/[`shadowpass`](./engine/pipeline/shadowpass.md)  
 
-+docs/engine/[scene](./engine/scene.md)  
-+docs/engine/scene/[info](.engine/scene/info.md)  
++docs/engine/[`scene`](./engine/scene.md)  
++docs/engine/scene/[`info`](.engine/scene/info.md)  
 +docs/engine/scene/[`data`](./engine/scene/data.md)  
 +docs/engine/scene/[`graph`](./engine/scene/graph.md)  
 
