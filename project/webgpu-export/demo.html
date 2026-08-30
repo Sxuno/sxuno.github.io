@@ -41,7 +41,27 @@
                 <canvas width = '400' height = '300' scene = 'rgb-cubes'></canvas>
                 <canvas width = '400' height = '300' scene = 'rgb-spheres'></canvas>
             </section>
+			<!--
             <input type = 'file'>load blendfile</input>
+			-->
+			<script>
+				// not yet supported
+				let input = document.createElement('input')
+				input.type = 'file'
+				input.style.display = 'none'
+				input.addEventListener('change', () => {
+					// console.log(input.files)
+					let blob = input.files[0]
+				})
+				let _parent = document.querySelector('#demo')
+				// _parent.appendChild(input)
+				let button = document.createElement('button')
+				button.onclick = () => {
+					input.click()
+				}
+				button.innerText = 'upload'
+				// _parent.appendChild(button)
+			</script>
         </main>
 		<footer>
 			<small>

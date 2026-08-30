@@ -132,6 +132,7 @@ label a { display: inline;}
         #paper {width: 800px}
         /* demo */
         #webgpu-export #demo canvas {border: 1px solid grey; border-radius: 20px;}
+        #webgpu-export input {display:none}
     /* webgpu-engine */
     #webgpu-engine {width:1080px;}
         /* proof of concept */
