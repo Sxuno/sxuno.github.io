@@ -1,9 +1,11 @@
 ### IGNORE ALL ###
-/*
-
+*
 ### BETA ###
 !/beta/
 !/beta/**
+### CONTENT ###
+!/content/
+!/content/**
 ### ENGINE ###
 !/engine/
 !/engine/**
@@ -15,14 +17,19 @@
 !/media/image/*.png
 !/media/*/*.svg
 ### PROJECTS ###
+!/project/
 !/project/webgpu-export.html
-!/project/webgpu-export/docs/**.md
+!/project/webgpu-export/
+!/project/webgpu-export/docs/
+!/project/webgpu-export/docs/**
 !/project/webgpu-export/*.zip
 !/project/webgpu-export/*.html
 
 !/project/webgpu-engine.html
+!/project/webgpu-engine/
 !/project/webgpu-engine/*.html
-!/project/webgpu-engine/docs/**.md
+!/project/webgpu-engine/docs/
+!/project/webgpu-engine/docs/**
 
 !/project/database-manager.html
 
@@ -34,12 +41,13 @@
 !/system/**
 ### theme ###
 !/theme/
-!/theme/**
-### user ###
-!/user/
-!/user/**
+!/theme/default 
+!/theme/default/*.css
 ### view ###
-!/view/**.html
+!/view/
+!/view/*.html
+!/view/showcase/
+!/view/showcase/*.html
 ### Defaults ###
 !README.md
 !LICENSE.txt
