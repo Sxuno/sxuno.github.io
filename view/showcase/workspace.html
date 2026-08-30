@@ -41,35 +41,27 @@
 				<h2>Description</h2>
 				<div class = 'grid-wrap'>
 					<div class = 'col100'>
-						Workflow automation Linux exclusive with cross-platform source files.<br />
-						Automations:<br />
-							compileprojectfiles			dynamic shell for buildin versioning<br />
-						Tools:<br />
-							setup.py 			for workspace automation linking Blender Addon Toolchain<br />
-						<br />
-							svg-builder.py 		for changing file extension for vsc to interpret as code or media<br />
-						Launcher:<br />
-							custom template<br />
+						Snapshots detailing my workflow.<br />
 					</div>
 					<div class = 'grid-wrap'>
 						<div class = 'col50'>
-							<img class = 'media' src="./../../media/image/BlenderAddon.vsc-workspace.png" width="320px" style='margin:"0 auto";'/>
+							<img class = 'media' src="./../../media/image/BlenderAddon.vsc-workspace.png" width="320px" style='margin:"0 auto"; display: block;'/>
+							<label style = 'color: white;font-style: normal;'>vsc workspace organisation, no auto creation of new projects yet.</label>
 						</div>
 						<div class = 'col50'>
 							<div class = 'col100'>
 								<img class = 'media' src="./../../media/image/template.png" width="320px" style='margin:"0 auto";'/>
+								<label  style = 'color: white;font-style: normal;'>custom launcher templates, mostly for prototyping.</label>
 							</div>
-							<div class = 'col100'>
-								<img class = 'media' src="./../../media/image/terminal.png" width="320px" style='margin:"0 auto";'/>
+							<div class = 'col100' >
+								<img class = 'media' src="./../../media/image/terminal.png" width="320px" style='margin:"0 auto"; display: block;'/>
+								<label  style = 'color: white;font-style: normal;' >Script for compiling UE5 Plugins</label>
 							</div>
 						</div>
 					</div>
 				</div>
 				<label>
-					I intend to create a data-driven pipeline offering program solutions for artists <br />
-					to manipulate spatial data in creative ways, <br />
-					while supporting dynamic GPU-driven rendering and visual interpretation of matrix structures. <br />
-					Workflow automations are Linux-exclusive, with cross-platform source file support.
+					Workflow automations are an essential part, in my workflow.
 				</label>
 			</section>			
 			<section id = 'features'>
@@ -77,7 +69,6 @@
 				<div class = 'grid-wrap'>
 					<div class = 'col100'>
 						<code>
-							<!-- 
 							#!/bin/bash
 
 							# compileproject.sh
@@ -91,8 +82,8 @@
 							# ~/PROJECT_NAME/source/PROJECT_NAME                            PROJECT_FILES
 							#
 							# PLUGIN STRUCTURE
-							# ~/PROJECT_NAME/source/PROJECT_NAME/Plugins					DIR_PLUGIN
-							# ~/PROJECT_NAME/source/PRJOECT_NAME/Plugins/PLUGIN_NAME		PLUGINFILES
+							# ~/PROJECT_NAME/source/PROJECT_NAME/Plugins                    DIR_PLUGIN
+							# ~/PROJECT_NAME/source/PRJOECT_NAME/Plugins/PLUGIN_NAME        PLUGINFILES
 							# -------------------------------
 							# PATH TO ENGINE
 							# -------------------------------
@@ -252,29 +243,33 @@
 									exit 0
 									;;
 							esac
-							-->
+							
 						</code>
+						<script>
+							console.log(document.querySelector('code').innerHTML)
+						</script>
 					</div>
 
 					<div class = 'col100'>
 						<img class = 'media' src="./../../media/image/BVector.png" width="320px;" />
 					</div>
 					<label>
-						manipulate spatial data in creative ways, <br />
+						prototype for visualizing procedrual data generation through goldx algo and how to render 
+						instances meshes through an actor onto it for spawning pcg logic.<br />
 					</label>
 
 					<div class = 'col100'>
 						<img class = 'media' src="./../../media/image/GPU-driven.png" width="320px;" />
 					</div>
 					<label>
-						while supporting dynamic GPU-driven rendering and visual interpretation of matrix structures. <br />						
+						PCG logic is not yet hooked up. <br />						
 					</label>
 
 					<div class = 'col100'>
 						<img class = 'media' src="./../../media/image/vsc.png" width="320px" />
 					</div>
 					<label>
-						Workflow automations are Linux-exclusive, with cross-platform source file support. <br />
+						VSC plugin for UPROPERTY autocomplete to support porting blueprint to cpp<br />
 					</label>
 				</div>
 			</section>
@@ -284,24 +279,26 @@
 					<div class = 'col100'>
 						<img class = 'media' src="./../../media/image/AActor.png" width="320px"/>
 					</div>		
-					<label>GPU performance</label>
+					<label>Impact of Aactor overhead for spline movement.</label>
 					<div class = 'col100'>
 						<image class = 'media' src="./../../media/image/class.png" width="320px;" />
 					</div>
-					<label>AActorsystem</label>
+					<label>Prototype ports to cpp</label>
 					<div class = 'col100'>
 						<image class = 'media' src="./../../media/image/BOrbitalControllSystem.png" width="320px;"/>
 					</div>
-					<label>Blueprint Prototype</label>
+					<label>Visalusation to prototype coordinate rebasing.</label>
 				</div>
 			</section>
 			<section id = 'specification'>
 				<h2>Specification</h2>
-				<label>System toolchain description</label>
+				<label>the workspace tries to utilize linux, automations start as shell script,
+					and get iterative expaned to python script, and/or javascirpt or cpp.
+				</label>
 			</section>
 			<section id = 'intent'>
 				<h2>Intent</h2>
-				<label>Workspace adaptation and automation</label>
+				<label>I'am treating my workspace as project it self.</label>
 			</section>
 		</main>
 		<footer>
