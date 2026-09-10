@@ -53,18 +53,19 @@
 			<section id = 'snapshot' style = 'display: flex; flex-direction: column;'>
 				<titel>Buffer mapping process</titel>
 				<label>engine.gpu.resource.init() see developer console</label>
+				<section class = 'wrap'>
+					<canvas scene = 'rgb-cubes' camera = 'default' view = 'unlit'></canvas>
+					<canvas scene = 'rgb-cubes' camera = 'default' view = 'depth'></canvas>
+					<canvas scene = 'rgb-cubes'></canvas>
 
-				<canvas scene = 'rgb-cubes'></canvas>
-				<canvas scene = 'rgb-cubes' camera = 'default' view = 'unlit'></canvas>
-				<canvas scene = 'rgb-cubes' camera = 'default' view = 'depth'></canvas>
+					<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'lit'></canvas>
+					<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'unlit'></canvas>
+					<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'depth'></canvas>
 
-				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'lit'></canvas>
-				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'unlit'></canvas>
-				<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'depth'></canvas>
-
-				<canvas scene = 'rgb-spheres' ></canvas>
-				<canvas scene = 'rgb-spheres' camera = 'false' view = 'unlit'></canvas>
-				<canvas scene = 'rgb-spheres' camera = 'default' view = 'depth'></canvas>
+					<canvas scene = 'rgb-spheres' ></canvas>
+					<canvas scene = 'rgb-spheres' camera = 'false' view = 'unlit'></canvas>
+					<canvas scene = 'rgb-spheres' camera = 'default' view = 'depth'></canvas>
+				</section>
 			</section>
 		</main>
 		<footer>

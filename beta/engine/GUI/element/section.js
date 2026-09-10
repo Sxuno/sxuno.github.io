@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.GUI.element.image = (function(){
+engine.GUI.element.section = (function(){
 
 	// =======
 	// PRIVATE
@@ -13,15 +13,16 @@ engine.GUI.element.image = (function(){
 
 	let _readystate
 
-	class Image {} // Note: use to deconstruct only
+	class Section {} // Note: use to deconstruct only
+    
 	// ======
 	// PUBLIC
 	// ======
 
 	const init = (function() {
 		// init
-		engine.log.event('init image')
-		engine.eventdispatcher.dispatchEvent(new Event('InitImage'))
+		engine.log.event('init section')
+		engine.eventdispatcher.dispatchEvent(new Event('InitSection'))
 		async function loadhandler(type){
 			// context loader
 			if (!_readystate) {
@@ -41,11 +42,11 @@ engine.GUI.element.image = (function(){
 	// ======
 
 	// DECLARE VAR
-	let image = {
+	let section = {
 		init: init,
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR
-	return image
+	return section
 
 })()

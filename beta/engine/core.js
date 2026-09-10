@@ -155,6 +155,8 @@ engine = (function() {
 		init : async function() {
 			log.info(`init core`)
 			_eventdispatcher.dispatchEvent(new Event('InitCore'))
+			await core.utils.init()
+
 			await script('engine/GUI/controller.js')
 			await script('engine/runtime.js')
 			if(navigator?.gpu) {
@@ -170,7 +172,23 @@ engine = (function() {
 			await script('engine/utils/math.js')
 
 			await engine.runtime.init()
-		}
+		},
+		utils : {
+			init : async function() {
+				engine.utils = new Object
+				engine.utils.scr = { // extend wit typebased script loader ?
+					load : async(src) => { 
+						await new Promise((resolve) => {
+							let script = document.createElement('script')
+							script.src = src
+							script.onload = resolve
+							script.onerror = resolve
+							document.head.appendChild(script)
+						})
+					}
+				}
+			}
+		},
 	}
 
 	// ======
@@ -229,7 +247,6 @@ engine = (function() {
 
 	// DECLARE VAR
 	let engine = {
-		//debug : _debug,
 		INFO : { name : _name, version : _version, extensions : _extension},
 		log : log,
 		eventdispatcher : eventdispatcher,

@@ -5,35 +5,67 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.pipeline.rasterizer = engine.pipeline.rasterizer || {}
 engine.pipeline.rasterizer.depthpass = (function () {
 
 	// =======
 	// PRIVATE
 	// =======
 
-	let _bindgrouplayout
-	let _bindgroup
-	let _pipelinelayout
-	let _pipeline
+	let _readystate
+	let _context  // complexity : scene x camera x renderer x view = pipeline x layout x group x grouplayout x resource {bufferobject?}
 	let _descriptor
+
+	// PIPELINE
+	let _resource
+	let _bindGroupLayout
+	let _bindGroup
+	let _pipelineLayout
+	let _pipeline
+	
+	// RESOURCE
+	let _binding
 	let _renderTarget
 
-	let _readystate // dependencie solver
+	// wrap in function for instances
 
-	const bind = {'depthpass': 'matrix'}
-	const group = {binding: 0 , resource: bind} // scene or camera
-	const layout = new Array() // like when visible
+	_resource = {texture : 	{label : `depth`, size: [0, 0, 1], format: 'depth24plus', usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,}}
 
-	const descriptor = () => {return _descriptor}
+	_bindGroupLayout = { entries : [
+			{binding: 0, visibility: 'PIPELINE', texture : {type : 'depth24plus'}}
+		]
+	}
+	_bindGroup = {
+		label: 'Depthpass',
+		layout: _bindGroupLayout,
+		entries : [
+			{binding: 0, resource: _resource}
+		]
+	}
+	_pipelineLayout = {_bindGroupLayouts: [_bindGroupLayout]}
+	_pipeline = {
+		layout : _pipelineLayout,
+	}
+
 	const renderTarget = async (context) => {
+		console.log('init renderTarget')
 		let x = context.width
 		let y = context.height
-		group.binding = context.buffer // for gpu buffer descriptor
-		_descriptor = (!_descriptor)? new Object : _descriptor
-		_descriptor = group
-		engine.gpu.resource.init(_descriptor)
+		// await gpu resource callback :: binding id
+		let pointer = context.buffer
+
+		_renderTarget = await engine.gpu.resource.init(
+			{
+				texture : 
+				{
+					label : `${context.scene}`,
+					size: [x, y, 1],
+					format: 'depth24plus',
+					usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
+				}, 
+			// binding : pointer
+		})
 	}
+
 	// ======
 	// PUBLIC
 	// ======
@@ -46,24 +78,23 @@ engine.pipeline.rasterizer.depthpass = (function () {
 		async function loadhandler(context){
 			// context loader 
 			if(!_readystate) {
-
+				// TODO : engine.debug? GUI.widget.console (may GUI.init(widget::console))
 			} else {
 				// runtimehook
 				console.warn('rasterizer depthpass init (context)')
 				console.log('depthpass init(context)')
-				console.log('resource binding')
+				console.log('binding' , _resource)
 
 				context['width'] = (!context.width) ? context.canvas.width : context.width
 				context['height'] = (!context.height) ? context.canvas.height : context.height
-				console.log('resolution '+context.width+'x'+context.height)
-				await renderTarget(context)
-				
 
-				//engine.pipeline.buffer(context.buffer)
+				await renderTarget(context)
 			}
 		}
 		return loadhandler
 	})()
+
+	const descriptor = () => {return _descriptor}
 
 	const draw = function (scene) {}
 

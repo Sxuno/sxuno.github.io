@@ -10,14 +10,12 @@ engine.GUI.element.canvas = (function(){
 	// =======
 	// PRIVATE
 	// =======
-	let _keyevents
 
 	let _readystate
 
-	const keyevent = {
-		register : () => {},
-		remove : () => {}
-	}
+	class Canvas {} // Note: use to deconstruct only
+
+	// WORKER // engine.cpu.worker ??? may 
 
 	// ======
 	// PUBLIC
@@ -44,7 +42,8 @@ engine.GUI.element.canvas = (function(){
 
 	// DECLARE VAR
 	let canvas = {
-		init: init,
+		init: init, 
+		prototype : Canvas,
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR

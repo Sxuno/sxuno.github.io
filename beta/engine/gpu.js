@@ -11,50 +11,91 @@ engine.gpu = (function(){
 	// PRIVATE
 	// =======
 
+	let _readystate
+	let _descriptor // context :: devices workloads allocations
+
 	// GPU
 	let _format
 	let _features
+
 	// DEVICE
 	let _adapter
 	let _device
-	let _limits
-	// CONTEXT
-	let _context
-	let _config
-	let _setup
-	// RESOURCES
-	let _buffer
-	let _resource
-	let _binding
+	let _limits // in use
 
-	let _readystate
+	// RESOURCES
+	let _resource // descriptor object?
+
+	let _buffer
+	let _texture  = new Array() //  complexity aspectratio x width x {type:: GPUOBJECT} // TODO: define at runtime
+	let _sampler
+
+	let _binding // {buffer : () => return _buffer, texture : () => return _texture, sampler : () => return _sampler}
+
+	let _bindGroupLayout
+	let _bindGroup
+	let _pipelineLayout
+	let _pipeline
+	
+	// MEMORY ?
+	let _alloc
+
+
+	const scheduler = (function (){// TODO encoder.prototype submit.prototype device.prototype
+		let adapter
+		let device
+		const init = async () => {
+			const requestAdapter = navigator.gpu.requestAdapter
+			// Override
+			navigator.gpu.requestAdapter = async function(...args) {
+				console.warn('Scheduler register Adapter')
+				_adapter = await requestAdapter.apply(this, args)
+				// fallbacks here
+				return _adapter
+			}
+			await navigator.gpu.requestAdapter()
+		}
+		return {init}
+	})()
+
+	// ======
+	// PUBLIC
+	// ======
+
+	const buffer = {
+
+	}
 
 	const compute = {
 		// compute shader api method ... return result [buffer]
 		// extension hook gpu.init() //dependencies ? 
 	}
 
-	// ======
-	// PUBLIC
-	// ======
-
 	const resource = {
-		init : async (context) => {
-			console.log('resource')
-			console.log(context)
-			_resource = _resource || new Array() // may group by type? for no reason?
-			_binding = _binding || new Array()			
-			
-			let id = _binding.findIndex(entry => entry === context.binding.join(''))
-			if (id === -1) {
-				_resource.push(context.resource)
-				_binding.push(context.binding.join(''))
-				id = _binding.length-1
+		init : async (resource) => { // flag? 
+			console.log('resource', resource)
+			_resource = _resource || new Array() // group by type for faster lookup
+			_binding = _binding || new Array()
+			let bind = new Array()
+
+			// resource complexity = binding + size + usage
+			if (resource.texture !== undefined) {
+					let aspectratio = resource.texture.size[0] / resource.texture.size[1]
+					console.log('ratio', aspectratio)
+					let size = resource.texture.size[0]
+					console.log('size', resource.texture.size)
+					// [number:aspectratio,[number:size,[{type: depth, GPUObject : ..., instances: number}]]]
+					console.error('create mookup')
+					bind.push([_resource.length-1])
+					// TODO add resource pointer structure :: check for redundency
+					_resource.push(_device.createTexture(resource.texture))
+					console.log(_resource)
 			}
-			console.log(`binding ${id}x${_binding[_binding.length-1]}`)
-			// console.log(engine.runtime.context().flatMap((item, index) => item.scene === context.binding[0] ? index :[])) // for later
-			engine.pipeline.buffer(context.binding, _binding.length-1)
-		}
+			// HERE 
+			_binding.push(resource.binding)
+		},
+		release : async (resource) => {}, // note : method for usage release
+
 	}
 
 	const init = (function() {
@@ -72,7 +113,7 @@ engine.gpu = (function(){
 				engine.log.info('gpu init')
 				engine.debug.timer.start('gpu init')
 				if (!_device) {
-					_adapter = await navigator.gpu.requestAdapter()
+					await scheduler.init()
 					if(_adapter){
 						_device = await _adapter.requestDevice()
 						_limits = _device.limits
@@ -116,13 +157,3 @@ engine.gpu = (function(){
 	return gpu
 
 })()
-
-
-/*
- bindgroup.depthpass(context) {
-
-	data = engine.pipeline.buffer[context.buffer] = {texture : depthtexture}
-
-	gpu.buffer = engine.pipeline.buffer[context.buffer]
- }
- */

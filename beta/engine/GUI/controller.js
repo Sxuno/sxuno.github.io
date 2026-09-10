@@ -11,36 +11,17 @@ engine.GUI = (function() {
 	// PRIVATE
 	// =======
 
-	// Definition : 
-	// 		an widget is an gui group anchor element 
-	//		an element is an gui privat logic primitive
-	// 		an widget contains elements
-	//		an widget can contain node widgets
-	//		an widget can control an widget
-	//		an widget can control an element
-	//		an element contains logic
-	// 		an element can contain node widgets
-	// 		an element can contain node elements
-	//		an element cant control an widget
-	//		an element cant control an element
-
-	let _descriptor // [{widgets [elements]}]
-
-	let _widgets
-	let _elments
-
 	let _readystate
 
-	// # - redundency tracker
-	async function load(src) {
-		await new Promise((resolve) => {
-			let script = document.createElement('script')
-			script.src = src
-			script.onload = resolve
-			script.onerror = resolve
-			document.head.appendChild(script)
-		})
-	}
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+	let _descriptor // [{layout [element]}]
+
+	let _styles
+	let _layouts
+	let _elements
 
 	// ======
 	// PUBLIC
@@ -50,36 +31,43 @@ engine.GUI = (function() {
 		// init dependencies
 		engine.log.event('init GUI')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGUI'))
-		_readystate = true // TEST SWITCH
+
+		_descriptor = new Array()
+		_elements = new Array()
+		_layouts = new Array()
+
+		// note style controller gets style info from layout
+		_styles = new Array()
+
+		_readystate = 1 // TEST SWITCH
 		async function loadhandler(context){
 			// context loader  // .add gui config hook
 			if(!_readystate) {
-				_readystate = true
+				if(engine.debug) {
+					console.error('#debug')
+				}
+				_readystate = 1
 			} else {
 				// runtimehook
 				if(context) {
 					/* expect GUI context class
 					{ context : {type : string, name : string, parent?: id, nodes?: id}} */
-					load(engine.PATH.root+`GUI/${context.type}/${context.name}.js`)
-					_descriptor = _descriptor || new Array
+					await engine.utils.scr.load(engine.PATH.root+`GUI/${context.type}/${context.name}.js`)
 					 // typebased switch
 					switch(context.type) {
-						case 'widget':
-							_widgets = _widgets || new Array
-							_widgets.push(context)
+						case 'layout':
+							_layouts.push(context)
 							_descriptor.push(context)
 							break
 						case 'element':
 							
 							if(!context.parent) {
-								_widgets = _widgets || new Array
-								_widgets.push(context)
+								_layouts.push(context)
 								_descriptor.push(context)
 								_descriptor[_descriptor.length-1]['nodes'] = null
 								break
 							}
-							_elments = _elments || new Array
-							_elments.push(context)
+							_elements.push(context)
 							_descriptor[context.parent].push(context)
 							break
 						default:
@@ -103,7 +91,7 @@ engine.GUI = (function() {
 		})()
 	}
 
-	const widget = {}
+	const layout = {}
 
 	const element = {}
 
@@ -115,7 +103,7 @@ engine.GUI = (function() {
 	let GUI = {
 		init,
 		element,
-		widget
+		layout
 	}
 	// CONDITIONAL
 	// RETURN VAR

@@ -20,6 +20,41 @@ engine.input.controller = (function(){
 		remove : () => {}
 	}
 
+	// events
+	// ---
+
+	// onhover
+	// onblur
+	// onclick
+	// onrelease?
+	// fullscreen
+
+	// type
+	// ---
+
+	// gesture
+	// sensor
+	// keyboard
+	// mouse
+	// microphone
+	// camera
+
+	// APIS
+	// ---
+
+	// MediaDevicesAPI
+	// Media Capture and Streams API
+	// Screen Capture API
+
+	// Pointer Events API
+	// Touch Events API
+	// Gamepad API
+	// Keyboard API
+	// Web Speech API ????? 	
+
+	// Device OrintationEvent
+	// DeviceMotionEvent
+
 	// ======
 	// PUBLIC
 	// ======

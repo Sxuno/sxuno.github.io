@@ -29,8 +29,30 @@ engine.runtime = (function() {
 	let _readystate
 
 	let _dependencies
-	let _contextloader
-	let _runtimehook
+	let _loadhandler
+	let _runtimehook 
+
+	/* FLAGS :: CONCEPT
+
+	// SETUP
+	let flags = new Uint8Array(1) // allow controller flags[1]?
+	let _dependencies 	= 1 // 2^0
+	let _loadhandler 	= 2 // 2^1
+	let _runtimehook 	= 4 // 2^2
+
+	// SET
+	flags[0] |= _dependencies
+
+	// CLEAR
+	// flags[0] &= ~_dependencies
+
+	// TOGGLE
+	// flags[0] ^= _dependencies
+
+	if (flags[0] & _dependencies) {
+    // flag is set
+}
+	*/
 
 	let observer = {
 		init : async function() {
@@ -109,8 +131,8 @@ engine.runtime = (function() {
 
 		for(let i = 0, len = _canvas.length; i < len; i++) {
 			// RESOLUTION SETUP // TODO : .add engine.config.resolutionscale // allow per scene?
-			_canvas[i].width = _canvas[i].width * _devicePixelRatio * _resolutionScale
-			_canvas[i].height = _canvas[i].height * _devicePixelRatio * _resolutionScale
+			_canvas[i].width = /* _canvas[i].width */ _canvas[i].getBoundingClientRect().width * _devicePixelRatio * _resolutionScale
+			_canvas[i].height = /* _canvas[i].height */ _canvas[i].getBoundingClientRect().height * _devicePixelRatio * _resolutionScale
 
 			_scene[i] = _canvas[i].getAttribute('scene')
 			_camera[i] = _canvas[i].getAttribute('camera')
@@ -140,7 +162,7 @@ engine.runtime = (function() {
 				engine.log.info('runtime context init')
 				if (engine.gpu?.device) {
 					engine.debug.timer.start('runtime context')
-					let pipeline = engine.pipeline.descriptor()
+					let pipeline = engine.pipeline.descriptor() // unused?
 					for(let i = 0, len = _canvas.length; i < len; i++) {
 						_context[i] = _canvas[i].getContext('webgpu')
 						_context[i].configure({
@@ -168,7 +190,6 @@ engine.runtime = (function() {
 				}
 				// TODO: for each visible context engine.pipeline.init(_context)
 				// await engine.pipeline.context.init() 
-
 				await engine.pipeline.init(_context)
 
 				/* DEBUG
@@ -182,10 +203,10 @@ engine.runtime = (function() {
 				console.log(engine.scene.data)
 				*/
 				_readystate = true
+				requestAnimationFrame(renderloop)
 			} else {
 				// runtimehook
-			}
-			requestAnimationFrame(renderloop)
+			}		
 		} 
 		return loadhandler
 	})()
@@ -194,7 +215,7 @@ engine.runtime = (function() {
 		return _context
 	}
 
-	const descriptor = function(context) {  // rethink in runtime context
+	const descriptor = function(context) { 
 		return engine.scene.resolver(context, _descriptor)
 	}
 

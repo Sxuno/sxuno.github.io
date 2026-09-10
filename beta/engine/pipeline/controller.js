@@ -11,30 +11,19 @@ engine.pipeline = (function() {
 	// PRIVATE
 	// =======
 
-	let _descriptor
-	let _renderer // reserved only
-	let _pointer
-	let _buffer
-
 	let _readystate
+	let _descriptor
 
-	// #1 - redundency tracker
-	async function load(src) {
-		await new Promise((resolve) => {
-			let script = document.createElement('script')
-			script.src = src
-			script.onload = resolve
-			script.onerror = resolve
-			document.head.appendChild(script)
-		})
-	}
+	// BUFFER
+	let _pointer
+	let _buffer // used?
 
 	// RENDERER
 	// NOTE : renderer imidiate invoke || execution at controller init
 	const renderer = {
 		rasterizer :  (function (){
 
-			let _readystate
+			let _readystate = 0 // namespace override local
 			
 			let _view = [
 				'lit',
@@ -64,8 +53,9 @@ engine.pipeline = (function() {
 				if(!_readystate) {
 					engine.log.event('rasterizer init')
 					engine.eventdispatcher.dispatchEvent(new Event('InitRasterizer'))
-					engine.pipeline.rasterizer ?? new Object
-					_readystate = true
+					engine.pipeline.rasterizer = engine.pipeline.rasterizer || new Object() // bugfix
+
+					_readystate = 1
 				}
 				if(typeof(context) === 'object' && !Array.isArray(context)) {
 					engine.log.event('rasterizer init (context:view)')
@@ -73,17 +63,16 @@ engine.pipeline = (function() {
 					await controller[context.renderer].passes(context.view)
 
 					for (let i = 0; i < _passes[context.view].length; i++) {
-						// move to passes
+						// move to passes ?
 						let namespace = _passes[context.view][i].split('/')
 						await engine.pipeline[namespace[0]][namespace[1]].init(context)
 					}
 				}
 			}
-			const buffer = {struct: { texture : []}}
+			//const buffer = {passname: { resources : [entries]}}
 			const draw = function (context) {
 				// DEBUG
 				// console.log('rasterizer')
-				// console.log(_buffer[context.scene][1][context.camera][1][context.renderer][1][context.view][1])
 			}
 			 const passes = async function(view) {
 				// NOTE : Loop === placeholder : init batch
@@ -91,23 +80,28 @@ engine.pipeline = (function() {
 				for (let i = 0; i < _passes[view].length; i++) {
 
 					let namespace = _passes[view][i].split('/')
-
+					
 					if(typeof(engine.pipeline[namespace[0]]) === 'undefined'){
 						let _pass = _descriptor.findIndex(type => type.renderer === namespace[0])
+						
 						if (_pass === -1) {
-							engine.debug.war(`pipeline controller for renderer ${namespace[0]} missing`)
 							engine.log.event(`pipeline init ${namespace[0]}`)
-							engine.pipeline[namespace[0]] ?? new Object
+							engine.debug.war(`pipeline controller link ${namespace[0]}`)
+							
+							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object() // BUGFIX
 						} 
-						if (_pass !== -1) {
-							controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
+						if (_pass !== -1 && engine.pipeline[namespace[0]] === undefined) {
+
+							await controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
+							console.log('namespace', engine.pipeline[namespace[0]])
+							console.log('pass', _pass)
 						}						
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
+						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
 					}
 					if(typeof(engine.pipeline[namespace[0]][namespace[1]]) === 'undefined'){
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
+						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
 						// TODO: switch = imidiate await || batch await after init complete
 						// DEBUG pass namespaces here
 					}
@@ -125,7 +119,7 @@ engine.pipeline = (function() {
 		})(),
 		raytracer : (function() {
 
-			let _readystate
+			let _readystate = 0
 
 			let _view = [
 				'lit',
@@ -152,7 +146,7 @@ engine.pipeline = (function() {
 				engine.log.event('init raytracer')
 				engine.eventdispatcher.dispatchEvent(new Event('InitRaytracer'))
 				engine.pipeline.raytracer ?? new Object
-				_readystate = true}
+				_readystate = 1}
 
 				if(typeof(context) === 'object' && !Array.isArray(context)) {
 					engine.log.event('raytracer init (context:view)')
@@ -169,30 +163,32 @@ engine.pipeline = (function() {
 			const draw = function (context) {
 				// console.log('raytracer')
 			}
-			const passes = async function(view) {
+			 const passes = async function(view) {
 				// NOTE : Loop === placeholder : init batch
 				// on error -> switch ? renderer[0] : view 
 				for (let i = 0; i < _passes[view].length; i++) {
 
 					let namespace = _passes[view][i].split('/')
-
 					
+					if(typeof(engine.pipeline[namespace[0]]) === 'undefined'){
 						let _pass = _descriptor.findIndex(type => type.renderer === namespace[0])
+						
 						if (_pass === -1) {
-							engine.debug.war(`pipeline controller for renderer ${namespace[0]} missing`)
 							engine.log.event(`pipeline init ${namespace[0]}`)
-							engine.pipeline[namespace[0]] ?? new Object
+							engine.debug.war(`pipeline controller link ${namespace[0]}`)
+							
+							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object() // BUGFIX
 						} 
-						if (_pass !== -1) {
-							controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
+						if (_pass !== -1 && engine.pipeline[namespace[0]] === undefined) {
+							await controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
 						}						
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
-					
+						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
+					}
 					if(typeof(engine.pipeline[namespace[0]][namespace[1]]) === 'undefined'){
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
-						// TODO: swtich = imidiate await || batch await after init complete
+						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
+						// TODO: switch = imidiate await || batch await after init complete
 						// DEBUG pass namespaces here
 					}
 				}
@@ -254,12 +250,11 @@ engine.pipeline = (function() {
 
 	const pointer = {
 		init : async (context) => {
-			// console.log(context)
 			// complexitiy :: scene x camera x renderer x view = buffer(context) :: if invalid init(context)	
 			let _context = engine.runtime.context()
 
 			// BUFFER ACCESS STRUCTURE
-			// scene x camera x renderer x view = bufferobject
+			// scene x camera x renderer  = bufferobject
 			// Note : 
 			// 			index 0  = global ids 
 			//			index 1 = Access path
@@ -268,7 +263,7 @@ engine.pipeline = (function() {
 
 			// micro optimization: 
 			// 		replace .findIndex with manual loop
-			// 		replaces function call overhand with inline execution,
+			// 		replaces function call overhead with inline execution,
 			// 		can prevent garbage collection churn from V8/SpiderMonkey (browser)
 
 			for (let i = 0 ; i < _context.length; i++) {
@@ -280,8 +275,6 @@ engine.pipeline = (function() {
 				let s = null
 				let c = 0
 				let r = 0
-				let v = 0 
-				let b = 0
 				
 				s = _pointer.findIndex(scene => scene[0] === _context[i].scene)
 
@@ -313,8 +306,7 @@ engine.pipeline = (function() {
 				await controller[_context[i].renderer].init(_context[i])
 				// TODO : BUFFER OBJECT				
 			}
-			// engine.debug?.log('pointer', _pointer)
-			 engine.debug?.log('buffer pointer', _pointer)
+			// engine.debug?.log('buffer pointer', _pointer)
 		}
 	}
 	// BUFFER
@@ -322,19 +314,15 @@ engine.pipeline = (function() {
 	const context = {
 		init : async (buffer) => {
 			engine.log.event('pipeline context init')
-			console.log(buffer)
+			console.log('context init', buffer)
 		}
-	}	
-	const buffer = (binding, resource) => {
-		if (typeof(resource) === 'undefined' && typeof(binding) === 'undefined'){
-			return _buffer
-		} else {
-			if (typeof(resource === 'number') && typeof(binding) === 'object' && Array.isArray(binding)) {
-			console.log(`buffer ${resource}`)
-			_pointer[binding[0]][1][binding[1]][1][binding[2]][1] = resource
-			// console.log(_pointer[binding[0]][1][binding[1]][1][binding[2]][1])
-			}	
-		}
+	}
+
+	// rework to call resource memspace with pointer
+	// NOTE pipeline buffer = scene graph data to map
+	const buffer = () => {
+
+		return _buffer
 	}
 	
 	// ======
@@ -361,7 +349,6 @@ engine.pipeline = (function() {
 				_readystate = true
 			} else {
 				// runtimehook
-				
 				pointer.init(context)
 			}
 		}

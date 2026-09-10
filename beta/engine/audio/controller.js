@@ -17,19 +17,19 @@ engine.audio.controller = (function(){
     let _analyser
 	let _dataArray
     
-    let _isReady
+    let _listening
 
     let _audioOut
 
 	let _readystate
 
     const update = () => {
-        if (!_isReady) return
+        if (!_listening) return
         _analyser.getByteFrequencyData(_dataArray)
     }
 
     function getFrequencyRange(startBin, endBin) {
-        if (!_isReady) return 0
+        if (!_listening) return 0
         let sum = 0
         for (let i = startBin; i <= endBin; i++) {
             sum += _dataArray[i]
@@ -52,7 +52,6 @@ engine.audio.controller = (function(){
             console.error('hardware list locked:', error)
         }
     }
-
 
 	// ======
 	// PUBLIC
