@@ -12,11 +12,15 @@ engine.pipeline.rasterizer.lightpass = (function () {
 	// PRIVATE
 	// =======
 
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	let _Buffer
 	let _width
 	let _height
-
-	let _readystate
 
 	// ======
 	// PUBLIC

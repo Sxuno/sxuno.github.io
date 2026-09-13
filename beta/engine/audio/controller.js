@@ -11,6 +11,13 @@ engine.audio.controller = (function(){
 	// =======
 	// PRIVATE
 	// =======
+
+    let _readystate
+
+    let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
     let _buffer
 
     let _context
@@ -21,7 +28,7 @@ engine.audio.controller = (function(){
 
     let _audioOut
 
-	let _readystate
+	
 
     const update = () => {
         if (!_listening) return

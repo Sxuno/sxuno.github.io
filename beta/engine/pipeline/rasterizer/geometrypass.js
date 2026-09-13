@@ -12,11 +12,15 @@ engine.pipeline.rasterizer.geometrypass = (function () {
 	// PRIVATE
 	// =======
 
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	let _buffer
 	let _width
 	let _height
-
-	let _readystate
 
 	// ======
 	// PUBLIC

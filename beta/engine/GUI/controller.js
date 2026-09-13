@@ -20,78 +20,69 @@ engine.GUI = (function() {
 	let _descriptor // [{layout [element]}]
 
 	let _styles
-	let _layouts
+	let _parents
+	let _attributes
 	let _elements
+	let _index
+
+	const controller = {
+		init : (function() {
+			// init
+			engine.log.event('init GUI controller')
+			async function loadhandler(){
+				// context loader // .add gui path hook
+			}
+			return loadhandler
+		})
+	}
 
 	// ======
 	// PUBLIC
 	// ======
 
 	const init = (function() {
-		// init dependencies
+		// dependencies
 		engine.log.event('init GUI')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGUI'))
 
 		_descriptor = new Array()
 		_elements = new Array()
-		_layouts = new Array()
 
-		// note style controller gets style info from layout
+		//  style info from layout
 		_styles = new Array()
 
-		_readystate = 1 // TEST SWITCH
 		async function loadhandler(context){
-			// context loader  // .add gui config hook
-			if(!_readystate) {
-				if(engine.debug) {
-					console.error('#debug')
+			// loadhandler
+			if(_readystate) {
+				// runtimehook
+			} else {
+				// context init
+				if(engine.debug || engine.config?.console) {
+					await engine.utils.scr.load(engine.PATH.root+`GUI/element/console.js`)
 				}
 				_readystate = 1
-			} else {
-				// runtimehook
-				if(context) {
-					/* expect GUI context class
-					{ context : {type : string, name : string, parent?: id, nodes?: id}} */
-					await engine.utils.scr.load(engine.PATH.root+`GUI/${context.type}/${context.name}.js`)
-					 // typebased switch
-					switch(context.type) {
-						case 'layout':
-							_layouts.push(context)
-							_descriptor.push(context)
-							break
-						case 'element':
-							
-							if(!context.parent) {
-								_layouts.push(context)
-								_descriptor.push(context)
-								_descriptor[_descriptor.length-1]['nodes'] = null
-								break
-							}
-							_elements.push(context)
-							_descriptor[context.parent].push(context)
-							break
-						default:
-							console.log(`GUI type ${context.type} not supported.`)
-					}
-					console.log(_descriptor)
-				}
 			}
 		}
 		return loadhandler
 	})()
 
-	const controller = {
-		init : (function() {
-			// init
-			engine.log.event('init GUI controller')
-			async function loadhandler(module){
-				// context loader // .add gui path hook
-			}
-			return loadhandler
-		})()
+	const register = (element) => {
+		console.log('register HTML Element to GUI')
+		let html 
+		html = document.createElement(element.type)
+		for (let a = 0; a < element.attributes.length; a++) {
+			html[element.attributes[a]] = element.value[a]
+		}
+		/*
+		for (let s = 0; s < element.style.length; s++) {
+			_styles.push(element.style[s]) // check for existing for .update .instancecount
+		}
+		*/
+		// TODO: bad solution replace with => recursive child parent relation construction with pointer lifecycle
+		let parent
+		parent = document.querySelectorAll(element.parent)
+		parent.append(html)
 	}
-
-	const layout = {}
 
 	const element = {}
 
@@ -103,7 +94,6 @@ engine.GUI = (function() {
 	let GUI = {
 		init,
 		element,
-		layout
 	}
 	// CONDITIONAL
 	// RETURN VAR

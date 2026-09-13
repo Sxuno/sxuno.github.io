@@ -11,11 +11,15 @@ engine.scene.graph = (function(){
 	// PRIVATE
 	// =======
 	
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	let _descriptor
 	let _data
 	let _opsqeue // for later
-
-	let _readystate
 
 	// ======
 	// PUBLIC

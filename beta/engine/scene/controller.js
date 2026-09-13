@@ -12,12 +12,16 @@ engine.scene = (function() {
 	// PRIVATE
 	// =======
 
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	let _metadata
 	let _priority
 	let _presistant
 	let _data // unused?
-
-	let _readystate
 
 	async function info() {
 		await engine.utils.scr.load(engine.PATH.content+'info.js')
@@ -55,12 +59,14 @@ engine.scene = (function() {
 	// PUBLIC
 	// ======
 
+	class Scene {}
+
 	const init = (function() {
 		// init dependency
 		engine.log.event('init scene')
 		engine.eventdispatcher.dispatchEvent(new Event('InitScene'))
 		async function loadhandler() {
-			// context loader
+			// loadhandler
 			if(!_readystate) {
 				engine.log.event('scene init')
 				// scene info // Change to metadata .add priority .preload image .persistant
@@ -72,6 +78,8 @@ engine.scene = (function() {
 				engine.scene.data = new Object
 				await data()
 				// scene graph
+
+				await engine.utils.scr.load(engine.PATH.root+'scene/graph.js')
 				await engine.scene.graph?.init()
 
 				_readystate = true
@@ -112,7 +120,7 @@ engine.scene = (function() {
 	// ======
 
 	// DECLARE VAR
-	let scene = {init, resolver}
+	let scene = {init, resolver, prototype : Scene}
 	// CONDITIONAL
 	// RETURN VAR
 	return scene

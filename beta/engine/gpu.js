@@ -12,6 +12,12 @@ engine.gpu = (function(){
 	// =======
 
 	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+
 	let _descriptor // context :: devices workloads allocations
 
 	// GPU
@@ -26,6 +32,7 @@ engine.gpu = (function(){
 	// RESOURCES
 	let _resource // descriptor object?
 
+	let _type
 	let _buffer
 	let _texture  = new Array() //  complexity aspectratio x width x {type:: GPUOBJECT} // TODO: define at runtime
 	let _sampler
@@ -39,7 +46,6 @@ engine.gpu = (function(){
 	
 	// MEMORY ?
 	let _alloc
-
 
 	const scheduler = (function (){// TODO encoder.prototype submit.prototype device.prototype
 		let adapter
@@ -74,32 +80,36 @@ engine.gpu = (function(){
 	const resource = {
 		init : async (resource) => { // flag? 
 			console.log('resource', resource)
-			_resource = _resource || new Array() // group by type for faster lookup
 			_binding = _binding || new Array()
-			let bind = new Array()
-
-			// resource complexity = binding + size + usage
+			_resource = _resource || new Array()
+			_type = _type || {texture: 0}
+			// resource complexity = type x {resource} x object id x instance count
 			if (resource.texture !== undefined) {
-					let aspectratio = resource.texture.size[0] / resource.texture.size[1]
-					console.log('ratio', aspectratio)
-					let size = resource.texture.size[0]
-					console.log('size', resource.texture.size)
-					// [number:aspectratio,[number:size,[{type: depth, GPUObject : ..., instances: number}]]]
-					console.error('create mookup')
-					bind.push([_resource.length-1])
-					// TODO add resource pointer structure :: check for redundency
-					_resource.push(_device.createTexture(resource.texture))
-					console.log(_resource)
+				_texture = _texture || new Array
+				
+				_texture.push(_device.createTexture(resource.texture))
+				_binding.push(resource.buffer)
+
+				let aspectratio = resource.texture.size[0] / resource.texture.size[1]
+				let size = resource.texture.size[0]
+
+				console.log('ratio', aspectratio)				
+				console.log('size', resource.texture.size)
+				
+				_resource.push([_type.texture,[aspectratio,[size,[_texture.length-1,[1]]]]])
+
+				console.error('DATASTRUCTURE RESOURCE', _resource)
+				console.log(_texture[_resource[_resource.length-1][1][1][1][0]])
+				// resource[frame n+1][type][format][usage][aspectratio][width][_texture[id]][count]
 			}
 			// HERE 
 			_binding.push(resource.binding)
 		},
 		release : async (resource) => {}, // note : method for usage release
-
 	}
 
 	const init = (function() {
-		// init dependencies
+		// dependencies
 		engine.log.event('init gpu')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGPU'))
 		_format = navigator.gpu.getPreferredCanvasFormat()
@@ -108,8 +118,11 @@ engine.gpu = (function(){
 			_features.push(feature)
 		}
 		async function loadhandler(context){
-			// context loader
-			if(!_readystate) {
+			// loadhandler
+			if(_readystate) {
+				// runtimehook  // ( eg for device recovery)
+			} else {
+				// context init
 				engine.log.info('gpu init')
 				engine.debug.timer.start('gpu init')
 				if (!_device) {
@@ -124,8 +137,6 @@ engine.gpu = (function(){
 					engine.gpu.format = _format
 				}
 				engine.debug.timer.end('gpu init')
-			} else {
-				// runtimehook
 			}
 		} 
 		return loadhandler

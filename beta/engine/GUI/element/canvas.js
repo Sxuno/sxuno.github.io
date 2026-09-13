@@ -13,13 +13,25 @@ engine.GUI.element.canvas = (function(){
 
 	let _readystate
 
-	class Canvas {} // Note: use to deconstruct only
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+	let _style
+	let _elements	
 
 	// WORKER // engine.cpu.worker ??? may 
+
+	const type = {
+		context2D : {},
+		webgpu : {}
+	}
 
 	// ======
 	// PUBLIC
 	// ======
+
+	class Canvas {} // Note: use to deconstruct only
 
 	const init = (function() {
 		// init

@@ -11,6 +11,12 @@ engine.runtime = (function() {
 	// PRIVATE
 	// =======
 
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	// CONTEXT
 	let _descriptor
 	let _canvas
@@ -25,13 +31,7 @@ engine.runtime = (function() {
 	let _resolution
 
 	let _frame
-
-	let _readystate
-
-	let _dependencies
-	let _loadhandler
-	let _runtimehook 
-
+	
 	/* FLAGS :: CONCEPT
 
 	// SETUP
@@ -49,9 +49,10 @@ engine.runtime = (function() {
 	// TOGGLE
 	// flags[0] ^= _dependencies
 
-	if (flags[0] & _dependencies) {
+	// if (flags[0] & _dependencies) {
     // flag is set
-}
+	// }
+	
 	*/
 
 	let observer = {
@@ -131,13 +132,15 @@ engine.runtime = (function() {
 
 		for(let i = 0, len = _canvas.length; i < len; i++) {
 			// RESOLUTION SETUP // TODO : .add engine.config.resolutionscale // allow per scene?
-			_canvas[i].width = /* _canvas[i].width */ _canvas[i].getBoundingClientRect().width * _devicePixelRatio * _resolutionScale
-			_canvas[i].height = /* _canvas[i].height */ _canvas[i].getBoundingClientRect().height * _devicePixelRatio * _resolutionScale
+			let css = window.getComputedStyle(_canvas[i])
+			_canvas[i].width = (_canvas[i].getBoundingClientRect().width - ((parseFloat(css.borderLeftWidth || 0) + (parseFloat(css.borderRightWidth) || 0))))* _devicePixelRatio * _resolutionScale
+			_canvas[i].height = (_canvas[i].getBoundingClientRect().height - ((parseFloat(css.borderTopWidth || 0) + (parseFloat(css.borderBottomWidth) || 0)))) * _devicePixelRatio * _resolutionScale
 
 			_scene[i] = _canvas[i].getAttribute('scene')
 			_camera[i] = _canvas[i].getAttribute('camera')
 			_renderer[i] = _canvas[i].getAttribute('renderer')
 			_view[i] = _canvas[i].getAttribute('view')
+
 			let scene = _descriptor.findIndex(context => context.scene === _scene[i])
 			if(scene === -1){
 				_descriptor.push({scene: _scene[i], canvas: [i], camera:[_camera[i]], view: [_view[i]]})
@@ -148,10 +151,15 @@ engine.runtime = (function() {
 			}
 		}
 		async function loadhandler(context){
-			// context loader
+			// loadhandler
 			if(!_readystate) {
 				engine.log.info('runtime init')
 				// context dependencies
+
+				await engine.GUI.init()
+				if (engine.debug) {
+					await engine.GUI.element.console.init()
+				}
 				await observer.init()
 
 				await engine.gpu?.init()
@@ -171,6 +179,7 @@ engine.runtime = (function() {
 							alphaMode: 'premultiplied',
 						})
 						// Modulate pipeline instructions
+						_context[i].index = i
 						let scene = _descriptor.findIndex(context => context.scene === _scene[i])
 						_context[i].scene = scene
 						let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])

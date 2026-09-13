@@ -19,6 +19,10 @@ engine = (function() {
 	/* Readstate */
 	let _readystate
 
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	/* Eventdispatcher */
 	let _eventdispatcher = new EventTarget()
 	let _eventlistener  // agnostic layer .add .remove .show
@@ -41,29 +45,58 @@ engine = (function() {
 	}
 	_path.engine.push(..._path.script.slice(_path.root.length, _path.script.length-2)) // -2 parent folder is root
 
-	/* Log */ // TODO: view(s) class .add _maxlength 100?  ringbuffer?
+	/* Log */ // TODO: make instance for privat scope logs data, set offset to lastindex, improve memory footprint
 	const log = {
 		infos : true,
 		info : function(string) {
+			let delta = Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()
+			log.view[log.view[0]] = [delta.toString(),'info', log.views.info[0]]
+			log.views.info[log.views.info[0]] = string
+			// concept 1 
+			// - arg logging before updating else cache
 			if (log.infos) {
-				console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
-			}			
+				console.info(
+					log.view[log.view[0]][0]+' '+
+					log.view[log.view[0]][1]+' '+
+					log.views[log.view[log.view[0]][1]][log.views[log.view[log.view[0]][1]][0]]) 
+				// console.log(`${delta} \n\t${string}`)
+			}
+
+			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1	
+			log.views.info[0] = (log.views.info[0] !== log.views.info.length) ? log.views.info[0]+1 : 1
 		},
 		events : true,
 		event : function(string) {
-			console.info(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} \n\t${string}`)
+			let delta = Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()
+			log.view[log.view[0]] = [delta.toString(),'event', log.views.event[0]]	
+			log.views.event[log.views.event[0]] = string
+
+			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1
+			log.views.event[0] = (log.views.event[0] !== log.views.event.length) ? log.views.event[0]+1 : 1
+			// conept 2
+			// + no declaration logging conflict
+			if (log.events) {
+				console.info(`${delta} event ${string}`)
+			}
 		},
 		warnings : true,
 		warn : function(string) {
+			let delta = Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()
+			log.view[log.view[0]] = [delta.toString(),'warn', log.views.warning[0]]		
+			log.views.warning[log.views.warning[0]] = string
+
+			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1
+			log.views.warning[0] = (log.views.warning[0] !== log.views.warning.length) ? log.views.warning[0]+1 : 1
+
 			if (log.warnings) {
-				console.warn(`${Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()} ${string}`)
+				console.warn(`${delta} ${string}`)
 			}
 		},
-		view : [],
+		view : new Array(250).fill(1),
 		views : {
-			infos : [],
-			events : [],
-			warnings : [],
+			info : new Array(100).fill(1),
+			event : new Array(100).fill(1),
+			warning : new Array(50).fill(1),
 		}
 	}
 	/* debug */
@@ -158,18 +191,14 @@ engine = (function() {
 			await core.utils.init()
 
 			await script('engine/GUI/controller.js')
+			await script('engine/input/controller.js')
 			await script('engine/runtime.js')
 			if(navigator?.gpu) {
 				await script('engine/gpu.js')
-				await script('engine/pipeline/controller.js')
 			}
-			await script('engine/input/controller.js')
-			
-
-			await script('engine/scene/controller.js')
-			await script('engine/scene/graph.js') // TODO: move to scene controller
-			
-			await script('engine/utils/math.js')
+			await script('engine/pipeline/controller.js')
+			await script('engine/scene/controller.js')			
+			await script('engine/utils/math.js') // TODO: .update structure .combine with core utils
 
 			await engine.runtime.init()
 		},
@@ -195,7 +224,8 @@ engine = (function() {
 	// PUBLIC
 	// ======
 
-	/* init */
+	/* init */   
+	// staged for rc0.3.0 or later :: TODO : override on core init for engine instance handling
 	const init = (function(){
 		log.event(`init engine`)
 		let _autoinit = document.currentScript.getAttribute('data-autoinit') ? true : false

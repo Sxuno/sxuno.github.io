@@ -13,10 +13,24 @@ engine.GUI.element.image = (function(){
 
 	let _readystate
 
-	class Image {} // Note: use to deconstruct only
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+	let _style
+	let _elements
+
+	const type = {
+		static : {},
+		slideshow : {},
+		background : {}
+	}
+	
 	// ======
 	// PUBLIC
 	// ======
+
+	class Image {} // Note: use to deconstruct only
 
 	const init = (function() {
 		// init
@@ -43,6 +57,7 @@ engine.GUI.element.image = (function(){
 	// DECLARE VAR
 	let image = {
 		init: init,
+		prototype : Image
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR

@@ -12,16 +12,19 @@ engine.pipeline.rasterizer.basepass = (function () {
 	// PRIVATE
 	// =======
 
+	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
 	let _Buffer
 	let _width
 	let _height
 
-	let _readystate
-
 	// ======
 	// PUBLIC
 	// ======
-
 
 	// concept basepass creates metadata and links
 
@@ -39,8 +42,6 @@ engine.pipeline.rasterizer.basepass = (function () {
 	// scene.graph.init(context)
 	// gpu[bindgroup].buffer(context)
 
-	//async function init() {}
-
 	const init = (function() {
 		// init dependencies
 		engine.log.event('init rasterizer basepass')
@@ -53,13 +54,9 @@ engine.pipeline.rasterizer.basepass = (function () {
 			} else {
 				// Runtime hook
 				console.warn('rasterizer basepass init (context)')
-				//console.log(engine.pipeline.buffer()[context.buffer[0]][1][context.buffer[1]][1][context.buffer[2]][1][context.buffer[3]][1])
-				let rendertarget = null
-				let buffer = {texture : {depth: rendertarget}}
-				//engine.pipeline.context.init(buffer)
 
-
-				let t = {
+				// MOCKUP FOR REFERENCE
+				let mockup = {
 					label: 'Composepass',
 					layout: '_pipeline.getBindGroupLayout(0)',
 					entries: [
@@ -69,7 +66,7 @@ engine.pipeline.rasterizer.basepass = (function () {
 						{ binding: 3, resource: '{buffer: engine.pipeline.basepass.buffer.get().metadata}' }
 					]
 				}
-				console.log(t)
+				console.log(mockup)
 
 			}
 		}

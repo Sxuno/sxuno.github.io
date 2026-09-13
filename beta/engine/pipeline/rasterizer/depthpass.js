@@ -12,6 +12,11 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	// =======
 
 	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+	
 	let _context  // complexity : scene x camera x renderer x view = pipeline x layout x group x grouplayout x resource {bufferobject?}
 	let _descriptor
 
@@ -27,6 +32,7 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	let _renderTarget
 
 	// wrap in function for instances
+	const construct = function(context){}
 
 	_resource = {texture : 	{label : `depth`, size: [0, 0, 1], format: 'depth24plus', usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,}}
 
@@ -46,24 +52,23 @@ engine.pipeline.rasterizer.depthpass = (function () {
 		layout : _pipelineLayout,
 	}
 
-	const renderTarget = async (context) => {
+	const renderTarget = async (context) => { // depracating to be replaced by construct
 		console.log('init renderTarget')
 		let x = context.width
 		let y = context.height
+		
 		// await gpu resource callback :: binding id
-		let pointer = context.buffer
-
-		_renderTarget = await engine.gpu.resource.init(
+		_renderTarget = await engine.gpu.resource.init( 
 			{
 				texture : 
 				{
-					label : `${context.scene}`,
+					label : `${_bindGroup.label}::${context.buffer.join('')}x${context.index}`,
 					size: [x, y, 1],
 					format: 'depth24plus',
 					usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
 				}, 
-			// binding : pointer
-		})
+			}
+		)
 	}
 
 	// ======
@@ -71,19 +76,19 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	// ======
 
 	const init = (function() {
-		// init dependencies
+		// dependencies
 		engine.log.event('init rasterizer depthpass')
-		//engine.eventdispatcher.dispatchEvent(new Event(''))
+		// engine.eventdispatcher.dispatchEvent(new Event(''))
 		_readystate = true
 		async function loadhandler(context){
-			// context loader 
+			// loadhandler
 			if(!_readystate) {
-				// TODO : engine.debug? GUI.widget.console (may GUI.init(widget::console))
+				// context init
 			} else {
 				// runtimehook
 				console.warn('rasterizer depthpass init (context)')
 				console.log('depthpass init(context)')
-				console.log('binding' , _resource)
+				console.log(`binding ${context.buffer.join('')}x${context.index}`)
 
 				context['width'] = (!context.width) ? context.canvas.width : context.width
 				context['height'] = (!context.height) ? context.canvas.height : context.height

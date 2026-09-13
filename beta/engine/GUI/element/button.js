@@ -5,7 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.GUI.element.section = (function(){
+engine.GUI.element.button = (function(){
 
 	// =======
 	// PRIVATE
@@ -19,23 +19,19 @@ engine.GUI.element.section = (function(){
 
 	let _style
 	let _elements
-    
-	const type = {
-		flexbox : {},
-		sizebox : {},
-		scrollbox : {}
-	}
+
+	const type = {}
 
 	// ======
 	// PUBLIC
 	// ======
 
-	class Section {} // Note: use to deconstruct only
+	class Button {} // Note: use to deconstruct only
 
 	const init = (function() {
 		// init
-		engine.log.event('init section')
-		engine.eventdispatcher.dispatchEvent(new Event('InitSection'))
+		engine.log.event('init button')
+		engine.eventdispatcher.dispatchEvent(new Event('InitButton'))
 		async function loadhandler(type){
 			// context loader
 			if (!_readystate) {
@@ -55,12 +51,12 @@ engine.GUI.element.section = (function(){
 	// ======
 
 	// DECLARE VAR
-	let section = {
+	let button = {
 		init: init,
-		prototype: Section
+		prototype : Button
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR
-	return section
+	return button
 
 })()

@@ -5,70 +5,66 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.input = engine.input || {}
-engine.input.controller = (function(){
+engine.input = (function(){
 
 	// =======
 	// PRIVATE
 	// =======
-	let _keyevents
 
 	let _readystate
 
-	const keyevent = {
-		register : () => {},
-		remove : () => {}
-	}
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+	let _events
+	let _hooks
 
 	// events
 	// ---
 
-	// onhover
-	// onblur
-	// onclick
-	// onrelease?
-	// fullscreen
-
-	// type
-	// ---
-
-	// gesture
-	// sensor
-	// keyboard
-	// mouse
-	// microphone
-	// camera
+		// gesture
+		// sensor
+		// keyboard
+		// mouse
+		// microphone
+		// camera
 
 	// APIS
 	// ---
 
 	// MediaDevicesAPI
-	// Media Capture and Streams API
-	// Screen Capture API
 
 	// Pointer Events API
 	// Touch Events API
 	// Gamepad API
 	// Keyboard API
-	// Web Speech API ????? 	
 
 	// Device OrintationEvent
 	// DeviceMotionEvent
+
+	const register = function(input) {
+		document.addEventListener()
+	}
+
+	const controller = {}
 
 	// ======
 	// PUBLIC
 	// ======
 
 	const init = (function() {
-		// init
+		// dependencies
 		engine.log.event('init input controller')
 		engine.eventdispatcher.dispatchEvent(new Event('InitInputController'))
 		async function loadhandler(input){
-			// context loader
-			if (!_readystate) {
-				_readystate = true
-			} else {
+			// loadhandler
+			if (_readystate) {
 				// runtimehook
+				
+			} else {
+				// context init
+				_readystate = 1
 			}
 		}
 		return loadhandler
@@ -79,7 +75,7 @@ engine.input.controller = (function(){
 	// ======
 
 	// DECLARE VAR
-	let controller = {
+	let input = {
 		init: init,
 		mode : 'orbital',
 		pointerlock : false,
@@ -88,6 +84,6 @@ engine.input.controller = (function(){
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR
-	return controller
+	return input
 
 })()

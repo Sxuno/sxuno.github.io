@@ -12,6 +12,11 @@ engine.pipeline = (function() {
 	// =======
 
 	let _readystate
+
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+	
 	let _descriptor
 
 	// BUFFER
@@ -337,19 +342,24 @@ engine.pipeline = (function() {
 		_descriptor = new Array()
 
 		async function loadhandler(context) {
-			// context loader
-			if(!_readystate) {
-				engine.log.event('pipeline init')
-			
-				for (let type of Object.keys(renderer)) {
-					controller.push(renderer[type])
-					_descriptor.push({renderer : type, view : renderer[type].view})
-				}
-				// TODO: engine.config.renderer
-				_readystate = true
-			} else {
+			// loadhandler
+			if(_readystate) {
 				// runtimehook
 				pointer.init(context)
+			} else {
+				// loadhandler
+				engine.log.info('loadhandler: pipeline init')
+				// TODO : rework into flagbased register method
+				if(engine.gpu?.device) {
+					for (let type of Object.keys(renderer)) {
+						controller.push(renderer[type])
+						_descriptor.push({renderer : type, view : renderer[type].view})
+					}
+				} else {
+					controller.push(renderer.datatracer)
+					_descriptor.push({renderer : 'datatracer', view : renderer['datatracer'].view})
+				}
+				_readystate = true
 			}
 		}
 		return loadhandler

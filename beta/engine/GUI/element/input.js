@@ -13,6 +13,21 @@ engine.GUI.element.input = (function(){
 
 	let _readystate
 
+	let _dependencies
+	let _loadhandler
+	let _runtimehook 
+
+	let _style
+	let _elements
+
+	const type = {
+		promt : {
+			init : () => {},
+			submit : () => {}
+		},
+		file : {}
+	}
+
 	// ======
 	// PUBLIC
 	// ======
