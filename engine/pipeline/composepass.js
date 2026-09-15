@@ -26,7 +26,11 @@ engine.pipeline.composepass = (function () {
             label: 'Composepass',
             layout: _bindGroupLayout,
             entries: [
-                { binding: 0, resource: engine.gpu.binding.sampleTexture('nearest')},
+                { binding: 0, resource: device.createSampler({
+				label: `sampe method nearest`,
+				magFilter: 'nearest',
+				minFilter: 'nearest'
+			})},
                 { binding: 1, resource: engine.pipeline.basepass.buffer.get()[context.scene].albedo },
                 { binding: 2, resource: engine.pipeline.lightpass.buffer.get()[context.scene].createView({label: 'composepass bindgroup resource[2]: lightpass buffer view'}) },
                 { binding: 3, resource: {buffer: engine.pipeline.basepass.buffer.get()[context.scene].metadata} }

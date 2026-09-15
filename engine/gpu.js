@@ -28,6 +28,18 @@ engine.gpu = (function() {
 
 	let _readystate
 
+	const monitor = function(device) {
+		device.lost.then(async (info) => {
+			console.log(info)
+			// await device reovery
+			_device = await _adapter.requestDevice()
+			monitor(_device)
+			engine.gpu.device = _device
+			await engine.runtime.init()
+		})
+	}
+
+
 	// ======
 	// PUBLIC
 	// ======
@@ -50,6 +62,7 @@ engine.gpu = (function() {
 					_adapter = await navigator.gpu.requestAdapter()
 					if(_adapter){
 						_device = await _adapter.requestDevice()
+						monitor(_device)
 						_limits = _device.limits
 					}
 				}

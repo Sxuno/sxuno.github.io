@@ -69,6 +69,7 @@ engine.runtime = (function () {
 	}
 
 	function render() {
+
 		let now = performance.now()
 		engine.STATS.frametime = now - engine.STATS.delta
 		engine.STATS.delta = now
@@ -90,6 +91,45 @@ engine.runtime = (function () {
 
 		_frameID = requestAnimationFrame(render)
 	}
+
+	const setupContext = async function() {
+		_canvas = Array.from(document.querySelectorAll('canvas[scene]'))
+		_context = new Array(_canvas.length)
+		for(let i = 0, len = _canvas.length; i < len; i++) {
+			_context[i] = _canvas[i].getContext('webgpu')
+			_context[i].configure({
+				device: engine.gpu.device,
+				format: engine.gpu.format,
+				alphaMode: 'premultiplied',
+			})
+			_context[i].scene = _canvas[i].getAttribute('scene')
+			// Modulate pipeline instructions
+			let scene = _descriptor.findIndex(context => context.scene === _scene[i])
+			_context[i].scene = scene
+			let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])
+			if (camera === -1) { camera = engine.scene.data.camera.findIndex(camera => camera.name === engine.scene.info[engine.scene.info.findIndex(scene => scene.name === _scene[i])].camera)}
+			_context[i].camera = camera
+
+		}
+		engine.gpu.context = _context // deprecated
+				
+				// await engine.scene.graph?.init() // called by scene init
+			
+		// OLD
+		_device = engine.gpu.device
+		_format = engine.gpu.format
+
+		engine.debug?.timer.start('pass init')
+			await engine.pipeline.depthpass.init(_device, _context)
+			await engine.pipeline.basepass.init(_device, _context)
+			await engine.pipeline.shadowpass.init(_device, _context)
+			await engine.pipeline.lightpass.init(_device, _context)
+			await engine.pipeline.composepass.init(_device, _context)
+		engine.debug?.timer.end('pass init')
+		requestAnimationFrame(render)
+	}
+
+
 
 	// ======
 	// PUBLIC
@@ -129,49 +169,26 @@ engine.runtime = (function () {
 				_descriptor[scene].view.push(_view[i])
 			}
 		}
-		async function loadhandler() {
+		async function loadhandler(context) {
 			// context loader
-			if(!_readystate) {
+			if(_readystate) {
+				// runtimehook
+				if(context) {} else {
+					
+					await setupContext()
+				}
+			} else {
+				_readystate = true
 				engine.log.info('runtime init')
 				// worker?
 				await observer.init()
 
 				await engine.gpu?.init()
 				await engine.scene?.init()
-				for(let i = 0, len = _canvas.length; i < len; i++) {
-					_context[i] = _canvas[i].getContext('webgpu')
-					_context[i].configure({
-						device: engine.gpu.device,
-						format: engine.gpu.format,
-						alphaMode: 'premultiplied',
-					})
-					_context[i].scene = _canvas[i].getAttribute('scene')
-					// Modulate pipeline instructions
-					let scene = _descriptor.findIndex(context => context.scene === _scene[i])
-					_context[i].scene = scene
-					let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])
-					if (camera === -1) { camera = engine.scene.data.camera.findIndex(camera => camera.name === engine.scene.info[engine.scene.info.findIndex(scene => scene.name === _scene[i])].camera)}
-					_context[i].camera = camera
-
-				}
-				engine.gpu.context = _context // deprecated
 				
-				// await engine.scene.graph?.init() // called by scene init
-			} else {
-				// runtimehook
+				await setupContext()
+				
 			}
-			// OLD
-			_device = engine.gpu.device
-			_format = engine.gpu.format
-
-			engine.debug?.timer.start('pass init')
-				await engine.pipeline.depthpass.init(_device, _context)
-				await engine.pipeline.basepass.init(_device, _context)
-				await engine.pipeline.shadowpass.init(_device, _context)
-				await engine.pipeline.lightpass.init(_device, _context)
-				await engine.pipeline.composepass.init(_device, _context)
-			engine.debug?.timer.end('pass init')
-			requestAnimationFrame(render)
 		}
 		return loadhandler
 	})()

@@ -31,7 +31,11 @@ engine.pipeline.lightpass = (function () {
             entries: [
                 { binding: 0, resource: engine.pipeline.basepass.buffer.get()[id].albedo },
                 { binding: 1, resource: engine.pipeline.depthpass.buffer.get()[id].createView({label: 'lightpass bindgroup view zBuffer'}) },
-                { binding: 2, resource: engine.gpu.binding.sampleTexture()},
+                { binding: 2, resource: device.createSampler({
+				label: `binding 2 lightpass`,
+				magFilter: 'nearest',
+				minFilter: 'nearest'
+			})},
                 { binding: 3, resource: { buffer: engine.pipeline.shadowpass.buffer.get()[id].lights }},
                 { binding: 4, resource: { buffer: engine.pipeline.shadowpass.buffer.get()[id].metadata }}
             ]
