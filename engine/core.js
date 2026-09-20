@@ -14,7 +14,7 @@ engine = (function() {
 
 	let _debug = true
 	let _name = 'WebGPU Engine'
-	let _version = '0.1.5-dev'
+	let _version = '0.1.6-dev'
 	let _extension = []
 
 	/* Readystate */
@@ -27,21 +27,12 @@ engine = (function() {
 	
 	/* 2339 path */
 	let _path = {
-		document : window.location.href.split('/'),
-		script : document.currentScript.src.split('/'),
-		root : [],
-		engine : ['.'],
-		shader : ['engine', 'shader'],
-		content : ['content']
+		document : window.location.href,
+		script : document.currentScript.src,
+		engine : '',
+		shader : 'engine/shader/',
+		content : 'content/'
 	}
-	for(let i = 0; i < _path.document.length; i++) {
-		if (_path.script[i] === _path.document[i] ) {
-			_path.root.push(_path.document[i])
-		} else if (i < _path.document.length-1) {
-			_path.engine.push('..')
-		}
-	}
-	_path.engine.push(..._path.script.slice(_path.root.length, _path.script.length-2)) // -2 : parent folder as root
 	/* 4154 LOG */ // TODO: view(s) class .add _maxlength 100? 
 	const log = {
 		infos : false,
@@ -106,36 +97,36 @@ engine = (function() {
 	}
 
 	/* 61106 script loader */
-	const script = async function(path){
+	const script = async function(path){ 
 		let scripts = []
-		switch(true) {
-			case typeof(path) === 'string':
-				scripts = [path]
-				break
-			case typeof(path) === 'object' && Array.isArray(path):
-					scripts = path
+			switch(true) {
+				case typeof(path) === 'string':
+					scripts = [path]
 					break
-			default:			
-				console.error(`script path type ${typeof(path)} not supported`)
+				case typeof(path) === 'object' && Array.isArray(path):
+						scripts = path
+					break
+			default:
+				console.error(`script path type ${typeof(path)} not supported.\n+ supported formats:\n\t| 'string'\n\t| ['string']`)
 				break
 		}
-		for (let i = 0; i < scripts.length; i++) {
-			await new Promise((resolve)=> {
+		for (let i = 0, len = scripts.length; i < len; i++) {
+			await new Promise((resolve) => {
 				let script = document.createElement('script')
 				let src = scripts[i].split('/')
 				switch(src[0]) {
 					case 'engine':
 						switch(src[1]) {
 							case 'shader':
-								script.src = PATH.shader+src.slice(2).join('/')
+								script.src = PATH.shader + src.slice(2).join('/')
 								break
 							default:
-								script.src = _path.engine.join('/')+'/'+src.join('/')
+								script.src = _path.engine  + src.slice(1).join('/')
 							break
 						}
 						break
 					case 'content':
-						script.src = PATH.content+src.slice(1).join('/')
+						script.src = PATH.content + src.slice(1).join('/')
 						break
 					default:
 						script.src = 'invalid'
@@ -150,7 +141,6 @@ engine = (function() {
 			})
 		}
 	}
-	
 
 	// ======
 	// PUBLIC
@@ -180,6 +170,10 @@ engine = (function() {
 			}
 			if(!_readystate) {
 				_eventdispatcher.dispatchEvent(new Event('InitCore'))
+				// configure PATH engine
+				_path.engine = _path.script.substring(0, _path.script.lastIndexOf('/') +1)
+				engine.debug?.log(`PATH engine ${_path.engine}`)
+
 				await script('engine/GUI/controller.js')
 				await script('engine/runtime.js')
 				if(navigator?.gpu) {
@@ -214,9 +208,9 @@ engine = (function() {
 	})()
 	/* PATH */
 	const PATH = {
-		root : _path.engine.join('/')+'/engine/',
-		shader : _path.shader.join('/')+'/',
-		content : _path.content.join('/')+'/',
+		root : _path.engine + '/engine/',
+		shader : _path.shader + '/',
+		content : _path.content + '/',
 	}
 	/* STATS */
 	const STATS = {
