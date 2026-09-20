@@ -24,7 +24,7 @@ engine.scene = (function() {
 	let _data // unused?
 
 	async function info() {
-		await engine.utils.scr.load(engine.PATH.content+'info.js')
+		await engine.utils.scr.load('content/info.js')
 	}
 	async function data(){ // TODO: // .branch experimental :: .optimize logic namespaces .extend priority presistent
 		for(let i = 0, len = engine.runtime.descriptor().length; i < len; i++) {
@@ -33,7 +33,7 @@ engine.scene = (function() {
 			if (infoID !== -1) {
 				engine.debug?.timer.start(`scene ${scene}`)
 				for(let j = 0, len = engine.scene.info[infoID].files.length; j < len; j++) {
-					await engine.utils.scr.load(engine.PATH.content+engine.scene.info[infoID].files[j]+'.js')
+					await engine.utils.scr.load('content/'+engine.scene.info[infoID].files[j]+'.js')
 					// scene data
 					engine.scene.data[engine.scene.cache.object] = engine.scene.data[engine.scene.cache.object] || []
 					if(!engine.scene.data[engine.scene.cache.object].some(entry => entry.name === engine.scene.cache.name)) {
@@ -62,13 +62,17 @@ engine.scene = (function() {
 	class Scene {}
 
 	const init = (function() {
-		// init dependency
+		// DEPENDENCIE
 		engine.log.event('init scene')
 		engine.eventdispatcher.dispatchEvent(new Event('InitScene'))
 		async function loadhandler() {
-			// loadhandler
-			if(!_readystate) {
-				engine.log.event('scene init')
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIME
+				engine.log.info('loadhandler scene : runtimehook')
+			} else {
+				// CONTEXT
+				engine.log.info('loadhandler scene : context')
 				// scene info // Change to metadata .add priority .preload image .persistant
 				engine.debug.timer.start('scene info')
 				engine.scene.info = new Array
@@ -79,12 +83,10 @@ engine.scene = (function() {
 				await data()
 				// scene graph
 
-				await engine.utils.scr.load(engine.PATH.root+'scene/graph.js')
+				await engine.utils.scr.load('engine/scene/graph.js')
 				await engine.scene.graph?.init()
 
 				_readystate = true
-			} else {
-				// runtimehook
 			}
 		}
 		return loadhandler

@@ -47,21 +47,58 @@ engine.gpu = (function(){
 	// MEMORY ?
 	let _alloc
 
-	const scheduler = (function (){// TODO encoder.prototype submit.prototype device.prototype
-		let adapter
-		let device
+	const controller = (function (){// overrides 
+		// Adapter
+		let _requestAdapter
+		// Device
+		let _requestDevice
+		let _queue
+		let _submit
+		// Encoder
+		let _createCommandEncoder
+		let _beginRenderPass
+		let _end
+
 		const init = async () => {
-			const requestAdapter = navigator.gpu.requestAdapter
-			// Override
+			_requestAdapter = navigator.gpu.requestAdapter
+			// Override Adapter
 			navigator.gpu.requestAdapter = async function(...args) {
-				console.warn('Scheduler register Adapter')
-				_adapter = await requestAdapter.apply(this, args)
-				// fallbacks here
+				engine.log.info('controller gpu : adapter request')
+				engine.debug?.timer.start('adapter request')
+				_adapter = await _requestAdapter.apply(this, args)
+				engine.debug?.timer.end('adapter request')
 				return _adapter
 			}
 			await navigator.gpu.requestAdapter()
+			// Override Device
+			_requestDevice = _adapter.requestDevice
+			_adapter.requestDevice = async function(...args) {
+				engine.log.info('controller gpu : device request')
+				engine.debug?.timer.start('device request')
+				_device = await _requestDevice.apply(this, args)
+				engine.debug?.timer.end('device request')
+				return _device
+			}
+			await _adapter.requestDevice()
+			controller.monitor(_device)
+			_limits = _device.limits
+
 		}
-		return {init}
+		const monitor = function(device) {
+			device.lost.then(async (info) => {
+				console.log(info)
+				_device = null // note release before request as safeguard for gpu gc
+				_device = await _adapter.requestDevice()
+				controller.monitor(_device)
+				// note : logic works but user has to actively switch tabs to reinitialize raf
+				// engine.runtime.init()
+			})
+		}
+		return {init, monitor}
+	})() 
+
+	const scheduler = (function (){// task scheduling only
+		
 	})()
 
 	// ======
@@ -77,21 +114,35 @@ engine.gpu = (function(){
 		// extension hook gpu.init() //dependencies ? 
 	}
 
-	const resource = {
+	const resource = { // TODO : RETHINK!!!
 		init : async (resource) => { // flag? 
 			console.log('resource', resource)
+
+			// move allocation to init
 			_binding = _binding || new Array()
 			_resource = _resource || new Array()
 			_type = _type || {texture: 0}
+			_texture = _texture || new Array
+
 			// resource complexity = type x {resource} x object id x instance count
 			if (resource.texture !== undefined) {
-				_texture = _texture || new Array
 				
-				_texture.push(_device.createTexture(resource.texture))
-				_binding.push(resource.buffer)
-
+				let format = resource.texture.format
+				let usage = resource.texture.usage
 				let aspectratio = resource.texture.size[0] / resource.texture.size[1]
 				let size = resource.texture.size[0]
+
+				let f 
+				let u 
+				let a 
+				let s 
+
+				// f = _resource[_type.texture].findIndex(format => format[0] === resource.texture.format)
+
+				//console.log(_texture['format']?.['usage']?.['aspectratio']?.['width'])
+
+				_texture.push(_device.createTexture(resource.texture))
+				_binding.push(resource.buffer)
 
 				console.log('ratio', aspectratio)				
 				console.log('size', resource.texture.size)
@@ -100,16 +151,19 @@ engine.gpu = (function(){
 
 				console.error('DATASTRUCTURE RESOURCE', _resource)
 				console.log(_texture[_resource[_resource.length-1][1][1][1][0]])
-				// resource[frame n+1][type][format][usage][aspectratio][width][_texture[id]][count]
+				// resource[type][format][usage][aspectratio][width][_texture[id]][count]
 			}
-			// HERE 
 			_binding.push(resource.binding)
 		},
 		release : async (resource) => {}, // note : method for usage release
 	}
 
+	const pipline = {
+		// placeholder for context init/ runtimehook ???
+	}
+
 	const init = (function() {
-		// dependencies
+		// DEPENDENCIES
 		engine.log.event('init gpu')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGPU'))
 		_format = navigator.gpu.getPreferredCanvasFormat()
@@ -118,25 +172,19 @@ engine.gpu = (function(){
 			_features.push(feature)
 		}
 		async function loadhandler(context){
-			// loadhandler
+			// LOADHANDLER
 			if(_readystate) {
-				// runtimehook  // ( eg for device recovery)
+				// RUNTIMEHOOK
 			} else {
-				// context init
+				// CONFIGURATION
 				engine.log.info('gpu init')
-				engine.debug.timer.start('gpu init')
 				if (!_device) {
-					await scheduler.init()
-					if(_adapter){
-						_device = await _adapter.requestDevice()
-						_limits = _device.limits
-					}
+					await controller.init()
 				}
 				if (_device) {
-					engine.gpu.device = _device
+					engine.gpu.device = () => {return _device}
 					engine.gpu.format = _format
 				}
-				engine.debug.timer.end('gpu init')
 			}
 		} 
 		return loadhandler
@@ -151,7 +199,7 @@ engine.gpu = (function(){
 		init,
 		resource
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	if(_features.includes('readonly_and_readwrite_storage_textures')) {
 		gpu.features = gpu.features || []
 		gpu.features.push('readonly_and_readwrite_storage_textures')

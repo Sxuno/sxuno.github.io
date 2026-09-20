@@ -21,7 +21,7 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	let _descriptor
 
 	// PIPELINE
-	let _resource
+	let _resource // .type
 	let _bindGroupLayout
 	let _bindGroup
 	let _pipelineLayout

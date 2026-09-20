@@ -18,9 +18,12 @@ engine.pipeline.rasterizer.geometrypass = (function () {
 	let _loadhandler
 	let _runtimehook 
 
-	let _buffer
-	let _width
-	let _height
+	// PIPELINE
+	let _binding
+	let _bindGroupLayout
+	let _bindGroup
+	let _pipelineLayout
+	let _pipeline
 
 	// ======
 	// PUBLIC

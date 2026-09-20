@@ -18,16 +18,18 @@ engine.pipeline.rasterizer.composepass = (function () {
 	let _loadhandler
 	let _runtimehook 
 
-	let _Buffer
-	let _width
-	let _height
+	// PIPELINE
+	let _binding
+	let _bindGroupLayout
+	let _bindGroup
+	let _pipelineLayout
+	let _pipeline
 	
 	const bindindGroup = [{}]
 
 	// ======
 	// PUBLIC
 	// ======
-
 
 	const init = (function() {
 		// init dependencies

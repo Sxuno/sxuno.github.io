@@ -17,8 +17,11 @@ engine.GUI.element.button = (function(){
 	let _loadhandler
 	let _runtimehook 
 
-	let _style
+	let _index
 	let _elements
+	let _parents
+	let _attributes
+	let _style
 
 	const type = {}
 
@@ -26,21 +29,22 @@ engine.GUI.element.button = (function(){
 	// PUBLIC
 	// ======
 
-	class Button {} // Note: use to deconstruct only
+	class Button {}
 
 	const init = (function() {
-		// init
+		// DEPENDENCIES
 		engine.log.event('init button')
 		engine.eventdispatcher.dispatchEvent(new Event('InitButton'))
 		async function loadhandler(type){
-			// context loader
-			if (!_readystate) {
-				_readystate = true
-			} else {
-				// runtimehook
+			// LOADHANDLER
+			if (_readystate) {
+				// RUNTIMEHOOK
 				if(type) {
 					console.log(type)
 				}
+			} else {
+				// CONFIGURATION
+				_readystate = true
 			}
 		}
 		return loadhandler
@@ -55,7 +59,7 @@ engine.GUI.element.button = (function(){
 		init: init,
 		prototype : Button
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return button
 

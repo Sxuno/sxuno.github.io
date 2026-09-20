@@ -17,8 +17,13 @@ engine.GUI.element.section = (function(){
 	let _loadhandler
 	let _runtimehook 
 
-	let _style
+	let _index
 	let _elements
+	let _parents
+	let _attributes
+	let _style
+
+	let _override
     
 	const type = {
 		flexbox : {},
@@ -30,21 +35,22 @@ engine.GUI.element.section = (function(){
 	// PUBLIC
 	// ======
 
-	class Section {} // Note: use to deconstruct only
+	class Section {}
 
 	const init = (function() {
-		// init
+		// DEPENDENCIES
 		engine.log.event('init section')
 		engine.eventdispatcher.dispatchEvent(new Event('InitSection'))
 		async function loadhandler(type){
-			// context loader
+			// LOADHANDLER
 			if (!_readystate) {
-				_readystate = true
-			} else {
-				// runtimehook
+				// RUNTIMEHOOK
 				if(type) {
 					console.log(type)
 				}
+			} else {
+				// CONFIGURATION
+				_readystate = true
 			}
 		}
 		return loadhandler
@@ -59,7 +65,7 @@ engine.GUI.element.section = (function(){
 		init: init,
 		prototype: Section
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return section
 

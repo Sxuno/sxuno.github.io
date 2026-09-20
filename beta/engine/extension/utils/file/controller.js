@@ -1,5 +1,3 @@
-// CONCEPT !!!
-
 /*
  * This file is part of WebGPU-Engine.
  *
@@ -8,16 +6,51 @@
  * file, You can obtain one at http://mozilla.org.
  */
 
+// CONCEPT !!!
+
 if(location.protocol === 'file:') {
     console.error('extension only supports server deployment.')
 } else {
 
-    engine.utils.file = {
-        // may read / write instead
-        load : (path) => {},
-        import : (blobb) => {}, 
-        export : (type) => {},
+    engine.utils.file = (function() {
 
-        types : ['blend', 'glft', 'glb', 'png', 'bmp', 'jpg'],
-    }
+        // =======
+        // PRIVATE
+        // =======
+
+        let _readystate
+
+        let _cache
+        
+        const format = { 
+            blend : {},
+            gltf : {},
+            glb : {},
+            usd : {},
+            // wgsl?
+        }
+        const controller = []
+
+        // ======
+        // PUBLIC
+        // ======
+
+        const load = (path) => {}
+        const read = (blobb) => {}
+        const write = (file) => {}
+
+        // ======
+        // EXPORT
+        // ======
+
+        // Declare var
+        let file = {
+            load,
+            read,
+            write
+        }
+        // CONDITIONAL
+	    // RETURN VAR
+        return file
+    })()
 }

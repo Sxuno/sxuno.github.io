@@ -17,6 +17,7 @@ engine.GUI = (function() {
 	let _loadhandler
 	let _runtimehook 
 
+	let _context
 	let _descriptor // [{layout [element]}]
 
 	let _styles
@@ -26,14 +27,7 @@ engine.GUI = (function() {
 	let _index
 
 	const controller = {
-		init : (function() {
-			// init
-			engine.log.event('init GUI controller')
-			async function loadhandler(){
-				// context loader // .add gui path hook
-			}
-			return loadhandler
-		})
+		// [element, [attributes]]
 	}
 
 	// ======
@@ -41,7 +35,7 @@ engine.GUI = (function() {
 	// ======
 
 	const init = (function() {
-		// dependencies
+		// DEPENDENCIE
 		engine.log.event('init GUI')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGUI'))
 
@@ -52,13 +46,18 @@ engine.GUI = (function() {
 		_styles = new Array()
 
 		async function loadhandler(context){
-			// loadhandler
+			// LOADHANDLER
 			if(_readystate) {
-				// runtimehook
+				// RUNTIMEHOOK
+				engine.log.info('loadhandler GUI : runtimehook')
 			} else {
-				// context init
+				// CONTEXT
+				engine.log.info('loadhandler GUI : context')
+				_styles = new CSSStyleSheet()
+				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _styles]
+				// _styles.insertRule(`canvas {display: none;}`)
 				if(engine.debug || engine.config?.console) {
-					await engine.utils.scr.load(engine.PATH.root+`GUI/element/console.js`)
+					await engine.utils.scr.load(`engine/GUI/element/console.js`)
 				}
 				_readystate = 1
 			}

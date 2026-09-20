@@ -18,7 +18,8 @@ engine.input = (function(){
 	let _runtimehook 
 
 	let _events
-	let _hooks
+	let _targets
+	let _overrides // function flag ? id pointer to function?
 
 	// events
 	// ---
@@ -43,6 +44,8 @@ engine.input = (function(){
 	// Device OrintationEvent
 	// DeviceMotionEvent
 
+	// Concept : controller[mouse].dostuff?
+
 	const register = function(input) {
 		document.addEventListener()
 	}
@@ -54,16 +57,17 @@ engine.input = (function(){
 	// ======
 
 	const init = (function() {
-		// dependencies
-		engine.log.event('init input controller')
+		// DEPENDENCIE
+		engine.log.event('init input')
 		engine.eventdispatcher.dispatchEvent(new Event('InitInputController'))
 		async function loadhandler(input){
-			// loadhandler
+			// LOADHANDLER
 			if (_readystate) {
-				// runtimehook
-				
+				// RUNTIMEHOOK
+				engine.log.info('loadhandler input : runtimehook')
 			} else {
-				// context init
+				// CONTEXT
+				engine.log.info('loadhandler input : context')
 				_readystate = 1
 			}
 		}

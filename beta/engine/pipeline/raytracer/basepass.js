@@ -17,10 +17,13 @@ engine.pipeline.raytracer.basepass = (function () {
 	let _dependencies
 	let _loadhandler
 	let _runtimehook 
-
-	let _Buffer
-	let _width
-	let _height
+	
+	// PIPELINE
+	let _resource // .type
+	let _bindGroupLayout
+	let _bindGroup
+	let _pipelineLayout
+	let _pipeline
 
 	// ======
 	// PUBLIC

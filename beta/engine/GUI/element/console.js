@@ -21,17 +21,16 @@ engine.GUI.element.console = (function(){
 	let _elements
 	let _parents
 	let _attributes
-	let _style
+	let _style // .console {} #{prefix}-Console (config.style.prefix) // or structure tracking
 
 	let _override
 
 	const override = function() {
-		// concept
-
-		// let _hook.engine.log.event
+		// CONCEPT
+		// let _override.engine.log.event
 		// engine.log.event = function(...args) {
 		//		element.section.set([{pointer, [arg], [value]}])
-		// 		_hook.apply(engine.log, args)
+		// 		_override.apply(engine.log, args)
 		//	return
 		// }
 	}
@@ -42,7 +41,7 @@ engine.GUI.element.console = (function(){
 	// gui.destory([{[pointer], [arg], [value]}]) // switch object && array
 
 	const set = function() {}
-	// gui.set([{[pointer], [arg], [value]}]) // switch object && array
+	// set([{[pointer], [arg], [value]}]) // switch object && array
 
 	const link = function() {}
 	const unlink = function() {}
@@ -55,16 +54,17 @@ engine.GUI.element.console = (function(){
 
 	const init = (function() {
 		// DEPENDENCIES
-		engine.log.event('GUI console init')
+		engine.log.event('init console')
 		
 		async function loadhandler(context) {
 			// LOADHANDLER
-			engine.log.info('loadhandler : GUI Console')
-			if(!_readystate) {
-				
-				_readystate = 1
+			if(_readystate) {
+				// RUNTIMEHOOK
+				engine.log.info('loadhandler console : runtimehook')
 			} else {
-			// RUNTIMEHOOK
+				// CONFIGURATION
+				engine.log.info('loadhandler console : context')
+				_readystate = 1
 			}
 		}
 		return loadhandler

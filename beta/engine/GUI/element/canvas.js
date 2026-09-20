@@ -17,8 +17,11 @@ engine.GUI.element.canvas = (function(){
 	let _loadhandler
 	let _runtimehook 
 
+	let _index
+	let _elements
+	let _parents
+	let _attributes
 	let _style
-	let _elements	
 
 	// WORKER // engine.cpu.worker ??? may 
 
@@ -34,15 +37,16 @@ engine.GUI.element.canvas = (function(){
 	class Canvas {} // Note: use to deconstruct only
 
 	const init = (function() {
-		// init
+		// DEPENDENCIES
 		engine.log.event('init canvas')
 		engine.eventdispatcher.dispatchEvent(new Event('InitCanvas'))
 		async function loadhandler(input){
-			// context loader
-			if (!_readystate) {
-				_readystate = true
+			// LOADHANDLER
+			if (_readystate) {
+				// RUNTIMEHOOK
 			} else {
-				// runtimehook
+				// CONFIGURATIOIN
+				_readystate = true
 			}
 		}
 		return loadhandler
@@ -57,7 +61,7 @@ engine.GUI.element.canvas = (function(){
 		init: init, 
 		prototype : Canvas,
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return canvas
 

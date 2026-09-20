@@ -16,7 +16,6 @@ engine.runtime = (function() {
 	let _dependencies
 	let _loadhandler
 	let _runtimehook 
-
 	// CONTEXT
 	let _descriptor
 	let _canvas
@@ -32,38 +31,33 @@ engine.runtime = (function() {
 
 	let _frame
 	
-	/* FLAGS :: CONCEPT
+	// FLAGS :: CONCEPT
 
 	// SETUP
-	let flags = new Uint8Array(1) // allow controller flags[1]?
-	let _dependencies 	= 1 // 2^0
-	let _loadhandler 	= 2 // 2^1
-	let _runtimehook 	= 4 // 2^2
+	// let flags = new Uint8Array(1) // allow controller flags[1]?
+	// let _dependencies 	= 1 // 2^0
+	// let _loadhandler 	= 2 // 2^1
+	// let _runtimehook 	= 4 // 2^2
 
 	// SET
-	flags[0] |= _dependencies
-
+	// flags[0] |= _dependencies
 	// CLEAR
 	// flags[0] &= ~_dependencies
-
 	// TOGGLE
 	// flags[0] ^= _dependencies
 
-	// if (flags[0] & _dependencies) {
-    // flag is set
-	// }
-	
-	*/
+	// if (flags[0] & _dependencies) {  }
 
-	let observer = {
+	const observer = {
 		init : async function() {
+			engine.log.info('runtime observer init')
 			return new Promise(resolve => {
 				let _resize = false
 				let _intersect = false
 				const resolver = () => {if(_resize && _intersect)resolve()}
 				observer.resize = new ResizeObserver(entries => {
 					for (let i = 0; i < entries.length; i++) {
-						let entry = _readystate ? _context.findIndex(element => element === entries[i].target) : _canvas.findIndex(element => element === entries[i].target)
+						let entry = _readystate ? _context.findIndex(element => element.canvas === entries[i].target) : _canvas.findIndex(element => element === entries[i].target)
 						engine.debug?.log(`Canvas ID ${entry} size: ${entries[i].contentRect.width} x ${entries[i].contentRect.height}`)
 					}
 					_resize = true
@@ -90,6 +84,38 @@ engine.runtime = (function() {
 		resize : null,
 	}
 
+	const configuration = {
+		init : async (context) => {
+			if(context) {
+				// TODO : add append new context configuration
+			} else {
+				for(let i = 0, len = _canvas.length; i < len; i++) {
+					_context[i] = _canvas[i].getContext('webgpu')
+					_context[i].configure({
+						device: engine.gpu.device(),
+						format: engine.gpu.format,
+						alphaMode: 'premultiplied',
+					})
+					// Modulate pipeline instructions
+					_context[i].index = i
+					let scene = _descriptor.findIndex(context => context.scene === _scene[i])
+					_context[i].scene = scene
+					let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])
+					if (camera === -1) { camera = engine.scene.data.camera.findIndex(camera => camera.name === engine.scene.info[engine.scene.info.findIndex(scene => scene.name === _scene[i])].camera)}
+					_context[i].camera = camera
+					let renderer = engine.pipeline.descriptor().findIndex(pipeline => pipeline.renderer === _renderer[i])
+					if (renderer === -1) { renderer = 0 }
+					_context[i].renderer = renderer
+					// DEBUG :: view namespace
+					// DEBUG :: pipeline loading
+					let view = engine.pipeline.descriptor()[renderer].view().findIndex(entry => entry === _view[i])
+					if (view === -1) { view = 0 }
+					_context[i].view = view
+				}
+			}
+		}
+	}
+
 	function renderloop() {
 		let now = performance.now()
 		engine.STATS.frametime = now - engine.STATS.delta
@@ -97,7 +123,7 @@ engine.runtime = (function() {
 		engine.STATS.fps = 1/(engine.STATS.frametime/1000)
 
 		// DRAWCALLS
-		// runtime decides what to draw
+		// use seperate loops for webgpunotsupported?
 		// dispatch worker for scene graph update? 
 		for (let i = 0; i < _context.length; i++) {
 			if(_visibility[i]) {
@@ -114,7 +140,7 @@ engine.runtime = (function() {
 	// ======
 
 	const init = (function() {
-		// init dependencies // TODO .showLoading?
+		// DEPENDENCIES // TODO .showLoading?
 		engine.log.event('init runtime')
 		engine.eventdispatcher.dispatchEvent(new Event('InitRuntime'))
 		// DESCRIPTOR
@@ -151,17 +177,24 @@ engine.runtime = (function() {
 			}
 		}
 		async function loadhandler(context){
-			// loadhandler
-			if(!_readystate) {
-				engine.log.info('runtime init')
-				// context dependencies
-
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
+				engine.log.info('loadhandler runtime : runtimehook')
+				if(context) { 
+					// register context
+					await configuration.init(context)
+				} else {
+					// recover context
+					await configuration.init()
+				}				
+			} else {
+				// CONFIGURATION
+				engine.log.info('loadhandler runtime : context')
 				await engine.GUI.init()
 				if (engine.debug) {
 					await engine.GUI.element.console.init()
 				}
-				await observer.init()
-
 				await engine.gpu?.init()
 				await engine.pipeline?.init()
 				await engine.scene?.init()
@@ -170,51 +203,15 @@ engine.runtime = (function() {
 				engine.log.info('runtime context init')
 				if (engine.gpu?.device) {
 					engine.debug.timer.start('runtime context')
-					let pipeline = engine.pipeline.descriptor() // unused?
-					for(let i = 0, len = _canvas.length; i < len; i++) {
-						_context[i] = _canvas[i].getContext('webgpu')
-						_context[i].configure({
-							device: engine.gpu.device,
-							format: engine.gpu.format,
-							alphaMode: 'premultiplied',
-						})
-						// Modulate pipeline instructions
-						_context[i].index = i
-						let scene = _descriptor.findIndex(context => context.scene === _scene[i])
-						_context[i].scene = scene
-						let camera =  engine.scene.data.camera.findIndex(camera => camera.name === _camera[i])
-						if (camera === -1) { camera = engine.scene.data.camera.findIndex(camera => camera.name === engine.scene.info[engine.scene.info.findIndex(scene => scene.name === _scene[i])].camera)}
-						_context[i].camera = camera
-						let renderer = engine.pipeline.descriptor().findIndex(pipeline => pipeline.renderer === _renderer[i])
-						if (renderer === -1) { renderer = 0 }
-						_context[i].renderer = renderer
-
-						// DEBUG :: view namespace
-						// DEBUG :: pipeline loading
-						let view = engine.pipeline.descriptor()[renderer].view().findIndex(entry => entry === _view[i])
-						if (view === -1) { view = 0 }
-						_context[i].view = view
-					}
+					await observer.init()
+					await configuration.init()
 					engine.debug?.timer.end('runtime context')
+					await engine.pipeline.init(_context) // change to pipeline context init? filter hidden?
+					_readystate = true
+					requestAnimationFrame(renderloop)
+				} else {
+					_readystate = true
 				}
-				// TODO: for each visible context engine.pipeline.init(_context)
-				// await engine.pipeline.context.init() 
-				await engine.pipeline.init(_context)
-
-				/* DEBUG
-				console.log('RUNTIME CONTEXT')
-				console.log(engine.runtime.context())
-				console.log('RUNTIME DESCRIPTOR')
-				console.log(engine.runtime.descriptor())
-				console.log('SCENE GRAPH DESCRIPTOR')
-				console.log(engine.scene.graph.descriptor())
-				console.log('SCENE DATA')
-				console.log(engine.scene.data)
-				*/
-				_readystate = true
-				requestAnimationFrame(renderloop)
-			} else {
-				// runtimehook
 			}		
 		} 
 		return loadhandler

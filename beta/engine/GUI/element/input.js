@@ -13,21 +13,31 @@ engine.GUI.element.input = (function(){
 
 	let _readystate
 
-	let _dependencies
-	let _loadhandler
+	let _loadhandler 
+	let _dependencies	
 	let _runtimehook 
 
-	let _style
+	let _index
 	let _elements
+	let _parents
+	let _attributes
+	let _style
 
-	const type = {
-		promt : {
-			init : () => {},
-			submit : () => {}
-		},
-		file : {}
-	}
+	let _override
 
+	const override = function() {}
+	// function hook
+	const construct = async function() {}
+	//gui.init({[elements], [[attributes]], [parent], [style]})
+	const destroy = function() {}
+	// gui.destory([{[pointer], [arg], [value]}]) // switch object && array
+
+	const set = function() {}
+	// gui.set([{[pointer], [arg], [value]}]) // switch object && array
+
+	const link = function() {}
+	const unlink = function() {}
+	
 	// ======
 	// PUBLIC
 	// ======
@@ -35,22 +45,23 @@ engine.GUI.element.input = (function(){
 	class Input {} // Note: use to deconstruct only
 
 	const init = (function() {
-		// init
+		// DEPENDENCIE
 		engine.log.event('init input')
-		engine.eventdispatcher.dispatchEvent(new Event('InitInput'))
-		async function loadhandler(type){
-			// context loader
-			if (!_readystate) {
-				_readystate = true
+		// engine.eventdispatcher.dispatchEvent(new Event('InitInput'))
+		async function loadhandler(context) {
+			// LOADHANDLER
+			engine.log.info('loadhandler : GUI element input')
+			if(_readystate) {
+				// RUNTIMEHOOK
+				
 			} else {
-				// runtimehook
-				if(type) {
-					console.log(type)
-				}
+				// CONFIGURATION
+				_readystate = 1
 			}
 		}
 		return loadhandler
 	})()
+	const style = () => {return _style}
 
 	// ======
 	// EXPORT
@@ -58,10 +69,13 @@ engine.GUI.element.input = (function(){
 
 	// DECLARE VAR
 	let input = {
-		init: init,
+		init,
+		link,
+		unlink,
+		destroy,
 		prototype : Input
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return input
 

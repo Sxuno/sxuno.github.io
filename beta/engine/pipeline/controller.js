@@ -54,16 +54,16 @@ engine.pipeline = (function() {
 					'rasterizer/composepass',
 				],
 			]
-			const init = async function (context) {
+			const init = async function (context) { // missing loadhandler
 				if(!_readystate) {
-					engine.log.event('rasterizer init')
+					engine.log.info('rasterizer init')
 					engine.eventdispatcher.dispatchEvent(new Event('InitRasterizer'))
 					engine.pipeline.rasterizer = engine.pipeline.rasterizer || new Object() // bugfix
 
 					_readystate = 1
 				}
 				if(typeof(context) === 'object' && !Array.isArray(context)) {
-					engine.log.event('rasterizer init (context:view)')
+					engine.log.info('rasterizer init (context:view)')
 					engine.debug?.log(`view ${controller[context.renderer].view()[context.view]}`)
 					await controller[context.renderer].passes(context.view)
 
@@ -102,11 +102,11 @@ engine.pipeline = (function() {
 							console.log('pass', _pass)
 						}						
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
+						await engine.utils.scr.load(`engine/pipeline/${_passes[view][i]}.js`)
 					}
 					if(typeof(engine.pipeline[namespace[0]][namespace[1]]) === 'undefined'){
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
+						await engine.utils.scr.load(`engine/pipeline/${_passes[view][i]}.js`) 
 						// TODO: switch = imidiate await || batch await after init complete
 						// DEBUG pass namespaces here
 					}
@@ -188,11 +188,11 @@ engine.pipeline = (function() {
 							await controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
 						}						
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`)
+						await engine.utils.scr.load(`engine/pipeline/${_passes[view][i]}.js`)
 					}
 					if(typeof(engine.pipeline[namespace[0]][namespace[1]]) === 'undefined'){
 						engine.debug.log(`register ${[namespace[0]]} ${[namespace[1]]}`)
-						await engine.utils.scr.load(engine.PATH.root+`pipeline/${_passes[view][i]}.js`) 
+						await engine.utils.scr.load(`engine/pipeline/${_passes[view][i]}.js`) 
 						// TODO: switch = imidiate await || batch await after init complete
 						// DEBUG pass namespaces here
 					}
@@ -255,17 +255,8 @@ engine.pipeline = (function() {
 
 	const pointer = {
 		init : async (context) => {
-			// complexitiy :: scene x camera x renderer x view = buffer(context) :: if invalid init(context)	
+			
 			let _context = engine.runtime.context()
-
-			// BUFFER ACCESS STRUCTURE
-			// scene x camera x renderer  = bufferobject
-			// Note : 
-			// 			index 0  = global ids 
-			//			index 1 = Access path
-			//
-			// 			RINGBUFFER OFFSET POSSIBLE
-
 			// micro optimization: 
 			// 		replace .findIndex with manual loop
 			// 		replaces function call overhead with inline execution,
@@ -345,10 +336,13 @@ engine.pipeline = (function() {
 			// loadhandler
 			if(_readystate) {
 				// runtimehook
-				pointer.init(context)
+				engine.log.info('loadhanlder pipeline : runtimehook')
+				if(context) {
+					pointer.init(context)
+				}
 			} else {
 				// loadhandler
-				engine.log.info('loadhandler: pipeline init')
+				engine.log.info('loadhandler pipeline : context')
 				// TODO : rework into flagbased register method
 				if(engine.gpu?.device) {
 					for (let type of Object.keys(renderer)) {

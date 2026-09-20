@@ -5,8 +5,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.audio = engine.audio || {}
-engine.audio.controller = (function(){
+engine.audio = (function(){
 
 	// =======
 	// PRIVATE
@@ -22,24 +21,21 @@ engine.audio.controller = (function(){
 
     let _context
     let _analyser
-	let _dataArray
     
-    let _listening
+    let _active
 
-    let _audioOut
-
-	
+    let _channel
 
     const update = () => {
-        if (!_listening) return
-        _analyser.getByteFrequencyData(_dataArray)
+        if (!_active) return
+        _analyser.getByteFrequencyData(_buffer)
     }
 
     function getFrequencyRange(startBin, endBin) {
-        if (!_listening) return 0
+        if (!_active) return 0
         let sum = 0
         for (let i = startBin; i <= endBin; i++) {
-            sum += _dataArray[i]
+            sum += _buffer[i]
         }
         // Normalized return
         return sum / (endBin - startBin + 1) / 255; 
@@ -51,10 +47,10 @@ engine.audio.controller = (function(){
                 console.info('feature sound channel selection not available.')
                 return
             }
-            if(!_audioOut) {
-                _audioOut = await navigator.mediaDevices.selectAudioOut()
+            if(!_channel) {
+                _channel = await navigator.mediaDevices.selectAudioOut()
             }
-            console.log(_audioOut)
+            console.log(_channel)
         } catch (error) {
             console.error('hardware list locked:', error)
         }
@@ -68,19 +64,20 @@ engine.audio.controller = (function(){
     const out = {}
 
 	const init = (function() {
-		// init
-		engine.log.event('init audio controller')
+		// DEPENDENCIES
+		engine.log.event('init audio')
 		engine.eventdispatcher.dispatchEvent(new Event('InitAudioController'))
 		async function loadhandler(audio){
-			// context loader
-			if (!_readystate) {
+			// LOADHANDLER
+			if (_readystate) {
+                // RUNTIMEHOOK
+			} else {
+				// CONFIGURATION
                 _context = new (window.AudioContext || window.webkitAudioContext)()
                 _analyser = _context.createAnalyser()
                 _analyser.fftSize = 256
-                _dataArray = new Uint8Array(_analyser.frequencyBinCount)
+                _buffer = new Uint8Array(_analyser.frequencyBinCount)
 				_readystate = true
-			} else {
-				// runtimehook
 			}
 		}
 		return loadhandler
@@ -91,13 +88,13 @@ engine.audio.controller = (function(){
 	// ======
 
 	// DECLARE VAR
-	let controller = {
+	let audio = {
 		init: init,
         input : input,
         out : out
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR
-	return controller
+	return audio
 
 })()

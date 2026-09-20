@@ -26,13 +26,17 @@ engine.scene.graph = (function(){
 	// ======
 
 	const init = (function() {
-		// init dependency
+		// DEPENDENCIE
 		engine.log.event('init scene graph')
 		engine.eventdispatcher.dispatchEvent(new Event('InitSceneGraph'))
 		async function loadhandler(context){
-			// context loader
-			if(!_readystate) {
-				engine.log.event(`scene graph init`)
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
+				engine.log.info('loadhandler scene graph : runtimehook')
+			} else {
+				// CONTEXT
+				engine.log.info(`loadhandler scene graph : context`)
 
 				engine.debug?.timer.start('scene graph descriptor')
 				_descriptor = new Array 
@@ -50,8 +54,6 @@ engine.scene.graph = (function(){
 				engine.debug?.timer.end('scene graph descriptor')
 
 				_readystate = true
-			} else {
-				// runtimehook
 			}
 		}		
 		return loadhandler

@@ -33,18 +33,19 @@ engine.GUI.element.image = (function(){
 	class Image {} // Note: use to deconstruct only
 
 	const init = (function() {
-		// init
+		// DEPENDENCIES
 		engine.log.event('init image')
 		engine.eventdispatcher.dispatchEvent(new Event('InitImage'))
 		async function loadhandler(type){
-			// context loader
-			if (!_readystate) {
-				_readystate = true
-			} else {
-				// runtimehook
+			// LOADHANDLER
+			if (_readystate) {
+				// RUNTIMEHOOK
 				if(type) {
 					console.log(type)
-				}
+				}	
+			} else {
+				// CONFIGURATION
+				_readystate = true
 			}
 		}
 		return loadhandler
@@ -59,7 +60,7 @@ engine.GUI.element.image = (function(){
 		init: init,
 		prototype : Image
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return image
 
