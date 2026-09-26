@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEST</title>
+		<style>
+		* {color-scheme: dark;}
+		body {
+			width: 100%; 
+			margin: 0px;
+			display: flex;
+			flex-direction: column;
+		}
+		header {
+			width: 800px;
+			margin: auto;
+			padding-bottom: 10px;
+		}
+		#viewport {
+			width: 800px;
+			height: 600px;
+			border: 1px solid grey;
+			margin: 5px auto;
+		}
+		</style>
+		<script>
+		// RUNTIME
+		window.addEventListener('load', () => {
+			const canvas = document.getElementById('viewport')
+			// Request pointer lock on click
+			canvas.addEventListener('click', () => {
+				canvas.requestPointerLock()
+			})
+			// Detect pointer lock changes
+			document.addEventListener('pointerlockchange', () => {
+				if (document.pointerLockElement === canvas) {
+					console.log('Pointer is locked!')
+				} else {
+					console.log('Pointer unlocked')
+				}
+			})
+			// Track relative mouse movement while locked
+			document.addEventListener('mousemove', (e) => {
+				if (document.pointerLockElement === canvas) {
+					console.log('Delta:', e.movementX, e.movementY)
+				}
+			})
+		})
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Mouselock</h1>
+			<label></label>
+		</header>
+		<canvas id = 'viewport'></canvas>
+	</body>
+</html>

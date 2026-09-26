@@ -1,0 +1,70 @@
+enable subgroups; // Use native hardware SIMD lanes
+
+struct PrimitiveData {
+    transform_matrix: mat4x4<f32>,
+    dimensions: vec4<f32>, // x, y, z size, and w = primitive type (0: box, 1: sphere)
+};
+
+@group(0) @binding(0) var<storage, read> primitives: array<PrimitiveData>;
+
+struct VertexOutput {
+    @builtin(position) clip_position: vec4<f32>,
+    @location(0) world_position: vec4<f32>,
+    @location(1) normal: vec3<f32>,
+};
+
+@vertex
+fn vs_main(
+    @builtin(vertex_index) vert_idx: u32,
+    @builtin(instance_index) inst_idx: u32,
+    @builtin(subgroup_invocation_id) lane_id: u32
+) -> VertexOutput {
+    var output: VertexOutput;
+
+    // 1. Fetch primitive metadata (highly uniform access pattern across the subgroup)
+    let prim = primitives[inst_idx];
+    
+    // 2. Determine which quadrant this specific thread belongs to (Double Mirroring)
+    // Vertices 0-23: Original, 24-47: Mirror X, 48-71: Mirror Y, 72-95: Mirror XY
+    let vertices_per_quadrant = 24u; // Example for a 24-vertex flat-shaded box
+    let quadrant = vert_idx / vertices_per_quadrant;
+    let local_vert_idx = vert_idx % vertices_per_quadrant;
+
+    // 3. Generate the 1/4 base mathematical shape
+    var pos = generate_base_box_vertex(local_vert_idx, prim.dimensions.xyz);
+    var normal = generate_base_box_normal(local_vert_idx);
+
+    // 4. Subgroup Intra-lane Synchronization & Transformation Math
+    // Instead of branching, we use mathematical signs determined by the quadrant.
+    // Threads in the same subgroup can quickly look up or broadcast adjustments 
+    // to vertex coordinates without reading global memory.
+    var mirror_scale = vec3<f32>(1.0, 1.0, 1.0);
+    
+    if (quadrant == 1u) { mirror_scale.x = -1.0; } // Mirror X
+    if (quadrant == 2u) { mirror_scale.y = -1.0; } // Mirror Y
+    if (quadrant == 3u) { 
+        mirror_scale.x = -1.0; 
+        mirror_scale.y = -1.0; 
+    } // Mirror XY
+
+    // Apply the mirror flip to geometry data
+    pos = pos * mirror_scale;
+    normal = normal * mirror_scale;
+
+    // ⚠️ CRITICAL STEP: Fix Winding Order (Backface Culling)
+    // Flipping an odd number of axes inverts the triangle winding order (CW vs CCW).
+    // If we mirrored only 1 axis (quadrant 1 or 2), we must flip the normal 
+    // or tell the GPU to reverse triangle orientation to prevent backface culling artifacts.
+    if (quadrant == 1u || quadrant == 2u) {
+        // Correct for inverted parity across the subgroup lanes
+        normal = -normal; 
+    }
+
+    // 5. Finalize G-Buffer Outputs
+    let world_pos = prim.transform_matrix * vec4<f32>(pos, 1.0);
+    output.clip_position = camera.view_projection * world_pos;
+    output.world_position = world_pos;
+    output.normal = normalize((prim.transform_matrix * vec4<f32>(normal, 0.0)).xyz);
+
+    return output;
+}

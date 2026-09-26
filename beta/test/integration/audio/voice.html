@@ -1,0 +1,242 @@
+<style>
+  * {color-scheme: dark;}
+  canvas {
+	margin: 20px auto;
+	width: 400px;
+	height: 300px;
+	display: flex;
+	border-radius: 12px;
+  }
+</style>
+<script>
+// TEST
+
+// TODO: 
+//          audio amp configuration
+//          text recognition
+//          desicion tree
+//          
+//      dependencie
+//      input
+
+let vctx
+
+let current
+let last
+
+let ringbuffer
+let worker
+
+function GUI() {
+	document.body.appendChild(document.createElement('canvas'))
+}
+
+function audiovisualizer(event) {
+	const CMD = {
+		SET_CANVAS: 0
+	}
+	let vctx = null
+	self.onmessage = (event) => {
+		switch(event.data.type) {
+			case CMD.SET_CANVAS:CMD
+				ctx = event.data.canvas.getContext('2d')
+				break
+		}
+	}
+}
+const decodeAudioVisualizer = () => {
+	return `(${audiovisualizer.toString()})()`
+}
+const blob = () => {
+	return new Worker(URL.createObjectURL(blob))
+}
+
+let actx
+let streambuffer
+let input
+
+async function audioInput() {
+	// DEBUG
+	console.log(await navigator)
+  if (!isAudioRunning) {
+	// --- START AUDIO ---
+	try {
+	  stream = await navigator.mediaDevices.getUserMedia({ 
+		audio: { echoCancellation: false, noiseSuppression: true } 
+	  });
+	  
+	  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+	  
+	  const source = audioCtx.createMediaStreamSource(stream);
+	  const gainNode = audioCtx.createGain();
+	  const analyser = audioCtx.createAnalyser();
+	  
+	  analyser.fftSize = 256;
+	  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+	  
+	  source.connect(gainNode);
+	  gainNode.connect(analyser);
+	  //gainNode.connect(audioCtx.destination);
+	  
+	  gainNode.gain.value = 2.0; 
+	  
+	  isAudioRunning = true;
+	  //button.textContent = "Stop Audio";
+	  
+		// Processing loop
+		const canvas = document.createElement('canvas');
+		document.body.appendChild(canvas)
+		const canvasCtx = canvas.getContext('2d');
+
+		// Inside your processAudio loop:
+		function processAudio() {
+			if (!isAudioRunning) return;
+			requestAnimationFrame(processAudio);
+			
+			// Define bufferLength directly from the analyser node
+			const bufferLength = analyser.frequencyBinCount;
+
+			// Clear the canvas for the new frame
+			canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+			
+			// CHOOSE ONE VISUALIZATION STYLE BELOW:
+			
+			// --- OPTION A: BAR EQUALIZER (Frequency Data) ---
+			analyser.getByteFrequencyData(dataArray);
+			
+			const barWidth = (canvas.width / bufferLength) * 2.5;
+			let x = 0;
+			
+			for (let i = 0; i < bufferLength; i++) {
+				// Value is 0 to 255. Convert to a height percentage.
+				const percent = dataArray[i] / 255;
+				const barHeight = canvas.height * percent;
+				
+				// Color changes based on frequency index (i)
+				canvasCtx.fillStyle = `rgb(${dataArray[i] + 50}, 50, 200)`;
+				canvasCtx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+				
+				x += barWidth;
+			}		
+			/*
+			// --- OPTION B: OSCILLOSCOPE WAVE (Time Domain Data) ---
+			analyser.getByteTimeDomainData(dataArray);
+			
+			canvasCtx.lineWidth = 2;
+			canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
+			canvasCtx.beginPath();
+			
+			const sliceWidth = canvas.width / bufferLength;
+			let x = 0;
+			
+			for (let i = 0; i < bufferLength; i++) {
+				// Normalize 0-255 data down to a -1 to 1 range, then map to canvas height
+				const v = dataArray[i] / 128.0; 
+				const y = (v * canvas.height) / 2;
+				
+				if (i === 0) {
+				canvasCtx.moveTo(x, y);
+				} else {
+				canvasCtx.lineTo(x, y);
+				}
+				
+				x += sliceWidth;
+			}			
+			canvasCtx.lineTo(canvas.width, canvas.height / 2);
+			canvasCtx.stroke();
+			*/
+		}
+	  processAudio();
+
+	} catch (err) {
+	  console.error('Error starting audio:', err);
+	}
+
+  } else {
+	// --- STOP & DISCONNECT AUDIO ---
+	
+	// 1. Stop the physical microphone hardware (turns off the browser recording icon)
+	if (stream) {
+	  stream.getTracks().forEach(track => track.stop());
+	  stream = null;
+	}
+
+	// 2. Close the AudioContext to release system audio resources
+	if (audioCtx) {
+	  await audioCtx.close();
+	  audioCtx = null;
+	}
+
+	isAudioRunning = false;
+	//button.textContent = "Start Audio";
+	console.log("Audio completely disconnected.");
+  }
+}
+
+function runtime() {
+	console.log('load')
+	audioInput()
+}
+
+window.addEventListener('load', event => runtime())
+
+</script>
+<script>
+
+let audioCtx = null;
+let stream = null;
+let isAudioRunning = false;
+
+async function toggleAudio() {
+  // const button = document.getElementById('audioToggle');
+
+
+}
+</script>
+
+
+<script>
+	// selflearning sample 
+	// The local brain of your custom voice agent
+	/*
+const JarvisVoiceTrainer = {
+  commandProfiles: {
+    "STOP": { weightMatrix: [], calibrated: false },
+    "GO":   { weightMatrix: [], calibrated: false }
+  },
+  
+  // 1. Enter Training Mode for a specific keyword
+  recordTrainingSample(commandKey, extractedPeaks) {
+    if (!this.commandProfiles[commandKey]) return;
+    
+    // Normalize the captured peaks to find the structural ratio shape
+    // (This is your local feature vector extraction)
+    const primaryPeakDistance = extractedPeaks.length > 1 
+      ? Math.abs(extractedPeaks[0].binIndex - extractedPeaks[1].binIndex)
+      : 0;
+      
+    // Save this slice to the historical training dataset
+    this.commandProfiles[commandKey].weightMatrix.push(primaryPeakDistance);
+    
+    console.log(`Saved sample for [${commandKey}]. Shape fingerprint:`, primaryPeakDistance);
+  },
+  
+  // 2. The Micro-Gradient Descent Step (The Tweak Loop)
+  optimizeThresholds(commandKey) {
+    const profile = this.commandProfiles[commandKey];
+    if (profile.weightMatrix.length === 0) return;
+    
+    // Mathematical Optimization: Find the perfect mathematical median 
+    // around which the user's vocal characteristics naturally cluster.
+    const sum = profile.weightMatrix.reduce((a, b) => a + b, 0);
+    const optimizedCenterWeight = sum / profile.weightMatrix.length;
+    
+    // Bake this tailored threshold directly into your live state lookup tree!
+    profile.targetDistanceThreshold = optimizedCenterWeight;
+    profile.calibrated = true;
+    
+    console.log(`%c J.A.R.V.I.S. calibrated for [${commandKey}]! Target weight: ${optimizedCenterWeight}`, "color: #00ffff; font-weight: bold;");
+  }
+};
+*/
+</script>

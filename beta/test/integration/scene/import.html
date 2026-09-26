@@ -1,0 +1,52 @@
+<style>
+* {
+    color-scheme: dark;
+}
+input {
+    display: none;
+}
+</style>
+<!-- in rework
+<script src = '../../src/engine/extension/scene/loader/blend.js'></script>
+-->
+<body></body>
+
+<script>
+    // BUFFER
+    var _buffer
+    async function buffers(buffer) {
+        
+        let abuffer = await buffer.arrayBuffer()
+        console.log(abuffer)
+        _buffer = new Uint8Array(abuffer)
+        console.log(_buffer)
+
+        await readScene(_buffer)
+    }
+</script>
+<script>
+    // DATA EXTRACTION
+
+</script>
+<script>
+    // GUI
+    let input = document.createElement('input')
+    input.type = 'file'
+    input.style.display = 'none'
+    input.addEventListener('change', () => {
+        console.log(input.files)
+        let blob = input.files[0]
+        buffers(blob)
+    })
+    document.body.appendChild(input)
+
+    let button = document.createElement('button')
+    button.onclick = () => {
+        input.click()
+        
+    }
+    button.innerText = 'upload'
+
+    document.body.appendChild(button)
+</script>
+

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<title>PERFORMANCE</title>
+<style>
+	*{color-scheme: dark;}
+</style>
+<!--
+<script>
+const size = 5_000_000
+const arr = Array.from({ length: size }, (_, i) => `item${i}`)
+const y = 'item999999'
+
+console.time('for..of')
+let result1 = []
+for (const x of arr) {
+	if (x.includes(y)) {
+		result1.push(x)
+	}
+}
+console.timeEnd('for..of')
+
+console.time('filter')
+const result2 = arr.filter(x => x.includes(y))
+console.timeEnd('filter')
+</script>
+-->
+<script>
+	let sampleArray = new Array(1_000)
+	let declaration = null
+	function arraySize(value) {
+		sampleArray = null
+		sampleArray = new Array(Number(value)).fill(null)
+	} 
+
+	function runBenchmark() {
+		let delta
+		console.log(sampleArray.length)
+		console.log('i++ 1d vs i++ 2d vs for in')		
+		// i ++ 1 declarations
+		delta = performance.now()
+		for (let i = 0; i < sampleArray.length; i++) {
+			sampleArray[i] = sampleArray.length			
+		}
+		console.log(`${performance.now() - delta} ms`)
+		// i ++ 2 declarations
+		delta = performance.now()
+		declaration = true
+		for (let i = 0,len = sampleArray.length; i < len; i++) {
+			sampleArray[i] = true
+		}
+		console.log(`${performance.now() - delta} ms`)
+		// for in 
+		delta = performance.now()
+			for (let i in sampleArray) {
+			sampleArray[i] = false
+		}
+		console.log(`${performance.now() - delta} ms`)
+
+		console.log('for each vs i++')
+		// for each
+		delta = performance.now()
+		sampleArray.forEach((_,i) => {
+			
+			sampleArray[i] = true
+			
+		})
+		console.log(`${performance.now() - delta} ms`)
+				// i++
+		delta = performance.now()
+		for(let i = 0; i < sampleArray.length; i++){
+			sampleArray[i] = false
+		}
+		console.log(`${performance.now() - delta} ms`)
+	}
+</script>
+<h1>Performance</h1>
+<h2>Microtasks</h2>
+<label>ArraySize</label>
+<input type = 'text' oninput = 'arraySize(this.value)'/>
+<button onclick = 'runBenchmark()'>run</button>

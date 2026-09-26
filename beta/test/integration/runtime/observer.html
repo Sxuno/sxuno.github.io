@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<style>
+    *{color-scheme: dark;}
+    div {margin: 5px auto; border: 1px solid grey;  height: 28px; text-align: center;padding: 5px;}
+</style>
+<script>
+// runtime simulation
+(function() {
+    const init = (function(){
+        console.log('init runtime')
+        window.addEventListener('load', runtime)
+        async function runtime() {
+            console.log('runtime')
+            await observer.init()
+        }
+        return runtime
+    })()
+})()
+</script>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<div>observertest</div>
+<script>
+// observer test
+
+const elements = Array.from(document.querySelectorAll('div'))
+
+const observer = {
+    init : async function() {
+        return new Promise(resolve => {
+            let _resize = false
+            let _intersect = false
+            console.log('observer')
+            const resolver = () => {
+                if (_intersect && _resize) {
+                    resolve()
+                }
+            }
+            window.addEventListener('resize', () => {
+                observer.resize.window = true
+                console.log(`resize window ${window.screenX} ${window.screenY}`)
+            })
+            observer.resize.element = new ResizeObserver(entries => {
+                if(!observer.resize.window) {
+                    for (const entry of entries) {
+                        console.log(`resize ${entry.target.nodeName}`)
+                    } 
+                } else {
+                    observer.resize.window = false
+                }
+                _resize = true
+                resolver()
+            })
+            observer.intersect = new IntersectionObserver(entries => {
+                for (const entry of entries) {
+                    console.log(`intersect ${entry.target.nodeName}`)
+                }
+                _intersect = true
+                resolver()
+            })
+            for (const element of elements) {
+                observer.resize.element.observe(element)
+                observer.intersect.observe(element)
+            }
+        })
+    },
+    resize : {
+        window : null,
+        element : null
+    },
+    intersect : null,
+}
+</script>
+<!--
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = {}
+    /* TODO: window.addEventListener('resize') 
+    // RESIZE OBSERVER
+    observer.resize = new ResizeObserver((entries) => {
+        for(const entry of entries) {
+            console.log(entry)
+            console.log(`Element ${entry.target}`)
+        }
+    })
+    */
+    // INTERSECTION OBSERVER
+    const elements = Array.from(document.querySelectorAll('div'))
+    observer.intersect = new IntersectionObserver((entries) => {
+        // console.log(entries.length) // DEBUG callback
+        for(const entry of entries) {           
+            console.log(`ID ${elements.findIndex(element =>  element === entry.target)} intersect ${entry.isIntersecting? 'load': 'hide'}`) // DEBUG Datapoints
+        }
+    })
+    // ADD Elements to observer
+    for(const element of document.querySelectorAll('div')) {
+        // observer.resize.observe(element) 
+        observer.intersect.observe(element)
+    }
+})
+</script>
+-->

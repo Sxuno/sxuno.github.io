@@ -1,0 +1,60 @@
+
+
+// Struct for data sent from JavaScript via Uniform Buffer
+struct AudioUniforms {
+    bass_energy: f32,      // Low-end power (0.0 to 1.0)
+    mid_energy: f32,       // Vocal/Mid power (0.0 to 1.0)
+    time: f32,             // Continuous engine clock ticks
+};
+
+@group(0) @binding(0) var<uniform> audio_data: AudioUniforms;
+
+struct VertexInput {
+    @location(0) position: vec3<f32>,
+    @location(1) uv: vec2<f32>,
+};
+
+struct VertexOutput {
+    @builtin(position) clip_position: vec4<f32>,
+    @location(0) uv: vec2<f32>,
+    @location(1) world_height: f32,
+};
+
+@vertex
+fn vs_main(input: VertexInput) -> VertexOutput {
+    var output: VertexOutput;
+    output.uv = input.uv;
+    
+    // Create a base copy of the position to deform
+    var modified_position = input.position;
+    
+    // --- THE WAVE MATHEMATICS ---
+    // Calculate distance from the center of the world grid (circular ripple effect)
+    let center = vec2<f32>(0.0, 0.0);
+    let distance_from_center = distance(modified_position.xz, center);
+    
+    // Dynamic frequency scaling: high audio energy speeds up the ripple waves
+    let wave_frequency = 4.0 + (audio_data.mid_energy * 2.0);
+    
+    // Determine height using a sine function over space and engine runtime time
+    // We multiply by bass_energy so the whole world surges upward when the audio is loud
+    let wave_height = sin(distance_from_center * wave_frequency - audio_data.time * 5.0) 
+                      * (0.1 + audio_data.bass_energy * 0.8);
+                      
+    // Apply a smooth falloff so the waves damp out at the edges of the map
+    let edge_falloff = smoothstep(5.0, 0.0, distance_from_center);
+    
+    // Apply final height deformation along the vertical axis (Y)
+    modified_position.y = wave_height * edge_falloff;
+    
+    // Store height for the fragment shader (useful for color transitions based on volume)
+    output.world_height = modified_position.y;
+    
+    // Matrix calculations to convert to 3D clip space (Assume dynamic MVP matrix binding here)
+    // output.clip_position = model_view_projection * vec4<f32>(modified_position, 1.0);
+    
+    // Stand-in standard position output mapping for standalone sample execution
+    output.clip_position = vec4<f32>(modified_position, 1.0);
+    
+    return output;
+}

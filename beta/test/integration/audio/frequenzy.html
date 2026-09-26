@@ -1,0 +1,145 @@
+struct Particle {
+    position: vec2<f32>,
+    velocity: vec2<f32>,
+};
+
+struct AudioData {
+    n_factor: f32, // Controlled by JS: maps to active voice pitch bin
+    m_factor: f32, // Controlled by JS: maps to active voice pitch bin
+    volume: f32,   // Overall loudness gate
+};
+
+@group(0) @binding(0) var<storage, read_write> particles: array<Particle>;
+@group(0) @binding(1) var<uniform> audio: AudioData;
+
+// Simple random generator helper for particle bounce noise
+fn pseudo_rand(co: vec2<f32>) -> f32 {
+    return fract(sin(dot(co, vec2<f32>(12.9898, 78.233))) * 43758.5453);
+}
+
+@compute @workgroup_size(64)
+fn cs_main(@builtin(global_invocation_id) id: vec3<u32>) {
+    let index = id.x;
+    var p = particles[index];
+    
+    // Scale positions to a standard mathematical -1.0 to 1.0 window
+    let x = p.position.x;
+    let y = p.position.y;
+    let pi = 3.14159265;
+    
+    // --- CHLADNI RESONANCE EQUATION ---
+    let term1 = cos(audio.n_factor * pi * x) * cos(audio.m_factor * pi * y);
+    let term2 = cos(audio.m_factor * pi * x) * cos(audio.n_factor * pi * y);
+    
+    // Calculate displacement energy at this specific spot (Absolute value)
+    let vibration_energy = abs(term1 - term2);
+    
+    // If the spot has high vibration, violently shuffle the sand grain particle
+    if (vibration_energy > 0.05 && audio.volume > 0.1) {
+        // Generate small random direction vectors based on thread ID and position
+        let rx = pseudo_rand(p.position + vec2<f32>(f32(index), 0.0)) - 0.5;
+        let ry = pseudo_rand(p.position + vec2<f32>(0.0, f32(index))) - 0.5;
+        
+        // Push the particle. Stronger sound and stronger vibration = faster displacement bounce
+        let push_force = vibration_energy * audio.volume * 0.02;
+        p.position.x += rx * push_force;
+        p.position.y += ry * push_force;
+    }
+    
+    // Keep sand particles inside boundaries (-1.0 to 1.0 bounds)
+    p.position = clamp(p.position, vec2<f32>(-1.0), vec2<f32>(1.0));
+    
+    // Write updated sand position data back to buffer storage links
+    particles[index] = p;
+}
+
+// resolution scaling
+
+struct Particle {
+    position: vec2<f32>, // Coordinates stored in raw screen pixels (e.g. x: 1920.0, y: 1080.0)
+    velocity: vec2<f32>,
+};
+
+struct AudioEngineUniforms {
+    canvas_resolution: vec2<f32>, // Passed from JS: vec2(window.innerWidth, window.innerHeight)
+    n_factor: f32,
+    m_factor: f32,
+    volume: f32,
+    time: f32,
+};
+
+@group(0) @binding(0) var<storage, read_write> particles: array<Particle>;
+@group(0) @binding(1) var<uniform> engine: AudioEngineUniforms;
+
+fn pseudo_rand(co: vec2<f32>) -> f32 {
+    return fract(sin(dot(co, vec2<f32>(12.9898, 78.233))) * 43758.5453);
+}
+
+@compute @workgroup_size(64)
+fn cs_main(@builtin(global_invocation_id) id: vec3<u32>) {
+    let index = id.x;
+    var p = particles[index];
+    
+    // 1. NORMALIZE POSITION TO A 0.0 -> 1.0 WINDOW SPACE
+    // This scales the math patterns beautifully across any aspect ratio
+    let normalized_uv = p.position / engine.canvas_resolution;
+    
+    // Scale to standard Chladni space (-1.0 to 1.0) inside the local calculation
+    let x = (normalized_uv.x * 2.0) - 1.0;
+    let y = (normalized_uv.y * 2.0) - 1.0;
+    let pi = 3.14159265;
+    
+    // 2. RUN THE CYMATICS FORMULA
+    let term1 = cos(engine.n_factor * pi * x) * cos(engine.m_factor * pi * y);
+    let term2 = cos(engine.m_factor * pi * x) * cos(engine.n_factor * pi * y);
+    let vibration_energy = abs(term1 - term2);
+    
+    // 3. PIXEL-PERFECT MOTION STEP
+    if (vibration_energy > 0.05 && engine.volume > 0.1) {
+        // Generate random directional noise offsets
+        let rx = pseudo_rand(p.position + vec2<f32>(f32(index), engine.time)) - 0.5;
+        let ry = pseudo_rand(p.position + vec2<f32>(engine.time, f32(index))) - 0.5;
+        
+        // The Magic Hook: Base the speed on a fixed maximum pixel step value.
+        // E.g., at max vibration, a grain pushes outward by a max of 3.0 pixels per frame.
+        const MAX_PIXEL_STEP = 3.0; 
+        let step_multiplier = vibration_energy * engine.volume * MAX_PIXEL_STEP;
+        
+        p.position.x += rx * step_multiplier;
+        p.position.y += ry * step_multiplier;
+    }
+    
+    // 4. BOUNDS CHECKING (Enforce pixel coordinate constraints)
+    p.position = clamp(p.position, vec2<f32>(0.0, 0.0), engine.canvas_resolution);
+    
+    // Save state back to global memory storage
+    particles[index] = p;
+}
+const RenderResolution = {
+  width: 0,
+  height: 0,
+
+  syncWithWindow(canvasElement) {
+    // Account for high-DPI screens natively
+    const dpr = window.devicePixelRatio || 1;
+    
+    this.width = canvasElement.clientWidth * dpr;
+    this.height = canvasElement.clientHeight * dpr;
+    
+    // Update the actual hardware rendering bounds of your WebGPU context
+    canvasElement.width = this.width;
+    canvasElement.height = this.height;
+  },
+
+  getFloatArray(audioSystem, timeValue) {
+    // Formats a clean array to blast directly into your WebGPU Uniform Buffer
+    return new Float32Array([
+      this.width,             // canvas_resolution.x
+      this.height,            // canvas_resolution.y
+      audioSystem.n_factor,   // n_factor
+      audioSystem.m_factor,   // m_factor
+      audioSystem.volume,     // volume
+      timeValue               // time
+    ]);
+  }
+};

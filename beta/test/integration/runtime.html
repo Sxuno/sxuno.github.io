@@ -1,0 +1,18 @@
+<style>
+    *{color-scheme: dark;}
+</style>
+
+<script>
+    // runtime simulation
+    (function() {
+        const init = (function(){
+            console.log('init runtime')
+            window.addEventListener('load', runtime)
+            async function runtime() {
+                console.log('runtime')
+                //await observer.init()
+            }
+            return runtime
+        })()
+    })()
+</script>

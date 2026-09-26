@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<title>DEBUG</title>
+
+<style>
+	* {color-scheme: dark;}
+	body { display:flex;flex-direction:column;width:650px;margin: 5px auto;}
+	canvas {border:1px solid grey;border-radius:8px;margin-bottom:10px;width:640px;height:360px;}
+	.wrap {width: 644px; display: flex;flex-wrap: wrap;}
+	.wrap  canvas {width: 640px; height: 360px;}
+	.wrap  canvas:nth-child(2) { margin-right:10px;width:315px;height:177px;}
+	.wrap  canvas:nth-child(3) { width:315px;height:177px;}
+	.wrap  canvas:nth-child(5) { margin-right:10px;width:315px;height:177px;}
+	.wrap  canvas:nth-child(6) { width:315px;height:177px;}
+	.wrap  canvas:nth-child(8) { margin-right:10px;width:315px;height:177px;}
+	.wrap  canvas:nth-child(9) { width:315px;height:177px;}
+</style>
+<!-- PROTOCOL INDICATOR -->
+<script>
+	let prot = (window.location.protocol === 'file:') ? 'local' : 'online'
+	document.querySelector('title').innerText = `DEBUG CDN ${prot}`
+</script>
+
+<script src = 'https://sxuno.github.io/beta/engine/core.js' data-autoinit></script>
+
+<!-- DEBUG FUNCTIONS-->
+<script>
+	// PATH custom config
+	engine.PATH.content = 'https://sxuno.github.io/content/' 
+	engine.PATH.shader = './../build/shadercache/'
+
+	engine.eventdispatcher.addEventListener('InitCore', () => {console.warn('Event InitCore callback')})
+
+	// engine.init()
+	// engine.init('load')
+	// engine.init('DOMContentLoaded')
+
+    /* Document ReadyState Log */
+	document.onreadystatechange = () => {console.log(`${Temporal.Now.plainTimeISO()} ${document.readyState}`)}
+</script>
+
+<titel>DEBUG MODE</titel>
+<label>output developer console</label>
+
+<section class = 'wrap'>
+	<canvas scene = 'rgb-cubes'></canvas>
+	<canvas scene = 'rgb-cubes' camera = 'default' view = 'unlit'></canvas>
+	<canvas scene = 'rgb-cubes' camera = 'default' view = 'depth'></canvas>
+
+	<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'lit'></canvas>
+	<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'unlit'></canvas>
+	<canvas scene = 'rgb-cubes' renderer = 'raytracer' view = 'depth'></canvas>
+
+	<canvas scene = 'rgb-spheres' ></canvas>
+	<canvas scene = 'rgb-spheres' camera = 'false' view = 'unlit'></canvas>
+	<canvas scene = 'rgb-spheres' camera = 'default' view = 'depth'></canvas>
+</section>

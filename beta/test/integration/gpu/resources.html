@@ -1,0 +1,32 @@
+function findClosestFallbackByRatio(targetWidth, targetHeight, groupedResources) {
+    let bestIndex = -1;
+    let bestScore = Infinity;
+    
+    const targetRatio = targetWidth / targetHeight;
+
+    for (let i = 0; i < groupedResources.length; i++) {
+        const group = groupedResources[i]; // Structure: [height, width, [textures]]
+        if (!group) continue;
+
+        const h = group[0];
+        const w = group[1];
+        const currentRatio = w / h;
+
+        // 1. Calculate how far off the aspect ratio is
+        const ratioDiff = Math.abs(targetRatio - currentRatio);
+
+        // 2. Calculate how far off the resolution scale is (normalized)
+        const sizeDiff = Math.abs(targetWidth - w) / targetWidth;
+
+        // 3. Combine them, giving Aspect Ratio an extremely heavy weight multiplier
+        // This guarantees a perfectly matching aspect ratio always wins over a closer resolution size.
+        const score = (ratioDiff * 1000) + sizeDiff;
+
+        if (score < bestScore) {
+            bestScore = score;
+            bestIndex = i;
+        }
+    }
+
+    return bestIndex; // Pointer to the best matching [height, width] bucket
+}

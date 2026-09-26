@@ -1,0 +1,47 @@
+enable subgroups;
+
+// Structure to hold complex numbers (Real and Imaginary channels)
+struct Complex {
+    real: f32,
+    imag: f32,
+};
+
+@compute @workgroup_size(32)
+fn compute_subgroup_fft(
+    @builtin(subgroup_invocation_id) lane_id : u32
+) {
+    // Each hardware lane loads its initial audio sample into local registers
+    var my_value = load_local_audio_sample(lane_id); 
+    
+    // THE FFT PASS LOOP
+    // The mask doubles every step: 1, 2, 4, 8, 16...
+    for (var mask: u32 = 1u; mask < 32u; mask *= 2u) {
+        
+        // 1. THE BITWISE SHUFFLE HOOK
+        // Every thread grabs its partner's complex value instantly over the registers!
+        let partner_value = Complex(
+            subgroupShuffleXor(my_value.real, mask),
+            subgroupShuffleXor(my_value.imag, mask)
+        );
+        
+        // 2. THE BUTTERFLY MULTIPLICATION
+        let twiddle = calculate_twiddle_factor(lane_id, mask);
+        
+        // Determine if this thread is the upper wing or lower wing of the butterfly
+        if ((lane_id & mask) == 0u) {
+            // Upper Wing: Add partner's modified value
+            my_value.real = my_value.real + (partner_value.real * twiddle.real - partner_value.imag * twiddle.imag);
+            my_value.imag = my_value.imag + (partner_value.real * twiddle.imag + partner_value.imag * twiddle.real);
+        } else {
+            // Lower Wing: Subtract partner's modified value
+            my_value.real = partner_value.real - (my_value.real * twiddle.real - my_value.imag * twiddle.imag);
+            my_value.imag = partner_value.imag - (my_value.real * twiddle.imag + my_value.imag * twiddle.real);
+        }
+        
+        // No memory barriers or synchronization blocks needed! 
+        // The subgroup guarantees execution happens in absolute hardware lockstep.
+    }
+    
+    // my_value now holds the finalized frequency bucket data for this bin index
+    write_back_to_global_frequency_buffer(lane_id, my_value);
+}

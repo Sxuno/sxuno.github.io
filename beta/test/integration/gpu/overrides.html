@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<title>DEBUG</title>
+<style>
+	* {color-scheme: dark;}
+	body {
+		display: flex; 
+		flex-direction: column; 
+		width: 512px;
+		margin: 5px auto;
+	}
+	canvas {
+		border : 1px solid grey;
+		margin: 5px;
+	}
+</style>
+<!-- TEST -->
+<script>
+// AI GENERATED FUNCTION
+(async function() {
+    
+    // Store the original requestAdapter reference
+    const originalRequestAdapter = await navigator.gpu.requestAdapter;
+    console.log(navigator)
+    // Override the requestAdapter method
+    navigator.gpu.requestAdapter = async function(...args) {
+        console.warn('🔌 navigator.gpu.requestAdapter() called with args:', args);
+        
+        // Call the original method to get the actual adapter
+        const adapter = await originalRequestAdapter.apply(this, args);
+        
+        // If no adapter is returned (WebGPU not supported/disabled), return it as-is
+        if (!adapter) {
+        return adapter;
+        }
+
+        // Store the original requestDevice reference from this adapter instance
+        const originalRequestDevice = await adapter.requestDevice;
+
+        // Override the requestDevice method on the returned adapter
+        adapter.requestDevice = async function(...deviceArgs) {
+        console.warn('🚀 adapter.requestDevice() was triggered!', {
+            adapter: adapter,
+            arguments: deviceArgs
+        });
+        
+        // Execute the original requestDevice method
+        return await originalRequestDevice.apply(this, deviceArgs);
+        };
+
+        return adapter;
+    };    
+    console.warn('✅ WebGPU requestAdapter/requestDevice overrides injected successfully.');
+})();
+</script>
+<!-- Framework simulation -->
+<script>
+    // runtime simulation
+    (function() {
+        const init = (function(){
+            console.log('init runtime')
+            window.addEventListener('load', runtime)
+            
+            async function runtime() {
+                console.warn('runtime test')
+                //await observer.init()
+                let _adapter = await navigator.gpu.requestAdapter()
+                let _device = await _adapter.requestDevice()
+                window.dispatchEvent(new Event('runtime test'))
+            }
+            return runtime
+        })()
+    })()
+</script>
+<!-- Engine -->
+<script src = './../src/engine/core.js'></script>
+<!-- CONFIG-->
+<script>
+    
+	// PATH custom config
+	engine.PATH.content = './../demo/content/'
+	engine.PATH.shader = './../build/shadercache/'
+
+	engine.eventdispatcher.addEventListener('InitCore', () => {console.warn('Event InitCore callback')})
+
+	// engine.init()
+	// engine.init('load')
+	// engine.init('DOMContentLoaded')
+
+    engine.init('runtime test')
+
+    /* Document ReadyState Log */
+	document.onreadystatechange = () => {console.log(`${Temporal.Now.plainTimeISO()} ${document.readyState}`)}
+</script>
+<canvas scene = 'rgb-cubes'></canvas>
+
+
+TODO:
+
+const originalRequestAdapter = GPU.prototype.requestAdapter;
+
+GPU.prototype.requestAdapter = async function(...args) {
+  engine.log.info('Global adapter request intercepted via GPU prototype!');
+  
+  const adapter = await originalRequestAdapter.apply(this, args);
+  return adapter;
+};
+
+
+// A Map to store the context of every active device in the runtime
+const deviceContexts = new Map(); 
+let myEngineDevice = null;
+
+// 1. OVERRIDE ADAPTER PROTOTYPE
+const originalRequestDevice = GPUAdapter.prototype.requestDevice;
+GPUAdapter.prototype.requestDevice = async function(...args) {
+  engine.log.info('controller gpu : device request via prototype');
+  engine.debug?.timer.start('device request');
+
+  // Call the native browser method on whichever adapter instance invoked this
+  const device = await originalRequestDevice.apply(this, args);
+  
+  engine.debug?.timer.end('device request');
+
+  // Check if this is your internal engine setup or an external call
+  const isInternal = args[0]?.label === 'my-engine-device'; 
+  
+  if (isInternal) {
+    myEngineDevice = device;
+    controller.monitor(device);
+    _limits = device.limits;
+  }
+
+  // Register every device into a tracking context so you can manage its queue later
+  deviceContexts.set(device, {
+    label: device.label || 'external-device',
+    isInternal: isInternal,
+    isPaused: false
+  });
+
+  return device;
+};
+
+// 2. OVERRIDE QUEUE SUBMIT VIA PROTOTYPE
+const originalSubmit = GPUQueue.prototype.submit;
+GPUQueue.prototype.submit = function(commandBuffers) {
+  // 'this' refers to the specific device.queue instance calling submit
+  // We can look up the queue's device by finding which device owns this queue
+  // (Or track the queue directly in your deviceContexts map during creation)
+  
+  engine.log.info(`Intercepted a queue submission!`);
+  
+  // Call the original native submission
+  originalSubmit.apply(this, [commandBuffers]);
+};
+
+
+const originalBeginRenderPass = GPUCommandEncoder.prototype.beginRenderPass;
+
+GPUCommandEncoder.prototype.beginRenderPass = function(descriptor) {
+  engine.log.info(`A render pass is starting with label: ${descriptor?.label}`);
+  
+  // You can inject your own diagnostic/monitoring markers here!
+  
+  return originalBeginRenderPass.apply(this, [descriptor]);
+};
+

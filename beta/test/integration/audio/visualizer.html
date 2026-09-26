@@ -1,0 +1,212 @@
+<style>
+  * {color-scheme: dark;}
+</style>
+<!-- core -->
+<script> 
+	const engine = new Object
+	engine.log = new Object
+	engine.eventdispatcher = new EventTarget()
+	engine.log.event = (string)=>{console.log(string)}
+	engine.PATH = new Object
+	engine.PATH.root = './../../src/engine/'
+</script>
+<!-- subsystem -->
+<script src = './../../src/engine/GUI/controller.js'></script>
+<!-- TEST -->
+<script>
+	const test = new Object
+	test.audio = {
+		stream : new Array, // buffer
+		controller : new Array,
+		channel : {
+			speaker : {
+			init : () => {console.log('init speaker channel')},
+			syntesize : () => {}
+			},
+			listener : {
+			init : () => {console.log('init microphone channel')},
+			analyse : () => {}
+			}
+		}
+	}
+  	console.log(engine)
+	console.log(test)
+</script>
+<main>
+	<header>Integration Test</header>
+	<label>Audio</label>
+</main>
+
+<footer>source</footer>
+// Audio State Provider inside your engine namespace
+const EngineAudioSystem = {
+  dataArray: null,
+  analyser: null,
+  isReady: false,
+
+  update() {
+	if (!this.isReady) return;
+	
+	// Pull the freshest audio data snapshot directly into the shared typed array
+	this.analyser.getByteFrequencyData(this.dataArray);
+  },
+
+  // Helper method for your 3D transformation matrices
+  getFrequencyRange(startBin, endBin) {
+	if (!this.isReady) return 0;
+	let sum = 0;
+	for (let i = startBin; i <= endBin; i++) {
+	  sum += this.dataArray[i];
+	}
+	return sum / (endBin - startBin + 1) / 255; // Returns normalized 0.0 - 1.0 float
+  }
+};
+
+<script>
+async function checkAudioPermissionState() {
+  try {
+	// Poll the browser's permission manager for audio recording
+	const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+	
+	console.log(`Current Audio State: ${permissionStatus.state}`); // "granted", "prompt", or "denied"
+	
+	// Listen for real-time changes (e.g., if the user revokes access via the address bar)
+	permissionStatus.onchange = () => {
+	  console.log(`Permission modified by user to: ${permissionStatus.state}`);
+	  if (permissionStatus.state === 'denied') {
+		// Core runtime engine safe shutdown call
+		EngineAudioSystem.emergencyStop();
+	  }
+	};
+	
+	return permissionStatus.state;
+  } catch (error) {
+	console.error("Permissions API not supported or threw an error:", error);
+  }
+}
+</script>
+function monitorStreamHealth(stream) {
+  const audioTrack = stream.getAudioTracks()[0];
+  
+  // Triggers if the hardware physically disconnects mid-session
+  audioTrack.onended = () => {
+	console.warn("Microphone hardware disconnected physically.");
+	// Update your 3D world UI to show a "Mic Disconnected" alert
+  };
+
+  // Check if the browser or user muted the tab at an OS level
+  setInterval(() => {
+	if (audioTrack.muted) {
+	  console.log("Audio track is muted by the system browser layer.");
+	}
+  }, 1000);
+}
+<script>
+let _audioOut
+async function audioOut() {
+  try {
+	if (!navigator.mediaDevices.selectAudioOutput) {
+	  console.info('feature sound channel selection not available.')
+	  return
+	}
+	if(!_audioOut) {
+	  const selectedDevice = await navigator.mediaDevices.selectAudioOutput()
+	  _audioOut = selectedDevice
+	}  
+	console.log(_audioOut)
+  } catch (err) {
+	console.error("Hardware list locked:", err)
+  }
+}
+</script>
+<script>
+async function switchAudioOutputDevice(audioCtx, targetDeviceName) {
+  try {
+	// 1. Enumerate all audio devices plugged into the computer
+	let test = await navigator.permissions.query({name: 'enumerateDevies'})
+	console.log(test)
+	const devices = await navigator.mediaDevices.enumerateDevices();
+	const audioOutputs = devices.filter(device => device.kind === 'audiooutput');
+	console.log(audioOutputs)
+	// 2. Find the device matching your specific channel intent
+	const targetDevice = audioOutputs.find(d => d.label.includes(targetDeviceName));
+	
+	if (!targetDevice) {
+	  console.error("Requested audio output channel target not found.");
+	  return;
+	}
+	
+	// 3. Hot-swap the output sink channel instantly without rebuilding the audio graph
+	//await audioCtx.setSinkId(targetDevice.deviceId);
+	console.log(`Audio successfully routed to: ${targetDevice.label}`);
+	
+  } catch (err) {
+	console.error("Failed to swap audio output channels:", err);
+  }
+}
+</script>
+
+<script>
+// A shared audio context and analyzer used across your entire engine namespace
+const EngineAudioCore = {
+  ctx: null,
+  analyser: null,
+  dataArray: null,
+  
+  init() {
+	this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+	this.analyser = this.ctx.createAnalyser();
+	this.analyser.fftSize = 256;
+	this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+  }
+};
+
+// Modifying the synthesis function to act as an Input Emulator
+function playAndAnalyzeVowel(vowelType, basePitch = 120) {
+  // Ensure the core engine context is initialized
+  if (!EngineAudioCore.ctx) EngineAudioCore.init();
+  
+  const ctx = EngineAudioCore.ctx;
+  const analyser = EngineAudioCore.analyser;
+
+  // 1. Setup Synthesis Nodes (The Generator)
+  const oscillator = ctx.createOscillator();
+  oscillator.type = 'sawtooth'; 
+  oscillator.frequency.value = basePitch; 
+  
+  const f1Filter = ctx.createBiquadFilter();
+  f1Filter.type = 'bandpass';
+  const f2Filter = ctx.createBiquadFilter();
+  f2Filter.type = 'bandpass';
+
+  // Apply Formant profiles
+  const profiles = {
+	"vowel_EE": { f1: 270, q1: 15, f2: 2290, q2: 15 },
+	"vowel_AA": { f1: 730, q1: 10, f2: 1090, q2: 10 }
+  };
+  const activeProfile = profiles[vowelType];
+  f1Filter.frequency.value = activeProfile.f1;
+  f1Filter.Q.value = activeProfile.q1;
+  f2Filter.frequency.value = activeProfile.f2;
+  f2Filter.Q.value = activeProfile.q2;
+
+  const synthGain = ctx.createGain();
+  synthGain.gain.setValueAtTime(0.3, ctx.currentTime);
+
+  // 2. Build the Node Connections
+  oscillator.connect(f1Filter);
+  oscillator.connect(f2Filter);
+  f1Filter.connect(synthGain);
+  f2Filter.connect(synthGain);
+
+  // --- THE BRIDGE ---
+  // Route to the speakers so you can hear it
+  synthGain.connect(ctx.destination); 
+  // Route to the engine's analyzer node so the detection tree processes it as live input!
+  synthGain.connect(analyser); 
+
+  // Fire the audio signal
+  oscillator.start();
+  oscillator.stop(ctx.currentTime + 0.5); // Run for 500ms
+}
+</script>

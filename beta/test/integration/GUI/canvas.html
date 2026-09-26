@@ -1,0 +1,126 @@
+<title>GUI</title>
+<style>
+    *{color-scheme: dark;}
+    body {display: flex; flex-direction: column;}
+    canvas {
+        border: 1px solid grey;
+        width: 800px;
+        height: 512px;
+        margin: 5px auto;
+    }
+    h1 {
+        margin: 5px auto;
+    }
+</style>
+<script>
+
+let ctx = null
+
+let current = {}
+let last = 0
+
+let worker = null
+// WORKER COMMANDS GLOBAL
+const CMD = {
+    SET_CANVAS: 0,
+    DRAW_LINE: 1,
+    DRAW_RECT: 2,
+    RESET: 3
+}
+window.addEventListener('load', event => {
+
+    const workerFN = () => {
+        // WORKER COMMANDS LOCAL
+        const CMD = {
+            SET_CANVAS: 0,
+            DRAW_LINE: 1,
+            DRAW_RECT: 2,
+            RESET: 3
+        }
+        let ctx = null
+        self.onmessage = (e) => {
+            switch(e.data.type) {
+                case CMD.SET_CANVAS:
+                    ctx = e.data.canvas.getContext('2d')
+                    break
+                case CMD.DRAW_LINE:
+                    ctx.strokeStyle = 'white'
+                    ctx.moveTo(50, 50)
+                    ctx.lineTo(200, 50)
+                    ctx.stroke()
+                    break
+                case CMD.DRAW_RECT:
+                    ctx.fillStyle = 'blue'
+                    ctx.fillRect(48,48,4,4)
+                    break
+                case CMD.RESET:
+                    ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
+                    // ctx.reset()
+                    break
+            }
+            // OBSOLETE SAMPLE WITH STRING PARSING
+            /*
+            if (e.data.canvas) {
+                ctx = e.data.canvas.getContext('2d')
+            }
+            if (e.data.command === 'line') {
+                ctx.strokeStyle = 'white'
+                // ctx.beginPath()
+                ctx.moveTo(50, 50)
+                ctx.lineTo(200, 50)
+                ctx.stroke()
+            }
+            if (e.data.command ===  'rect') {
+                ctx.fillStyle = 'blue'
+                ctx.fillRect(48,48,4,4)
+            }
+            if (e.data.command === 'reset') {
+                ctx.reset()
+                // partial reset 
+                // ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height)
+            }
+            */
+        }
+    }
+    const code = `(${workerFN.toString()})()`
+    const blob = new Blob([code], { type: 'application/javascript'})
+
+    worker = new Worker(URL.createObjectURL(blob))
+
+    let canvas = document.createElement('canvas')
+    document.querySelector('body').appendChild(canvas)
+    canvas.width = 800 * 1.5
+    canvas.height = 512 * 1.5
+    
+    //ctx = canvas.getContext('2d')
+    let offscreen = canvas.transferControlToOffscreen()
+    worker.postMessage({ type: CMD.SET_CANVAS, canvas: offscreen }, [offscreen])
+})
+
+function line() {
+    worker.postMessage({type: CMD.DRAW_LINE})
+}
+function path() {
+    // ctx.beginPath();
+}
+function rect() {
+    worker.postMessage({type: CMD.DRAW_RECT})
+}
+function anim() {
+    // worker.postMessage({command: 'anim'})
+}
+function reset() {
+    worker.postMessage({type: CMD.RESET})
+}
+</script>
+<h1>
+    <button onclick = 'line()'>line</button>
+    <button onclick = 'rect()'>rect</button>
+    <button onclick = 'anim()'>animate</button>
+    <button onclick = 'reset()'>reset</button>
+</h1>
+
+// NEXT STEPS 
+// Ringbuffer
+// Bufferpool
+// Swapchain
