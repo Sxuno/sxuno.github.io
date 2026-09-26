@@ -15,6 +15,7 @@ See [LICENSE](./LICENSE.txt) for details.
 ## Project structure
 
 ```
+    beta            >>> webgpu-engine development branch mirror
     content         >>> 3d content files
     engine          >>> webgpu-engine
     projects        >>> static html project files
