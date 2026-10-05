@@ -68,6 +68,7 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 /*** FLEXGRID **/
 .grid-wrap { display: flex; flex-wrap: wrap; }
 .col10 { flex: 0 0 10%; padding: 5px 5px 5px 0px; }
+.col20 { flex: 0 0 20%; padding: 5px 5px 5px 0px;}
 .col25 { flex: 1 1 25%; padding: 5px 0px; }
 .col33 { flex: 1 1 33%; padding: 5px 0px; }
 .col50 { flex: 1 1 50%; padding: 5px 0px; min-width: 320px; }
@@ -91,14 +92,15 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 .T_UI_Arrow_right {transform: rotate(90deg);}
 /*** IMAGE ***/
 .media {border-radius: 8px; border: 1px solid grey;}
-/*** VIEWS ***/
 
+/*** VIEWS ***/
 /* githubpage */
 #githubpage {/*min-width:240px;*/ padding-left: 24px; padding-right: 24px; /* background-color: rgba(0, 0, 0, .5); /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
 main h1 {font-size: 54px;padding: 10px 0px;margin: 0px;}
-main a {display: block;color: white;text-decoration: none;}
+main a {display: inline;color: white;text-decoration: none;}
 label {font-style: italic;color: grey;}
 label a { display: inline;}
+.inactive {color: grey !important}
 .network ul {list-style-type: none;overflow: hidden;padding: 0px;margin: 0px;}
 .network ul li {float: left;padding-right: 20px;}
 .network ul li a img {height: 32px;width: 32px;}
@@ -107,8 +109,6 @@ label a { display: inline;}
 /* Motivation */
 /* PROJECTS */
 
-    /* DisplaySubsystem */
-    #DisplaySubsystem {width:1080px;}
     /* orbitcontrollsystem */
     #orbitalcontrollsystem {width:800px;}
     /* wegpu-export */
@@ -148,6 +148,9 @@ label a { display: inline;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(6) { width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(8) { margin-right:10px;width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(9) { width:315px;height:177px;}
+
+    #spatial-frame-reconstruction {width: 800px}
+
 
 /* worksamples */
 #worksample_3Dmodels {width:1080px;}
