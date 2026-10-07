@@ -16,13 +16,12 @@ See [LICENSE](./LICENSE.txt) for details.
 
 ```
     beta            >>> webgpu-engine development branch mirror
-    content         >>> 3d content files
-    engine          >>> webgpu-engine
-    projects        >>> static html project files
+    content         >>> 3d scene data
+    engine          >>> webgpu-engine poc 0.1.6
+    projects        >>> project landing pages
     system          >>> framework system
     theme           >>> style system
-    user            >>> session and cookie system
-    views           >>> static html files
+    views           >>> portfolio landing page
 ```
 
 ## Workspace Tools

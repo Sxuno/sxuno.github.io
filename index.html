@@ -75,7 +75,6 @@
 			<section id = 'projects'>
 				<h2>Projects</h2>
 				<div class = 'scrollcontainer'>
-
 					<div class = 'containeritem'>
 						<a href = './project/webgpu-export.html'>Webgpu-export</a><br/>
 						<label>Blender Addon</label>
@@ -117,12 +116,12 @@
 			</nav>
 		</main>
 		<canvas class = 'webgpu' width = '320' height = '192' scene = 'rgb-cubes'></canvas>
-		<!-- note: inline size = rendersize / css size canvas size && .webgpu !important = dependency webgpu-engine v0.1.x dependency -->
+		<!-- note: inline size = rendersize / css size canvas size && .webgpu !important = webgpu-engine v0.1.x depracating dependency -->
 		<footer>
 			<small>
 				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 			</small>
-			<!-- class based hook from framework to engine.eventdispatcher sample -->
+			<!-- SAMPLE: class based hook to engine.eventdispatcher -->
 			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './media/logo/webgpu.svg' /></label>	
 		</footer>
 	</body>

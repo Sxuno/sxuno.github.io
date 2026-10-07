@@ -1,8 +1,8 @@
-// TODO: 
-	// add themeselector
-	// ---
-	// console.log(document.styleSheets[1])
-	// document.styleSheets[1].disabled = true
+// FRAMEWORK
+// sample for webgpu engine integration
+// version 0.2.0-alpha
+
+// BASIC SETUP
 
 // ENGINE hooks
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,56 +17,63 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		})
 	}
+
+	const test = document.querySelector('#test')
+	if(test) {
+		let s = test.getBoundingClientRect()
+		console.log(s.width)
+		console.log(test.children)
+	}
 })
+
 // SYSTEM functions
-system = (function () {
+const system = (function () {
 	const session = document.cookie
 	const language = navigator.language
 	const theme = 'default'
 	const notification = null
 	return {session, language, theme}
 })()
+
+// RESPONSIVE functions
+const responsive = (function() {
+	let _observer
+	let _width
+	let _height
+
+	_width = window.innerWidth
+	_height = window.innerHeight
+	console.log(`document onscreensize ${_width} x ${_height}`)
+})()
+
 // VIEW functions
-view = (function() {
-	let _cache
-	let _index
-	notification = (function() {
-		const show = () => {}
-		const hide = () => {}
-		return {show, hide}
-	})()
-	container = (function() {
-		let cache = {
-			height : 315*2.5,
-			width : 560*2.5
+const view = (function () {
+	let _vdom
+	const content = (function(){
+		let _section
+		let _overlay
+		let _slider
+
+		const section = {
+			load : {},
+			show : {},
+			hide : {},
+			remove : {}
 		}
-		const show = () => {}
-		const hide = () => {}
-		const page = {
-			next : () => {},
-			prev : () => {}
+		const overlay = {
+			load : {},
+			show : {},
+			hide : {},
+			remove : {}
 		}
-		return {show, hide, page}
-	})()
-	media = (function() {
-		let cache = {
-			image : false,
-			model : false,
-			video : false
+		const slider = {
+			load : {},
+			show : {},
+			hide : {},
+			remove : {}
 		}
-		const image = () => {}
-		const model = () => {}
-		const video = () => {}
-		return {image, model, video}
+
+		return {section, overlay, slider}
 	})()
-	overlay = (function () {
-		let cache = {
-			background : false,
-			func : false
-		}
-		const show = () => {}
-		const hide = () => {}
-		return {show, hide}
-	})()
-	return {container, media, overlay}
+	return {content}
 })()

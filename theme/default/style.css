@@ -4,6 +4,7 @@ html, body { height: 100%; margin: 0px; display: flex; flex-direction: column;}
 a:link, a:visited, a:hover, a:active, a:focus { color: rgb(0, 128, 255); text-decoration: none; }
 h3, h4 { margin-top: 0px;}
 /*** MEDIA RESPONSIVE ***/
+/* TODO: replace with responsive.js */
 @media (max-width: 540px) {
     body header h1 {text-align: center;}
     body main {width: 360px;}
@@ -28,7 +29,6 @@ h3, h4 { margin-top: 0px;}
     body main header {position:relative;}
 }
 /*** LAYOUT ***/
-
 /*** Z-INDEX ***/
 /* TODO: update order */
 header {z-index: 99}
@@ -39,7 +39,6 @@ div {z-index: 0}
 .loader {z-index: 300;}
 .overlay.func {z-index: 400;}
 #githubpage {z-index: 10}
-
 /*** HEADER ***/
 header {min-height: 50px; width: 100%; position: fixed; top:0px; display: flex;  background: linear-gradient(to bottom, #1C1B22 0%, rgba(28,27,34,1) 50%, rgba(28,27,34,0) 100%); }
 header h1 { width: 100%; max-width: 1080px; min-width: 433px; margin: auto; font-size: 28px;}
@@ -95,9 +94,7 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 .roadmap {display: flex;}
 .roadmap .container {margin-left: 24px;}
 .roadmap .container:first-child {margin: 0px;}
-/* .roadmap .label {} */
 .roadmap .content {border: 1px solid white; border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;}
-
 /*** VIEWS ***/
 /* githubpage */
 #githubpage {/*min-width:240px;*/ padding-left: 24px; padding-right: 24px; /* background-color: rgba(0, 0, 0, .5); /*background-image: url("./../media/image/background.png"); background-position: center;background-size: 120%;background-repeat: no-repeat;*/}
@@ -113,26 +110,11 @@ label a { display: inline;}
 /* Intent */
 /* Motivation */
 /* PROJECTS */
-
     /* orbitcontrollsystem */
     #orbitalcontrollsystem {width:800px;}
     /* wegpu-export */
     #webgpu-export {width:1080px;}
-    #preview img {border: 1px solid grey; border-radius: 8px;}
-    #download a {color: grey;}
-    .roadmap { /* padding: 5px; /*border: 1px solid black; */display: flex; position: relative; }
-    .legend { background-color: transparent; display: flex; flex-direction: column; position: absolute; top: 0px; left: 0px;}
-    .legend div { background-color: transparent; font-size: 12px; font-weight: bold; padding-left: 5px; position: relative; }
-    .legend div:nth-child(1) { top: 30px; }
-    .legend div:nth-child(2) { top: 65px; }
-    .legend div:nth-child(3) { top: 102px; }
-    .timeline { display: flex; overflow-x: scroll; max-width: 100%; padding-bottom: 6px; flex-grow: 1; }
-    .timeline div { background-color: black; flex: 0 0 auto; justify-content: flex-end; border-right: 1px solid black; }
-    .timeline div:nth-child(1) label { font-weight: bold; color: white;}
-    .timeline > div:last-child { flex-grow: 1; }
-    .timeline div label { background-color: rgb(0, 128, 255); color: rgb(31, 58, 97); font-style: italic; display: flex; flex: 0 0 auto; justify-content: flex-end; padding-right: 5px; }
-    .timeline div div { background-color: grey; display: flex; justify-content: flex-end; height: 33px; gap: 5px; margin-top: 20px; }
-    .timeline div div div { background-color: white; color: black; height: 18px; margin: 5px; padding: 2.5px; border-radius: 2.5px; font-family: Arial, Helvetica, sans-serif; }
+    #webgpu-export #preview img {border: 1px solid grey; border-radius: 8px;}
         /* paper */
         #paper {width: 800px}
         /* demo */
@@ -144,7 +126,6 @@ label a { display: inline;}
         #webgpu-engine #demo canvas {border-radius: 20px; width: 600px; height: 300px}
         /* snapshot */
         #webgpu-engine #snapshot canvas {border : 1px solid grey;border-radius: 5px; margin-bottom: 10px;}
-
         #webgpu-engine #snapshot .wrap {width: 644px; display: flex;flex-wrap: wrap;}
         #webgpu-engine #snapshot .wrap  canvas {width: 640px; height: 360px;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(2) { margin-right:10px;width:315px;height:177px;}
@@ -153,11 +134,9 @@ label a { display: inline;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(6) { width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(8) { margin-right:10px;width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap  canvas:nth-child(9) { width:315px;height:177px;}
-
+    /* spatial frame reconstruction */
     #spatial-frame-reconstruction {width: 800px}
-
 /* worksamples */
-
  div {background-size: 100%;}
  .header {height: 55px;  margin: 25px auto; padding: 25px 354px; flex-wrap: nowrap;}
  .header h1 {font-size: 48px; text-align: center; margin: 0px; padding: 0px 0px 10px 10px; float: right;}

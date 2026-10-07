@@ -172,7 +172,7 @@ engine = (function() {
 				_eventdispatcher.dispatchEvent(new Event('InitCore'))
 				// configure PATH engine
 				_path.engine = _path.script.substring(0, _path.script.lastIndexOf('/') +1)
-				engine.debug?.log(`PATH engine ${_path.engine}`)
+				// engine.debug?.log(`PATH engine ${_path.engine}`)
 
 				await script('engine/GUI/controller.js')
 				await script('engine/runtime.js')
