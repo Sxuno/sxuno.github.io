@@ -36,8 +36,10 @@
 
 !/project/spatial-frame-reconstruction.html
 !/project/spatial-frame-reconstruction/
-!/project/spatial-frame-reconstruction/demo.html
-!/project/spatial-frame-reconstruction/modelviewer.html
+!/project/spatial-frame-reconstruction/demo/
+!/project/spatial-frame-reconstruction/demo/**
+#!/project/spatial-frame-reconstruction/demo.html
+#!/project/spatial-frame-reconstruction/modelviewer.html
 
 !/project/OrbitalControllSystem.html
 

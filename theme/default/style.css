@@ -105,7 +105,7 @@ main h1 {font-size: 54px;padding: 10px 0px;margin: 0px;}
 main a {display: inline;color: white;text-decoration: none;}
 label {font-style: italic;color: grey;}
 label a { display: inline;}
-.inactive {color: grey !important}
+.inactive {color: grey !important; pointer-events: none !important; cursor: default !important;}
 .network ul {list-style-type: none;overflow: hidden;padding: 0px;margin: 0px;}
 .network ul li {float: left;padding-right: 20px;}
 .network ul li a img {height: 32px;width: 32px;}

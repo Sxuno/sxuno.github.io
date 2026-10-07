@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+	<head>
+		<title>Spatial Frame Reconstruction</title>
+
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content= 'SXuno, Portfolio, Github, Sketchfab, LinkedIn'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>
+		
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
+
+		<link rel = 'icon' type = 'image/x-ico' href = './../media/icon/menu.svg'>
+		<link rel = 'stylesheet' href = './../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../theme/default/engine.css'>
+
+		<script src = './../system/framework.js'></script>
+		<script src = './../engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../content/'
+			engine.PATH.shader = './../engine/shader/'
+		</script>
+		<!-- TODO: integrate into theme/engine? -->
+		<style>
+			.comparison {
+				position: relative;
+				overflow: hidden;
+				width: 1080px;
+				height: 608px;
+			}
+			.image {
+				position: absolute;
+				inset: 0;
+				background-size: 100% 100%;
+				background-position: 0 0;
+				width: 100%;
+				height: 100%;
+
+			}
+			.before {
+				background-image: url(./spatial-frame-reconstruction/demo/reconstructed.png); /*right*/
+			}
+			.after {
+				background-image: url(./spatial-frame-reconstruction/demo/lowres.png); /*left*/
+				clip-path: inset(0 50% 0 0);
+			}
+			.slider {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 50%;
+
+				width: 1px;
+				background: white;
+
+				z-index: 10;
+				cursor: ew-resize;
+			}
+			.handle {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+
+				width: 32px;
+				height: 32px;
+
+				border: 2px solid white;
+				border-radius: 50%;
+				background: black;
+
+				transform: translate(-50%, -50%);
+			}
+			#input div {margin: 20px auto 0px auto;display:flex;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:12px;}
+			#input label{margin: 10px auto 0px auto;justify-content: center;}
+			#input {display: flex;flex-direction: column;}
+		</style>
+
+	</head>
+	<body>
+		<header>
+			<nav>
+				<label class = 'left'>
+					<img src = './../media/icon/menu.svg' />
+					<a href='./../index.html'>Home</a>
+				</label>
+				<label class = 'right'>
+					English <img src = './../media/icon/settings.svg' />
+				</label>
+			</nav>
+		</header>
+		<main id = 'spatial-frame-reconstruction'>
+			<h1>Spatial Frame Reconstruction</h1>
+			<div></div>
+			<label></label>
+			<!-- main -->
+			<section id = 'preview'>
+				<h2>Preview</h2>
+				<label>
+                </label>
+			</section>
+			<!-- TODO: update css to integrate into preview -->
+			<section id = 'demo'>
+                <div class='comparison'>
+					<div class='image before'></div>
+					<div class='image after'></div>
+					<div class='slider'>
+						<div class='handle'></div>
+					</div>
+				</div>
+            </section>
+			<!-- TODO: integrate into system/framework -->
+			<script>
+				const comparison = document.querySelector('.comparison')
+				const slider = document.querySelector('.slider')
+				const after = document.querySelector('.after')
+
+				let dragging = false
+
+				function move(x) {
+					const rect = comparison.getBoundingClientRect()
+					const position = Math.max(0, Math.min(1, (x - rect.left) / rect.width))
+
+					slider.style.left = `${position * 100}%`
+					after.style.clipPath = `inset(0 ${100 - position * 100}% 0 0)`
+				}
+
+				comparison.addEventListener('pointerdown', event => {
+					dragging = true
+					comparison.setPointerCapture(event.pointerId)
+					move(event.clientX)
+				})
+
+				comparison.addEventListener('pointermove', event => {
+					if (dragging)
+						move(event.clientX)
+				})
+
+				comparison.addEventListener('pointerup', () => {
+					dragging = false
+				})
+
+				comparison.addEventListener('pointercancel', () => {
+					dragging = false
+				})
+			</script>
+
+			<section id = 'description'>
+				<h2>Description</h2>
+                <div>
+					Shader based frame reconstruction model for RGBA image format.
+                </div>
+				<label>
+                </label>
+			</section>
+            <section id = 'features'>
+                <h2>Features</h2>
+                <div>
+					The Mathematical Core: 
+					<br/>1-Step Rectified Flow Matching (RFM)<br/>
+					<br/>Hardware Gating:
+					<br/>Branchless Predication via Continuous LERP<br />
+					<br/>Bandwidth Protection:
+					<br/>Software-Packed FP8 (E4M3) Storage<br />
+                </div>
+                <label>
+                </label>
+            </section>
+			<section id = 'demo'>
+                <h2>Demo</h2>
+				<div>
+					<a class = 'inactive' href = './spatial-frame-reconstruction/demo.html'>Live sample</a>
+				</div>
+				<br/>
+				<div >
+					<a class = 'inactive' href = './spatial-frame-reconstruction/modelviewer.html'>ONNX viewer</a>
+				</div>
+                <label>
+                </label>
+            </section>
+			<section id = 'download'>
+				<h2>Download</h2>
+				<div class = 'grid-wrap'>
+					<div class = 'col20'>
+						ONNX model
+					</div>
+					<div class = 'col20'>
+						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+					</div>
+				</div>
+				<div class = 'grid-wrap'>
+					<div class = 'col20'>
+						ONNX weights
+					</div>
+					<div class = 'col20'>
+						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+					</div>
+				</div>
+				<div class = 'grid-wrap'>
+					<div class = 'col20'>
+						ONNX bundled
+					</div>
+					<div class = 'col20'>
+						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>
