@@ -22,7 +22,8 @@
 !/project/webgpu-export/
 !/project/webgpu-export/docs/
 !/project/webgpu-export/docs/**
-!/project/webgpu-export/*.zip
+!/project/webgpu-export/download/
+!/project/webgpu-export/download/**
 !/project/webgpu-export/*.html
 
 !/project/webgpu-engine.html
@@ -33,9 +34,14 @@
 
 !/project/database-manager.html
 
-!/project/vsc-UnrealRefSense.html
+!/project/spatial-frame-reconstruction.html
+!/project/spatial-frame-reconstruction/
+!/project/spatial-frame-reconstruction/demo.html
+!/project/spatial-frame-reconstruction/modelviewer.html
 
 !/project/OrbitalControllSystem.html
+
+!/project/vsc-UnrealRefSense.html
 ### system ###
 !/system/
 !/system/**
