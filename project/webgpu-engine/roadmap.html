@@ -3,16 +3,16 @@
 	<head>
 		<title>WebGPU Engine</title>
 
-		<meta name="description" content="Art, coding and modeling portfolio">
-		<meta name="keywords" content="SXuno, Portfolio, ArtStation, Github, Sketfab, LinkedIn">
-		<meta name="author" content="Stefan Wienold">
-		<meta name="language" content = 'en'>
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content = 'SXuno, Portfolio, Project, Github, Githubpages, WebGPU, Engine, Runtime, Core, roadmap'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>
 		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta charset="UTF-8">
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
 
-		<link rel="icon" type="image/x-ico" href="./../../media/icon/menu.svg">
-		<link rel="stylesheet" href="./../../theme/default/style.css">
+		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/menu.svg'>
+		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
 		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
 
 		<script src = './../../system/framework.js'></script>
@@ -22,6 +22,33 @@
 			engine.PATH.content = './../../content/'
 			engine.PATH.shader = './../../engine/shader/'
 		</script>
+
+		<noscript>
+			/*** MEDIA RESPONSIVE ***/
+			@media (max-width: 540px) {
+				body header h1 {text-align: center;}
+				body main {width: 360px;}
+				body main header {width: 360px;text-align: center;}
+			}
+			@media (max-width: 720px) {
+				body header h1 {text-align: center;}
+				body main {max-width: 420px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (max-width: 1443px) {
+				body header h1 {text-align: center;}
+				body main {width: 720px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (min-width: 1444px) {
+				body header h1 {text-align: center;}
+				body main {min-width: 1080px;}
+				body main header {left: 0px;top: 32px; position:absolute;}
+			}
+			@media (max-height: 640px) {
+				body main header {position:relative;}
+			}
+		</noscript>
 	</head>
 	<body>
 		<header>

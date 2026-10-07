@@ -3,18 +3,18 @@
 	<head>
 		<title>Worksample</title>
 
-	<meta name="description" content="Art, coding and modeling portfolio">
-	<meta name="keywords" content="SXuno, Portfolio, ArtStation, Github, Sketchfab, LinkedIn">
-	<meta name="author" content="Stefan Wienold">
-	<meta name="language" content = 'de'>
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content = 'SXuno, Portfolio, ArtStation, Github, Sketchfab, LinkedIn, worksample'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'de'>
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta charset="UTF-8">
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
 
-		<link rel="icon" type="image/x-ico" href="./../../media/icon/worksample.svg">
-		<link rel="stylesheet" href="./../../theme/default/animations.css">
+		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/worksample.svg'>
+		<link rel = 'stylesheet' href = './../../theme/default/animations.css'>
 
-		<link rel="stylesheet" href="./../../theme/default/style.css"> 
+		<link rel = 'stylesheet' href = './../../theme/default/style.css'> 
 		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
 
 		<script src = './../../system/framework.js'></script>
@@ -25,8 +25,34 @@
 			engine.PATH.shader = './../../engine/shader/'
 		</script>
 
-		<script src="./../../system/window.js"></script>
+		<script src = './../../system/window.js'></script>
 
+		<noscript>
+			/*** MEDIA RESPONSIVE ***/
+			@media (max-width: 540px) {
+				body header h1 {text-align: center;}
+				body main {width: 360px;}
+				body main header {width: 360px;text-align: center;}
+			}
+			@media (max-width: 720px) {
+				body header h1 {text-align: center;}
+				body main {max-width: 420px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (max-width: 1443px) {
+				body header h1 {text-align: center;}
+				body main {width: 720px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (min-width: 1444px) {
+				body header h1 {text-align: center;}
+				body main {min-width: 1080px;}
+				body main header {left: 0px;top: 32px; position:absolute;}
+			}
+			@media (max-height: 640px) {
+				body main header {position:relative;}
+			}
+		</noscript>
 		
 		<style>
 			/* media description */
@@ -64,68 +90,68 @@
 			</nav>
 		</header>
 		
-		<div class="header grid-wrap">
-			<img src="./../../media/icon/worksample.svg"/>
+		<div class = 'header grid-wrap'>
+			<img src = './../../media/icon/worksample.svg'/>
 			<h1>Worksample</h1>
 		</div>
-		<div class="content">
-			<div id="japanesebath" class="grid animation-hover-background"  onclick="media.image('japanesebath')">
-				<div class="ambient-shadow-gradient-top-bottom">    
+		<div class = 'content'>
+			<div id = 'japanesebath' class = 'grid animation-hover-background'  onclick = 'media.image("japanesebath")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>    
 					<h2 class = 'worksample'>Technical scene</h2>
 					<p>Case study for webgpu tonemapping, buffer alignment and material creation.</p>                          
-					<img src="./../../media/logo/blender.svg" />
+					<img src = './../../media/logo/blender.svg' />
 				</div>
 			</div>
-			<div id="unrealtestspace" class="grid animation-hover-background" onclick="media.image('unrealtestspace')">
-				<div class="ambient-shadow-gradient-top-bottom">
+			<div id = 'unrealtestspace' class = 'grid animation-hover-background' onclick = 'media.image("unrealtestspace")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>
 					<h2 class = 'worksample'>Unreal Test Level</h2>
 					<p>Case study for actor relations and animations</p>                          
-					<img src="./../../media/logo/unrealengine.svg" />
+					<img src = './../../media/logo/unrealengine.svg' />
 				</div>
 			</div>
-			<div id="woodhut" class="grid animation-hover-background" onclick="media.image('woodhut')">
-				<div class="ambient-shadow-gradient-top-bottom">
+			<div id = 'woodhut' class = 'grid animation-hover-background' onclick = 'media.image("woodhut")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>
 					<h2 class = 'worksample'>Woodhut</h2>
 					<p>Case study for modular staticmeshs for modular actor instancing.</p>                          
-					<img src="./../../media/logo/blender.svg" />
+					<img src = './../../media/logo/blender.svg' />
 				</div>
 			</div>
-			<div id="workspace" class="grid animation-hover-background" onclick="media.image('workspace')">
-				<div class="ambient-shadow-gradient-top-bottom">
+			<div id = 'workspace' class = 'grid animation-hover-background' onclick = 'media.image("workspace")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>
 					<h2 class = 'worksample'>Workspace</h2>
 					<p>Aniversery Sample about topology shading.</p>                          
-					<img src="./../../media/logo/blender.svg" />
+					<img src = './../../media/logo/blender.svg' />
 				</div>
 			</div>
-			<div id="smithgridstone" class="grid animation-hover-background" onclick="media.model('smithgridstone')">
-				<div class="ambient-shadow-gradient-top-bottom">
+			<div id = 'smithgridstone' class = 'grid animation-hover-background' onclick = 'media.model("smithgridstone")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>
 					<h2 class = 'worksample'>Modular Asset</h2>
 					<p>Case study modular actor constrains.</p>                          
-					<img src="./../../media/logo/blender.svg" />
+					<img src = './../../media/logo/blender.svg' />
 				</div>
 			</div>
-			<div id="carshop" class="grid animation-hover-background" onclick="media.video('carshop')">
-				<div class="ambient-shadow-gradient-top-bottom">
+			<div id = 'carshop' class = 'grid animation-hover-background' onclick = 'media.video("carshop")'>
+				<div class = 'ambient-shadow-gradient-top-bottom'>
 					<h2 class = 'worksample'>Cardealershop</h2>
 					<p>Case study for Materiallayering and chunks loading in RAGE Rockstar Advanced Game Engine.</p>
-					<img src="./../../media/logo/3dsmax.svg" />
+					<img src = './../../media/logo/3dsmax.svg' />
 				</div>
 			</div>
 		</div>
-		<div class="navigationbar">
-			<div class="ambient-shadow-backdrop">
-				<a href="https://sketchfab.com/sxuno" target="_blank">
-					<img class="link sketchfab" src="./../../media/logo/sketchfab.svg" />
+		<div class = 'navigationbar'>
+			<div class = 'ambient-shadow-backdrop'>
+				<a href = 'https://sketchfab.com/sxuno' target = '_blank'>
+					<img class = 'link sketchfab' src = './../../media/logo/sketchfab.svg' />
 				</a>
 			</div>
-			<div class="ambient-shadow-backdrop">
-				<a href="https://twitter.com/SXuno" target="_blank">
-					<img class="link twitter" src="./../../media/logo/twitter.svg" />
+			<div class = 'ambient-shadow-backdrop'>
+				<a href = 'https://twitter.com/SXuno' target = '_blank'>
+					<img class = 'link twitter' src = './../../media/logo/twitter.svg' />
 				</a>
 			</div>
-			<div class="ambient-shadow-backdrop">
-				<a href="https://www.youtube.com/channel/UC5llmhOtMno3-DQoRaLsNgg" target="_blank">
-					<img class="link youtube" src="./../../media/logo/youtube.svg" />
+			<div class = 'ambient-shadow-backdrop'>
+				<a href = 'https://www.youtube.com/channel/UC5llmhOtMno3-DQoRaLsNgg' target = '_blank'>
+					<img class = 'link youtube' src = './../../media/logo/youtube.svg' />
 				</a>
 			</div>
 		</div>

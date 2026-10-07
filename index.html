@@ -3,24 +3,50 @@
 	<head>
 		<title>SXuno</title>
 
-		<meta name="google-site-verification" content="T2u_P-uBusQEsbRekgUa87pN1GJAzo9X5rYRX2HWkRs" />
-		<meta name="robots" content="index, follow">	
+		<meta name = 'robots' content='index, follow'>
+		<meta name = 'google-site-verification' content = 'T2u_P-uBusQEsbRekgUa87pN1GJAzo9X5rYRX2HWkRs' />
 
-		<meta name="description" content="Art, coding and modeling portfolio">
-		<meta name="keywords" content="SXuno, Portfolio, WebGPU, Blender, Blender Addon">
-		<meta name="author" content="Stefan Wienold">
-		<meta name="language" content = 'en'>			
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content = 'SXuno, Portfolio, Github, Githubpage, Projects, Blender, Blender Addon, WebGPU, WebGPU Engine, WebGPU Runtime'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>			
 
-		<meta name="viewport" content="width=device-width">
-		<meta charset="UTF-8">
+		<meta name = 'viewport' content = 'width = device-width'>
+		<meta charset = 'UTF-8'>
 
-		<link rel="icon" type="image/x-icon" href="media/icon/site.svg">
-		<link rel="stylesheet" href="theme/default/style.css">
+		<link rel = 'icon' type = 'image/x-icon' href = 'media/icon/site.svg'>
+		<link rel = 'stylesheet' href = 'theme/default/style.css'>
 		<link rel = 'stylesheet' href = 'theme/default/engine.css'>
 
 		<script src = 'system/framework.js'></script>
 		<script src = 'engine/core.js'></script>
 		
+		<noscript>
+			/*** MEDIA RESPONSIVE ***/
+			@media (max-width: 540px) {
+				body header h1 {text-align: center;}
+				body main {width: 360px;}
+				body main header {width: 360px;text-align: center;}
+			}
+			@media (max-width: 720px) {
+				body header h1 {text-align: center;}
+				body main {max-width: 420px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (max-width: 1443px) {
+				body header h1 {text-align: center;}
+				body main {width: 720px;}
+				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+			}
+			@media (min-width: 1444px) {
+				body header h1 {text-align: center;}
+				body main {min-width: 1080px;}
+				body main header {left: 0px;top: 32px; position:absolute;}
+			}
+			@media (max-height: 640px) {
+				body main header {position:relative;}
+			}
+		</noscript>
 	</head>
 	<body>
 		<header>
@@ -39,28 +65,28 @@
 				SXuno
 			</h1>
 			<!--
-			<section id="blogs">
+			<section id='blogs'>
 				<h2>Biolog</h2>
 				<a href = './view/biolog/CV.html'>CV</a>
 				<a href = './view/biolog/Intent.html'>Intent</a>		
 				<a href = './view/biolog/Motivation.html'>Motivation</a>
 			</section>
 			-->
-			<section id="projects" class="webgpu-engine">
+			<section id = 'projects'>
 				<h2>Projects</h2>
 				<div class = 'scrollcontainer'>
 
 					<div class = 'containeritem'>
-						<a href="./project/webgpu-export.html">Webgpu-export</a><br/>
+						<a href = './project/webgpu-export.html'>Webgpu-export</a><br/>
 						<label>Blender Addon</label>
 					</div>
 					<div class = 'containeritem'>
-						<a href="./project/webgpu-engine.html">Webgpu-engine</a><br/>
+						<a href = './project/webgpu-engine.html'>Webgpu-engine</a><br/>
 						<label>modular custom engine</label>
 					</div>
 
 					<div class = 'containeritem'>
-						<a href="./project/database-manager.html">Database-manager</a><br/>
+						<a href = './project/database-manager.html'>Database-manager</a><br/>
 						<label>server client model</label>
 					</div>
 				</div>
@@ -76,22 +102,22 @@
 				<br />
 				<br />
 			</section>
-			<nav class="network">
+			<nav class = 'network'>
 				<ul>
 				<!--
-					<li><a href="https://www.artstation.com/sxuno" target="_blank"><img src="media/logo/artstation.svg"></a></li>
+					<li><a href = 'https://www.artstation.com/sxuno' target = '_blank'><img src = 'media/logo/artstation.svg'></a></li>
 				-->
-					<li><a href="https://github.com/Sxuno" target="_blank"><img src="media/logo/github.svg"></a></li>
-					<li><a href="https://sketchfab.com/sxuno" target="_blank"><img src="media/logo/sketchfab.svg"></a></li>
-					<li><a href="https://www.youtube.com/channel/UC5llmhOtMno3-DQoRaLsNgg"><img src="media/logo/youtube.svg"></a></li>
+					<li><a href = 'https://github.com/Sxuno' target = '_blank'><img src = 'media/logo/github.svg'></a></li>
+					<li><a href = 'https://sketchfab.com/sxuno' target = '_blank'><img src = 'media/logo/sketchfab.svg'></a></li>
+					<li><a href = 'https://www.youtube.com/channel/UC5llmhOtMno3-DQoRaLsNgg'><img src = 'media/logo/youtube.svg'></a></li>
 				<!--
-					<li><a href="https://www.linkedin.com/in/sxuno/" target="_blank"><img src="media/logo/linkedin.svg"></a></li>
+					<li><a href = 'https://www.linkedin.com/in/sxuno/' target = '_blank'><img src = 'media/logo/linkedin.svg'></a></li>
 				-->
 				</ul>
 			</nav>
 		</main>
 		<canvas class = 'webgpu' width = '320' height = '192' scene = 'rgb-cubes'></canvas>
-		<!-- note: inline size = rendersize / css size canvas size -->
+		<!-- note: inline size = rendersize / css size canvas size && .webgpu !important = dependency webgpu-engine v0.1.x dependency -->
 		<footer>
 			<small>
 				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
