@@ -22,30 +22,32 @@
 		<script src = 'engine/core.js'></script>
 		
 		<noscript>
-			/*** MEDIA RESPONSIVE ***/
-			@media (max-width: 540px) {
-				body header h1 {text-align: center;}
-				body main {width: 360px;}
-				body main header {width: 360px;text-align: center;}
-			}
-			@media (max-width: 720px) {
-				body header h1 {text-align: center;}
-				body main {max-width: 420px;}
-				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
-			}
-			@media (max-width: 1443px) {
-				body header h1 {text-align: center;}
-				body main {width: 720px;}
-				body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
-			}
-			@media (min-width: 1444px) {
-				body header h1 {text-align: center;}
-				body main {min-width: 1080px;}
-				body main header {left: 0px;top: 32px; position:absolute;}
-			}
-			@media (max-height: 640px) {
-				body main header {position:relative;}
-			}
+			<style>
+				/*** MEDIA RESPONSIVE ***/
+				@media (max-width: 540px) {
+					body header h1 {text-align: center;}
+					body main {width: 360px;}
+					body main header {width: 360px;text-align: center;}
+				}
+				@media (max-width: 720px) {
+					body header h1 {text-align: center;}
+					body main {max-width: 420px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (max-width: 1443px) {
+					body header h1 {text-align: center;}
+					body main {width: 720px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (min-width: 1444px) {
+					body header h1 {text-align: center;}
+					body main {min-width: 1080px;}
+					body main header {left: 0px;top: 32px; position:absolute;}
+				}
+				@media (max-height: 640px) {
+					body main header {position:relative;}
+				}
+			</style>
 		</noscript>
 	</head>
 	<body>
