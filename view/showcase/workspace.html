@@ -13,6 +13,7 @@
 
 		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/menu.svg'>
 		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../../theme/default/media.css'>
 		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
 
 		<script src = './../../system/framework.js'></script>
@@ -68,34 +69,50 @@
 			<h1>Workspace</h1>
 			<section id = 'description'>
 				<h2>Description</h2>
-				<div class = 'grid-wrap'>
-					<div class = 'col100'>
+				<div class = 'grid splitH'>
+					<div class = 'f11-10'>
 						Snapshots detailing my workflow.<br />
 					</div>
-					<div class = 'grid-wrap'>
-						<div class = 'col50'>
-							<img class = 'media' src = './../../media/image/BlenderAddon.vsc-workspace.png' width = '320px' style = 'display: block;'/>
-							<label style = 'color: white;font-style: normal;'>vsc workspace organisation, no auto creation of new projects yet.</label>
-						</div>
-						<div class = 'col50'>
-							<div class = 'col100'>
-								<img class = 'media' src = './../../media/image/template.png' width = '320px' style = 'display: block'/>
-								<label  style = 'color: white;font-style: normal;'>custom launcher templates, mostly for prototyping.</label>
+					<label class = 'f11-10'>
+					Workflow automations are an essential part, in my workflow.
+					</label>
+					<div class = 'f11-80 grid splitV'>
+						<div class = 'f11-50'>
+							<div id = 'VSCWorkspaceBlenderAddon' data-type = 'png' class = 'media animation-hover-background'>
+								<noscript>
+									<img src = './../../media/image/VSCWorkspaceBlenderAddon.png' width = '320' style = 'display: block; width: 100%;'/>
+								</noscript>
+								<div class = 'ambient-gradient-top-bottom'></div>
+								<label style = 'color: white;font-style: normal;'>vsc workspace organisation, no auto creation of new projects yet.</label>
 							</div>
-							<div class = 'col100' >
-								<img class = 'media' src = './../../media/image/terminal.png' width = '320px' style = 'display: block;'/>
-								<label  style = 'color: white;font-style: normal;' >Script for compiling UE5 Plugins</label>
+						</div>
+						<div class = 'f11-50 grid splitH'>
+							<div class = 'f11-50'>
+								<div id = 'template' data-type = 'png' class = 'media animation-hover-background'>
+									<noscript>
+										<img src = './../../media/image/template.png' width = '320' style = 'display: block; width: 100%;'/>
+									</noscript>
+									<div class = 'ambient-gradient-top-bottom'></div>
+									<label  style = 'color: white;font-style: normal;'>custom launcher templates, mostly for prototyping.</label>
+								</div>
+							</div>
+							<div class = 'f11-50' >
+								<div id = 'terminal' data-type = 'png' class = 'media animation-hover-background'>
+									<noscript>
+										<img src = './../../media/image/terminal.png' width = '320' style = 'display: block; width: 100%;'/>
+									</noscript>
+									<div class = 'ambient-gradient-top-bottom'></div>
+									<label  style = 'color: white;font-style: normal;' >Script for compiling UE5 Plugins</label>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<label>
-					Workflow automations are an essential part, in my workflow.
-				</label>
+
 			</section>			
 			<section id = 'features'>
 				<h2>Features</h2>
-				<div class = 'grid-wrap'>
+				<div class = 'grid splitH'>
 					<!--
 					<div class = 'col100'>
 						
@@ -282,44 +299,74 @@
 						</script>
 					</div>
 					-->
-					<div class = 'col100'>
-						<img class = 'media' src = './../../media/image/BVector.png' width = '320px;' />
+					<div class = 'f11-50'>
+						<div id = 'BVector' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/BVector.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<div class = 'ambient-gradient-top-bottom'></div>
+							<label>
+								prototype for visualizing procedrual data generation through goldx algo and how to render<br/>
+								instances meshes through an actor onto it for spawning pcg logic.<br />
+							</label>
+						</div>
 					</div>
-					<label>
-						prototype for visualizing procedrual data generation through goldx algo and how to render<br/>
-						instances meshes through an actor onto it for spawning pcg logic.<br />
-					</label>
 
-					<div class = 'col100'>
-						<img class = 'media' src = './../../media/image/GPU-driven.png' width = '320px;' />
+					<div class = 'f11-25'>
+						<div id = 'GPU-driven' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/GPU-driven.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<label>
+								PCG logic is not yet hooked up. <br />
+							</label>
+							<div class = 'ambient-gradient-top-bottom'></div>
+						</div>
 					</div>
-					<label>
-						PCG logic is not yet hooked up. <br />						
-					</label>
 
-					<div class = 'col100'>
-						<img class = 'media' src = './../../media/image/vsc.png' width = '320px' />
+					<div class = 'f11-25'>
+						<div id = 'vsc' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/vsc.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<label>
+								VSC plugin for UPROPERTY autocomplete to support porting blueprint to cpp<br />
+							</label>
+							<div class = 'ambient-gradient-top-bottom'></div>
+						</div>
 					</div>
-					<label>
-						VSC plugin for UPROPERTY autocomplete to support porting blueprint to cpp<br />
-					</label>
 				</div>
 			</section>
 			<section id = 'performance'>
 				<h2>Performance</h2>
-				<div class = 'grid-wrap'>
-					<div class = 'col100'>
-						<img class = 'media' src = './../../media/image/AActor.png' width = '320px'/>
+				<div class = 'grid splitH'>
+					<div class = 'f11-40'>
+						<div id = 'AActor' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/AActor.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<label>Impact of Aactor overhead for spline movement.</label>
+							<div class = 'ambient-gradient-top-bottom'></div>
+						</div>
 					</div>		
-					<label>Impact of Aactor overhead for spline movement.</label>
-					<div class = 'col100'>
-						<image class = 'media' src = './../../media/image/class.png' width = '320px;' />
+					<div class = 'f11-20'>
+						<div id = 'cppclass' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/cppclass.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<label>Prototype ports to cpp</label>
+							<div class = 'ambient-gradient-top-bottom'></div>
+						</div>
 					</div>
-					<label>Prototype ports to cpp</label>
-					<div class = 'col100'>
-						<image class = 'media' src = './../../media/image/BOrbitalControllSystem.png' width = '320px;'/>
+					<div class = 'f11-40'>
+						<div id = 'BOrbitalControllSystem' data-type = 'png' class = 'media animation-hover-background'>
+							<noscript>
+								<img src = './../../media/image/BOrbitalControllSystem.png' width = '320' style = 'display: block; width: 100%;'/>
+							</noscript>
+							<label>Visualization to prototype coordinate rebasing.</label>
+							<div class = 'ambient-gradient-top-bottom'></div>
+						</div>
 					</div>
-					<label>Visualization to prototype coordinate rebasing.</label>
 				</div>
 			</section>
 			<section id = 'specification'>

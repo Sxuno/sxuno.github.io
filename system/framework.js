@@ -5,8 +5,8 @@
 // BASIC SETUP
 
 // ENGINE hooks
-document.addEventListener('DOMContentLoaded', () => {
-	
+// sample
+document.addEventListener('DOMContentLoaded', () => {	
 	// engine signal receiver
 	if (engine) {
 		// class based
@@ -17,16 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		})
 	}
-
-	const test = document.querySelector('#test')
-	if(test) {
-		let s = test.getBoundingClientRect()
-		console.log(s.width)
-		console.log(test.children)
-	}
 })
 
 // SYSTEM functions
+// API Module
 const system = (function () {
 	const session = document.cookie
 	const language = navigator.language
@@ -36,7 +30,8 @@ const system = (function () {
 })()
 
 // RESPONSIVE functions
-const responsive = (function() {
+// API
+const layout = (function() {
 	let _observer
 	let _width
 	let _height
@@ -44,9 +39,17 @@ const responsive = (function() {
 	_width = window.innerWidth
 	_height = window.innerHeight
 	console.log(`document onscreensize ${_width} x ${_height}`)
+
+	window.addEventListener('resize', (listener) => {
+		console.log(listener)
+	})
+
+	const observer = (element, event, handler) => {}
+	return {observer}
 })()
 
 // VIEW functions
+// API Module
 const view = (function () {
 	let _vdom
 	const content = (function(){
@@ -89,13 +92,15 @@ const view = (function () {
 	}
 	return {content, overlay}
 })()
-
+// FILE functions
+// API Module
 const file = (function () {
 	const load = () => {}
 
 	return {load}
 })()
-
+// RUNTIME 
+// ECM Module
 const runtime = (function () {
 	let _root = document.currentScript.src
 	let _context
@@ -105,7 +110,6 @@ const runtime = (function () {
 
 	_theme = _theme.split('/')
 	_theme = _theme[_theme.length-2]
-	console.log(_theme)
 
 	_style = new CSSStyleSheet()
 	document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
@@ -118,7 +122,7 @@ const runtime = (function () {
 					if(media.dataset.type) {
 						let path = new URL(`../media/image/${media.id}.${media.dataset.type}`, _root)
 						_style.insertRule(`#${CSS.escape(media.id)} { background-image: url("${path.href}"); }`)
-					} else { console.warn(`media ${media.id} has no defined data-type`)}
+					} else { console.warn(`media ${media.id} has no defined data-type`)} // case create new datatype? may like bufferplaceholder?
 				}
 			} else { return }
 		}

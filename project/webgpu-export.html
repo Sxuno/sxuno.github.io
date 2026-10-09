@@ -12,7 +12,9 @@
 		<meta charset = 'UTF-8'>
 
 		<link rel = 'icon' type = 'image/x-icon' href = './../media/icon/menu.svg'>
+		
 		<link rel = 'stylesheet' href = './../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../theme/default/media.css'>
 		<link rel = 'stylesheet' href = './../theme/default/engine.css'>
 
 		<script src = './../system/framework.js'></script>
@@ -69,7 +71,11 @@
 			<section id = 'preview'>
 				<h2>Preview</h2>
 				<!-- TODO: make it separate images which enlarge xor show label text // for mobile make them collapse and rotate with uniform scale-->
-				<img src = './../media/image/webgpu-export-preview.png' />  
+				<div id = 'webgpu-export-preview' data-type = 'png' class = 'media animation-hover-background'>
+					<noscript>
+						<img src = './../media/image/webgpu-export-preview.png' style = 'display: block; max-width: 100%; height: auto;'/>
+					</noscript>
+				</div>
 			</section>
 			<section id = 'description'>
 				<h2>Description</h2>
@@ -83,8 +89,8 @@
 			</section>
 			<section id = 'features'>
 				<h2>Features</h2>
-					<div class = 'grid-wrap'>
-						<div class = 'col50'>
+					<div class = 'grid'>
+						<div class = 'f11-50'>
 							<section>
 								<h3>Distributions</h3>
 								Deliver your Scene as small Demos via<br />
@@ -92,14 +98,14 @@
 								immersions with Script or Server Distribution.
 							</section>
 						</div>
-						<div class = 'col50'>
+						<div class = 'f11-50'>
 							<section>
 								<h3>Templates</h3>
 								Different Templates to enhance your<br />
 								exported scenes with a basic framework.
 							</section>
 						</div>
-						<div class = 'col50'>
+						<div class = 'f11-50'>
 							<section>
 								<h3>Shading Selector</h3>
 								Set your default shading mode, right<br />
@@ -107,7 +113,7 @@
 								code and functions.
 							</section>
 						</div>
-						<div class = 'col50'>
+						<div class = 'f11-50'>
 							<section>
 								<h3>Camera Controller</h3>
 								Different camera controller for creative<br />
@@ -120,8 +126,8 @@
 				<h2>Specifications</h2>
 				<section class = 'requirements'>
 					<h3>Requirements</h3>
-					<div class = 'grid-wrap'>
-						<div class = 'col50'>
+					<div class = 'grid'>
+						<div class = 'f11-50'>
 							<section>
 								<h4>Addon</h4>
 								Blender 4.5.0 or newer<br />
@@ -133,7 +139,7 @@
 								(bundled with Blender)<br/>
 							</section>
 						</div>
-						<div class = 'col50'>
+						<div class = 'f11-50'>
 							<section>
 								<h4>WebGPU</h4>
 								Chrome (Stable), Edge (Stable), Firefox Nightly<br />
@@ -155,16 +161,16 @@
 				</section>
 				<section>
 					<h3>Tech Stack</h3>
-						<div class = 'grid-wrap'>
-							<div class = 'col33'>
+						<div class = 'grid'>
+							<div class = 'f11-33'>
 								<b>Languages</b><br />
 								Python, Javascript, WGSL<br />
 							</div>
-							<div class = 'col33'>
+							<div class = 'f11-33'>
 								<b>APIs</b><br />
 								Blender API, WebGPU API<br />
 							</div>
-							<div class = 'col33'>
+							<div class = 'f11-33'>
 								<b>Markup</b><br />
 								HTML, CSS
 							</div>
@@ -262,28 +268,28 @@
 			<section id = 'download'>
 				<h2>Planed releases</h2>		
 					<h3>Github</h3>
-					<div class = 'grid-wrap'>
-						<div class = 'col10'>
+					<div class = 'grid'>
+						<div class = 'f00-10'>
 							source: 
 						</div>
-						<div class = 'col33'>
+						<div class = 'f11-33'>
 							<a class = 'inactive' href = './../index.html#github.com/sxuno/webgpu-engine/releases' target = '_self' rel = 'noopener noreferrer'>Access request</a>
 						</div>
 					</div>
-					<div class = 'grid-wrap'>
-						<div class = 'col10'>
+					<div class = 'grid'>
+						<div class = 'f00-10'>
 						release:
 						</div>
-						<div class = 'col33'>
+						<div class = 'f11-33'>
 							<a class = 'inactive' href = './../index.html#github.com/sxuno/webgpu-engine/releases' target='_self' rel='noopener noreferrer'>Access request</a><br /><br />
 						</div>
 					</div>
 					<h3>Blender Addons</h3>
-					<div class = 'grid-wrap'>
-						<div class = 'col10'>
+					<div class = 'grid'>
+						<div class = 'f00-10'>
 						release:
 						</div>
-						<div class = 'col33'>
+						<div class = 'f11-33'>
 							<a class = 'inactive' href = 'https://extensions.blender.org/add-ons/' target = '_blank' rel = 'noopener noreferrer'>in planning</a>
 						</div>
 					</div>
