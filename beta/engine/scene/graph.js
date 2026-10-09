@@ -19,7 +19,7 @@ engine.scene.graph = (function(){
 
 	let _descriptor
 	let _data
-	let _opsqeue // for later
+	let _opsqeue
 
 	// ======
 	// PUBLIC
@@ -35,9 +35,8 @@ engine.scene.graph = (function(){
 				// RUNTIMEHOOK
 				engine.log.info('loadhandler scene graph : runtimehook')
 			} else {
-				// CONTEXT
+				// CONFIGURATION
 				engine.log.info(`loadhandler scene graph : context`)
-
 				engine.debug?.timer.start('scene graph descriptor')
 				_descriptor = new Array 
 				for(let i = 0, len = engine.runtime.descriptor().length; i < len; i++) {
@@ -52,7 +51,6 @@ engine.scene.graph = (function(){
 					}
 				}
 				engine.debug?.timer.end('scene graph descriptor')
-
 				_readystate = true
 			}
 		}		
@@ -80,5 +78,4 @@ engine.scene.graph = (function(){
 	// CONDITIONAL
 	// RETURN VAR
 	return graph
-
 })()

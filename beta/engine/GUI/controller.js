@@ -41,10 +41,9 @@ engine.GUI = (function() {
 
 		_descriptor = new Array()
 		_elements = new Array()
-
 		//  style info from layout
 		_styles = new Array()
-
+		
 		async function loadhandler(context){
 			// LOADHANDLER
 			if(_readystate) {

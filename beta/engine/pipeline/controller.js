@@ -21,15 +21,13 @@ engine.pipeline = (function() {
 
 	// BUFFER
 	let _pointer
-	let _buffer // used?
+	let _buffer // unused
 
 	// RENDERER
 	// NOTE : renderer imidiate invoke || execution at controller init
 	const renderer = {
 		rasterizer :  (function (){
-
-			let _readystate = 0 // namespace override local
-			
+			let _readystate = 0 // namespace override local		
 			let _view = [
 				'lit',
 				'unlit',
@@ -74,7 +72,6 @@ engine.pipeline = (function() {
 					}
 				}
 			}
-			//const buffer = {passname: { resources : [entries]}}
 			const draw = function (context) {
 				// DEBUG
 				// console.log('rasterizer')
@@ -93,7 +90,7 @@ engine.pipeline = (function() {
 							engine.log.event(`pipeline init ${namespace[0]}`)
 							engine.debug.war(`pipeline controller link ${namespace[0]}`)
 							
-							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object() // BUGFIX
+							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object()
 						} 
 						if (_pass !== -1 && engine.pipeline[namespace[0]] === undefined) {
 
@@ -145,7 +142,6 @@ engine.pipeline = (function() {
 					'rasterizer/composepass',
 				],
 			]
-
 			const init = async function (context) {
 				if(!_readystate) {
 				engine.log.event('init raytracer')
@@ -182,7 +178,7 @@ engine.pipeline = (function() {
 							engine.log.event(`pipeline init ${namespace[0]}`)
 							engine.debug.war(`pipeline controller link ${namespace[0]}`)
 							
-							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object() // BUGFIX
+							engine.pipeline[namespace[0]] = engine.pipeline[namespace[0]] || new Object()
 						} 
 						if (_pass !== -1 && engine.pipeline[namespace[0]] === undefined) {
 							await controller[_descriptor.findIndex(type => type.renderer === namespace[0])].init()
@@ -254,14 +250,12 @@ engine.pipeline = (function() {
 	const descriptor = () => {return _descriptor}
 
 	const pointer = {
-		init : async (context) => {
-			
+		init : async (context) => {	
 			let _context = engine.runtime.context()
 			// micro optimization: 
 			// 		replace .findIndex with manual loop
 			// 		replaces function call overhead with inline execution,
 			// 		can prevent garbage collection churn from V8/SpiderMonkey (browser)
-
 			for (let i = 0 ; i < _context.length; i++) {
 				if (!_pointer) {
 					engine.log.event(`buffer init`)
@@ -273,7 +267,6 @@ engine.pipeline = (function() {
 				let r = 0
 				
 				s = _pointer.findIndex(scene => scene[0] === _context[i].scene)
-
 				if(s === -1) {
 					_pointer.push([_context[i].scene, []])
 					engine.debug?.log(`link scene [${_context[i].scene}] to buffer [${_pointer.length-1}]`)	
@@ -281,7 +274,6 @@ engine.pipeline = (function() {
 				} 
 				
 				c = _pointer[s][1].findIndex(camera => camera[0] === _context[i].camera)
-
 				if(c === -1) {
 					_pointer[s][1].push([_context[i].camera, []])
 					engine.debug?.log(`link camera [${_context[i].camera}] to buffer [${s}]`)
@@ -289,14 +281,11 @@ engine.pipeline = (function() {
 				}
 			
 				r = _pointer[s][1][c][1].findIndex(renderer => renderer[0] === _context[i].renderer)
-
 				if(r === -1) {
 					_pointer[s][1][c][1].push([_context[i].renderer, []])
 					engine.debug?.log(`link renderer [${_context[i].renderer}] to buffer [${s}]`)
 					r = _pointer[s][1][c][1].findIndex(renderer => renderer[0] === _context[i].renderer)
 				}
-
-				// renderer init context
 				// REMOVED VIEW from POINTER => USE BUFFER STRUCT with view as composepass arg
 				_context[i].buffer = [s,c,r] 
 				await controller[_context[i].renderer].init(_context[i])
@@ -313,11 +302,9 @@ engine.pipeline = (function() {
 			console.log('context init', buffer)
 		}
 	}
-
 	// rework to call resource memspace with pointer
-	// NOTE pipeline buffer = scene graph data to map
+	// NOTE : pipeline buffer = scene graph data to map ??
 	const buffer = () => {
-
 		return _buffer
 	}
 	
@@ -326,22 +313,20 @@ engine.pipeline = (function() {
 	// ======
 
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init pipeline')
 		engine.eventdispatcher.dispatchEvent(new Event('InitPipeline'))
-
 		_descriptor = new Array()
-
 		async function loadhandler(context) {
-			// loadhandler
+			// LOADHANDLER
 			if(_readystate) {
-				// runtimehook
+				// RUNTIMEHOOK
 				engine.log.info('loadhanlder pipeline : runtimehook')
 				if(context) {
 					pointer.init(context)
 				}
 			} else {
-				// loadhandler
+				// CONFIGURATION
 				engine.log.info('loadhandler pipeline : context')
 				// TODO : rework into flagbased register method
 				if(engine.gpu?.device) {

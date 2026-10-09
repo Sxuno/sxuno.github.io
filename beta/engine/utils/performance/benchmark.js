@@ -32,8 +32,8 @@ engine.utils.performance.benchmark = (function(){
 				// RUNTIMEHOOK
 				engine.log.info('loadhandler benchmark : runtimehook')
 			} else {
-				// CONTEXT
-				engine.log.info('loadhandler benchmark : context')
+				// CONFIGURATION
+				engine.log.info('loadhandler benchmark : configuration')
 				_readystate = 1
 			}
 		}
@@ -48,8 +48,7 @@ engine.utils.performance.benchmark = (function(){
 	let benchmark = {
 		init: init,
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return benchmark
-
 })()

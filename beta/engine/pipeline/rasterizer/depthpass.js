@@ -21,21 +21,18 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	let _descriptor
 
 	// PIPELINE
-	let _resource // .type
+	let _resource // _binding
 	let _bindGroupLayout
 	let _bindGroup
 	let _pipelineLayout
 	let _pipeline
 	
-	// RESOURCE
-	let _binding
-	let _renderTarget
+	// old // to be replaced
+	let _renderTarget 
 
-	// wrap in function for instances
 	const construct = function(context){}
-
+	// wrap in function for instances?
 	_resource = {texture : 	{label : `depth`, size: [0, 0, 1], format: 'depth24plus', usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,}}
-
 	_bindGroupLayout = { entries : [
 			{binding: 0, visibility: 'PIPELINE', texture : {type : 'depth24plus'}}
 		]
@@ -56,7 +53,6 @@ engine.pipeline.rasterizer.depthpass = (function () {
 		console.log('init renderTarget')
 		let x = context.width
 		let y = context.height
-		
 		// await gpu resource callback :: binding id
 		_renderTarget = await engine.gpu.resource.init( 
 			{
@@ -76,16 +72,14 @@ engine.pipeline.rasterizer.depthpass = (function () {
 	// ======
 
 	const init = (function() {
-		// dependencies
+		// DEPENDENCIES
 		engine.log.event('init rasterizer depthpass')
 		// engine.eventdispatcher.dispatchEvent(new Event(''))
-		_readystate = true
+		_readystate = true // TEST TOGGLE
 		async function loadhandler(context){
-			// loadhandler
-			if(!_readystate) {
-				// context init
-			} else {
-				// runtimehook
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
 				console.warn('rasterizer depthpass init (context)')
 				console.log('depthpass init(context)')
 				console.log(`binding ${context.buffer.join('')}x${context.index}`)
@@ -94,6 +88,9 @@ engine.pipeline.rasterizer.depthpass = (function () {
 				context['height'] = (!context.height) ? context.canvas.height : context.height
 
 				await renderTarget(context)
+			} else {
+				// CONFIGURATION
+				_readystate = 1
 			}
 		}
 		return loadhandler

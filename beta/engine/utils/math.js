@@ -11,7 +11,7 @@ engine.utils.math = (function() {
 	// PRIVATE
 	// =======
 
-	// type allocations // note: allocations outputs are pointer
+	// type allocations // note: allocations outputs are pointer // TODO : rethink allocations
 	let _vec2 = new Float32Array(2)
 	let _vec3 = new Float32Array(3)
 	let _vec4 = new Float32Array(4)

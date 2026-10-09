@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.pipeline.rasterizer = engine.pipeline.rasterizer || {}
 engine.pipeline.rasterizer.shadowpass = (function () {
 
 	// =======
@@ -29,20 +28,19 @@ engine.pipeline.rasterizer.shadowpass = (function () {
 	// PUBLIC
 	// ======
 
-
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init rasterizer shadowpass')
-		//engine.eventdispatcher.dispatchEvent(new Event(''))
-        _readystate = true
+		// engine.eventdispatcher.dispatchEvent(new Event(''))
+        _readystate = true // TEST TOGGLE
 		async function loadhandler(context){
-			// context loader 
-			if(!_readystate) {
-
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
+				console.warn('rasterizer shadowpass init (context)')
 			} else {
-                // runtimehook
-                console.warn('rasterizer shadowpass init (context)')
-
+                // CONFIGURATION
+				_readystate = 1
 			}
 		}
 		return loadhandler

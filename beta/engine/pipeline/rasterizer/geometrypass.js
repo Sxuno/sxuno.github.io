@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.pipeline.rasterizer = engine.pipeline.rasterizer || {}
 engine.pipeline.rasterizer.geometrypass = (function () {
 
 	// =======
@@ -29,19 +28,18 @@ engine.pipeline.rasterizer.geometrypass = (function () {
 	// PUBLIC
 	// ======
 
-
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init rasterizer geometrypass')
-		//engine.eventdispatcher.dispatchEvent(new Event(''))
-	_readystate = true
+		// engine.eventdispatcher.dispatchEvent(new Event(''))
+		_readystate = true // TEST TOGGLE
 		async function loadhandler(context){
-			// context loader 
-			if(!_readystate) {
-
-			} else {
-				// runtimehook
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
 				console.warn('rasterizer geometrypass init (context)')
+			} else {
+				// CONFIGURATION
 			}
 		}
 		return loadhandler

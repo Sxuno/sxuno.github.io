@@ -13,7 +13,7 @@ engine = (function() {
 
 	let _debug = true
 	let _name = 'WebGPU Engine'
-	let _version = '0.2.2-dev'
+	let _version = '0.2.3-dev'
 	let _extension = []
 
 	/* Readstate */
@@ -35,15 +35,15 @@ engine = (function() {
 		content : 'content/'
 	}
 
-	const log = {// TODO: make instance for privat scope logs data, improve memory footprint
+	const log = { // TODO: make instance for privat scope gc and improve memory alloc
 		infos : true,
 		info : function(string) {
 			let delta = Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()
 			log.view[log.view[0]] = [delta.toString(),'info', log.views.info[0]]
 			log.views.info[log.views.info[0]] = string
 
-			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1	
-			log.views.info[0] = (log.views.info[0] !== log.views.info.length) ? log.views.info[0]+1 : 1
+			log.view[0] = (log.view[0] !== log.view.length-1) ? log.view[0]+1 : 1	
+			log.views.info[0] = (log.views.info[0] !== log.views.info.length-1) ? log.views.info[0]+1 : 1
 
 			if (log.infos) {
 				console.info(`${delta} event ${string}`)
@@ -55,8 +55,8 @@ engine = (function() {
 			log.view[log.view[0]] = [delta.toString(),'event', log.views.event[0]]	
 			log.views.event[log.views.event[0]] = string
 
-			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1
-			log.views.event[0] = (log.views.event[0] !== log.views.event.length) ? log.views.event[0]+1 : 1
+			log.view[0] = (log.view[0] !== log.view.length-1) ? log.view[0]+1 : 1
+			log.views.event[0] = (log.views.event[0] !== log.views.event.length-1) ? log.views.event[0]+1 : 1
 
 			if (log.events) {
 				console.info(`${delta} event ${string}`)
@@ -68,19 +68,28 @@ engine = (function() {
 			log.view[log.view[0]] = [delta.toString(),'warn', log.views.warning[0]]		
 			log.views.warning[log.views.warning[0]] = string
 
-			log.view[0] = (log.view[0] !== log.view.length) ? log.view[0]+1 : 1
-			log.views.warning[0] = (log.views.warning[0] !== log.views.warning.length) ? log.views.warning[0]+1 : 1
+			log.view[0] = (log.view[0] !== log.view.length-1) ? log.view[0]+1 : 1
+			log.views.warning[0] = (log.views.warning[0] !== log.views.warning.length-1) ? log.views.warning[0]+1 : 1
 
 			if (log.warnings) {
 				console.warn(`${delta} ${string}`)
 			}
 		},
+		errors : true,
+		error : function(string) {
+			let delta = Temporal.Now ? Temporal.Now.plainTimeISO() : new Date().toISOString()
+			log.view[log.view[0]] = [delta.toString(),'event', log.views.error[0]]	
+			log.views.error[log.views.error[0]] = string
+
+			log.view[0] = (log.view[0] !== log.view.length-1) ? log.view[0]+1 : 1
+			log.views.error[0] = (log.views.error[0] !== log.views.error.length-1) ? log.views.error[0]+1 : 1
+		},
 		view : new Array(250).fill(1),
 		views : {
 			info : new Array(100).fill(1),
-			event : new Array(100).fill(1),
+			event : new Array(75).fill(1),
 			warning : new Array(50).fill(1),
-			/* error : new Array(25).fill(1) */
+			error : new Array(25).fill(1),
 		}
 	}
 
@@ -151,17 +160,16 @@ engine = (function() {
 				engine.utils = new Object
 				engine.utils.scr = {
 					load : async(path) => { 
-
 						let scripts = []
-							switch(true) {
-								case typeof(path) === 'string':
-									scripts = [path]
-									break
-								case typeof(path) === 'object' && Array.isArray(path):
-										scripts = path
-									break
+						switch(true) {
+							case typeof(path) === 'string':
+								scripts = [path]
+								break
+							case typeof(path) === 'object' && Array.isArray(path):
+									scripts = path
+								break
 							default:
-								console.error(`script path type ${typeof(path)} not supported.\n+ supported formats:\n\t| 'string'\n\t| ['string']`)
+								engine.log.error(`path type ${typeof(path)} not supported.\n+ supported formats:\n\t| 'string'\n\t| ['array of string']`)
 								break
 						}
 						for (let i = 0, len = scripts.length; i < len; i++) {
@@ -204,7 +212,7 @@ engine = (function() {
 	// PUBLIC
 	// ======
 
-	const init = (function(){
+	const init = (function(){ // note : rethink label 'data-autoinit' may replace and or use it as scenedata arg
 		log.event(`init engine`)
 		let _autoinit = document.currentScript.getAttribute('data-autoinit') ? true : false
 		let _event = document.currentScript.getAttribute('data-autoinit') || 'load'
@@ -266,5 +274,4 @@ engine = (function() {
 	if(_debug != false) {engine.debug = _debug}
 	// RETURN VAR
 	return engine
-
 })()

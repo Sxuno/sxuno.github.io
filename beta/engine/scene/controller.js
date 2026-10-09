@@ -21,12 +21,12 @@ engine.scene = (function() {
 	let _metadata
 	let _priority
 	let _presistant
-	let _data // unused?
+	let _data
 
 	async function info() {
 		await engine.utils.scr.load('content/info.js')
 	}
-	async function data(){ // TODO: // .branch experimental :: .optimize logic namespaces .extend priority presistent
+	async function data(){ // TODO: .optimize logic namespaces .extend priority presistent
 		for(let i = 0, len = engine.runtime.descriptor().length; i < len; i++) {
 			let scene = engine.runtime.descriptor()[i].scene
 			let infoID = engine.scene.info.findIndex(element => element.name === scene)
@@ -74,7 +74,7 @@ engine.scene = (function() {
 				// CONTEXT
 				engine.log.info('loadhandler scene : context')
 				// scene info // Change to metadata .add priority .preload image .persistant
-				engine.debug.timer.start('scene info')
+				engine.debug?.timer.start('scene info')
 				engine.scene.info = new Array
 				await info()
 				engine.debug?.timer.end('scene info')
@@ -82,7 +82,6 @@ engine.scene = (function() {
 				engine.scene.data = new Object
 				await data()
 				// scene graph
-
 				await engine.utils.scr.load('engine/scene/graph.js')
 				await engine.scene.graph?.init()
 

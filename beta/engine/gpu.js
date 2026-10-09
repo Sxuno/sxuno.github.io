@@ -17,7 +17,6 @@ engine.gpu = (function(){
 	let _loadhandler
 	let _runtimehook 
 
-
 	let _descriptor // context :: devices workloads allocations
 
 	// GPU
@@ -27,18 +26,16 @@ engine.gpu = (function(){
 	// DEVICE
 	let _adapter
 	let _device
-	let _limits // in use
+	let _limits
 
 	// RESOURCES
 	let _resource // descriptor object?
-
 	let _type
 	let _buffer
 	let _texture  = new Array() //  complexity aspectratio x width x {type:: GPUOBJECT} // TODO: define at runtime
 	let _sampler
 
 	let _binding // {buffer : () => return _buffer, texture : () => return _texture, sampler : () => return _sampler}
-
 	let _bindGroupLayout
 	let _bindGroup
 	let _pipelineLayout
@@ -47,57 +44,60 @@ engine.gpu = (function(){
 	// MEMORY ?
 	let _alloc
 
-	const controller = (function (){// overrides 
-		// Adapter
+	const controller = (function (){
+		// DEFAULTS
 		let _requestAdapter
-		// Device
 		let _requestDevice
-		let _queue
 		let _submit
-		// Encoder
 		let _createCommandEncoder
-		let _beginRenderPass
-		let _end
 
 		const init = async () => {
-			_requestAdapter = navigator.gpu.requestAdapter
-			// Override Adapter
-			navigator.gpu.requestAdapter = async function(...args) {
+			// OVERRIDES
+			_requestAdapter = GPU.prototype.requestAdapter			
+			GPU.prototype.requestAdapter = async function(...args) {
 				engine.log.info('controller gpu : adapter request')
-				engine.debug?.timer.start('adapter request')
-				_adapter = await _requestAdapter.apply(this, args)
-				engine.debug?.timer.end('adapter request')
-				return _adapter
+				return await _requestAdapter.apply(this, args)
 			}
-			await navigator.gpu.requestAdapter()
-			// Override Device
-			_requestDevice = _adapter.requestDevice
-			_adapter.requestDevice = async function(...args) {
-				engine.log.info('controller gpu : device request')
-				engine.debug?.timer.start('device request')
-				_device = await _requestDevice.apply(this, args)
-				engine.debug?.timer.end('device request')
-				return _device
+			_requestDevice = GPUAdapter.prototype.requestDevice
+			GPUAdapter.prototype.requestDevice = async function(...args) {
+				engine.log.info('controller gpu : device request')				
+				return await _requestDevice.apply(this, args)
 			}
-			await _adapter.requestDevice()
-			controller.monitor(_device)
+			// NOTE : PLACEHOLDER FOR DETECTING UNKNOWN WORKLOADS :: USE WITH CARE 
+			_createCommandEncoder = GPUDevice.prototype.createCommandEncoder
+			GPUDevice.prototype.createCommandEncoder = function(...args) {
+				return _createCommandEncoder.apply(this, args)
+			}
+			_submit = GPUQueue.prototype.submit
+			GPUQueue.prototype.submit = function(...args) {
+				_submit.apply(this, args)
+			}
+			// INTERNAL SETUP
+			engine.debug?.timer.start('adapter request')
+			_adapter = await navigator.gpu.requestAdapter()
+			engine.debug?.timer.end('adapter request')
+			_descriptor = {device : Temporal.Now ? Temporal.Now.instant().epochMilliseconds : Date.now()}
+			engine.debug?.timer.start('device request')
+			_device = await _adapter.requestDevice({label: _descriptor.device})
+			engine.debug?.timer.end('device request')
 			_limits = _device.limits
-
+			controller.monitor(_device)
 		}
 		const monitor = function(device) {
 			device.lost.then(async (info) => {
 				console.log(info)
-				_device = null // note release before request as safeguard for gpu gc
-				_device = await _adapter.requestDevice()
+				_device = null // note : release before request as safeguard for gpu gc
+				_descriptor = {device : Temporal.Now ? Temporal.Now.instant().epochMilliseconds : Date.now()}
+				_device = await _adapter.requestDevice({label: _descriptor.device})
 				controller.monitor(_device)
-				// note : logic works but user has to actively switch tabs to reinitialize raf
+				// note : runtime recovery works but user has to actively switch tabs to reinitialize raf
 				// engine.runtime.init()
 			})
 		}
 		return {init, monitor}
 	})() 
 
-	const scheduler = (function (){// task scheduling only
+	const scheduler = (function (){ // task scheduling only
 		
 	})()
 
@@ -105,13 +105,10 @@ engine.gpu = (function(){
 	// PUBLIC
 	// ======
 
-	const buffer = {
-
-	}
+	const buffer = {}
 
 	const compute = {
 		// compute shader api method ... return result [buffer]
-		// extension hook gpu.init() //dependencies ? 
 	}
 
 	const resource = { // TODO : RETHINK!!!
@@ -155,7 +152,7 @@ engine.gpu = (function(){
 			}
 			_binding.push(resource.binding)
 		},
-		release : async (resource) => {}, // note : method for usage release
+		release : async (resource) => {},
 	}
 
 	const pipline = {
@@ -185,6 +182,7 @@ engine.gpu = (function(){
 					engine.gpu.device = () => {return _device}
 					engine.gpu.format = _format
 				}
+				_readystate = 1
 			}
 		} 
 		return loadhandler
@@ -214,5 +212,4 @@ engine.gpu = (function(){
 	}
 	// RETURN VAR
 	return gpu
-
 })()

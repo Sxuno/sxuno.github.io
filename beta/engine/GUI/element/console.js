@@ -27,7 +27,7 @@ engine.GUI.element.console = (function(){
 
 	const override = function() {
 		// CONCEPT
-		// let _override.engine.log.event
+		// let _override = engine.log.event
 		// engine.log.event = function(...args) {
 		//		element.section.set([{pointer, [arg], [value]}])
 		// 		_override.apply(engine.log, args)

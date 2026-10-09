@@ -25,15 +25,15 @@ engine.utils.performance.profiler = (function(){
 	const init = (function() {
 		// DEPENDENCIE
 		engine.log.event('init profiler')
-		// engine.eventdispatcher.dispatchEvent(new Event('Initprofiler'))
+		// engine.eventdispatcher.dispatchEvent(new Event('InitProfiler'))
 		async function loadhandler(input){
 			// LOADHANDLER
 			if (_readystate) {
 				// RUNTIMEHOOK
 				engine.log.info('loadhandler profiler : runtimehook')
 			} else {
-				// CONTEXT
-				engine.log.info('loadhandler profiler : context')
+				// CONFIGURATION
+				engine.log.info('loadhandler profiler : configuration')
 				_readystate = 1
 			}
 		}
@@ -48,8 +48,7 @@ engine.utils.performance.profiler = (function(){
 	let profiler = {
 		init: init,
 	}
-	// IF FEATURESET VAR.FEATURE
+	// CONDITIONAL
 	// RETURN VAR
 	return profiler
-
 })()

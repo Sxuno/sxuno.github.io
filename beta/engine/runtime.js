@@ -87,7 +87,7 @@ engine.runtime = (function() {
 	const configuration = {
 		init : async (context) => {
 			if(context) {
-				// TODO : add append new context configuration
+				// TODO : add append context configuration
 			} else {
 				for(let i = 0, len = _canvas.length; i < len; i++) {
 					_context[i] = _canvas[i].getContext('webgpu')
@@ -157,7 +157,7 @@ engine.runtime = (function() {
 		_resolutionScale = 1
 
 		for(let i = 0, len = _canvas.length; i < len; i++) {
-			// RESOLUTION SETUP // TODO : .add engine.config.resolutionscale // allow per scene?
+			// RESOLUTION SETUP // TODO : .add engine.config.resolutionscale
 			let css = window.getComputedStyle(_canvas[i])
 			_canvas[i].width = (_canvas[i].getBoundingClientRect().width - ((parseFloat(css.borderLeftWidth || 0) + (parseFloat(css.borderRightWidth) || 0))))* _devicePixelRatio * _resolutionScale
 			_canvas[i].height = (_canvas[i].getBoundingClientRect().height - ((parseFloat(css.borderTopWidth || 0) + (parseFloat(css.borderBottomWidth) || 0)))) * _devicePixelRatio * _resolutionScale
@@ -182,13 +182,13 @@ engine.runtime = (function() {
 				// RUNTIMEHOOK
 				engine.log.info('loadhandler runtime : runtimehook')
 				if(context) { 
-					// register context
+					// REGISTER CONTEXT
 					await configuration.init(context)
 				} else {
-					// recover context
+					// RECOVER CONTEXT
 					await configuration.init()
 				}				
-			} else {
+			} else { // TODO : RETHINK :: context setup -> rAF call (different renderloops?)
 				// CONFIGURATION
 				engine.log.info('loadhandler runtime : context')
 				await engine.GUI.init()
@@ -198,15 +198,14 @@ engine.runtime = (function() {
 				await engine.gpu?.init()
 				await engine.pipeline?.init()
 				await engine.scene?.init()
-
 				// context setup
 				engine.log.info('runtime context init')
 				if (engine.gpu?.device) {
-					engine.debug.timer.start('runtime context')
+					engine.debug?.timer.start('runtime context')
 					await observer.init()
 					await configuration.init()
 					engine.debug?.timer.end('runtime context')
-					await engine.pipeline.init(_context) // change to pipeline context init? filter hidden?
+					await engine.pipeline.init(_context) // change to pipeline context init? defere hidden?
 					_readystate = true
 					requestAnimationFrame(renderloop)
 				} else {
@@ -234,5 +233,4 @@ engine.runtime = (function() {
 	// CONDITIONAL
 	// RETURN VAR
 	return runtime
-
 })()

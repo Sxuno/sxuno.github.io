@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org.
  */
-engine.pipeline.rasterizer = engine.pipeline.rasterizer || {}
 engine.pipeline.rasterizer.lightpass = (function () {
 
 	// =======
@@ -30,17 +29,18 @@ engine.pipeline.rasterizer.lightpass = (function () {
 	// ======
 
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init rasterizer lightpass')
-		//engine.eventdispatcher.dispatchEvent(new Event(''))
-		_readystate = true
+		// engine.eventdispatcher.dispatchEvent(new Event(''))
+		_readystate = true // TEST TOGGLE
 		async function loadhandler(context){
-			// context loader  // .add gui config hook
-			if(!_readystate) {
-
-			} else {
-				// runtimehook
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
 				console.warn('rasterizer lightpass init (context)')
+			} else {
+				// CONFIGURATION
+				_readystate = 1				
 			}
 		}
 		return loadhandler

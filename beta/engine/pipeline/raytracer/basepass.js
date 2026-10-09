@@ -19,7 +19,7 @@ engine.pipeline.raytracer.basepass = (function () {
 	let _runtimehook 
 	
 	// PIPELINE
-	let _resource // .type
+	let _binding
 	let _bindGroupLayout
 	let _bindGroup
 	let _pipelineLayout
@@ -29,20 +29,18 @@ engine.pipeline.raytracer.basepass = (function () {
 	// PUBLIC
 	// ======
 
-	//async function init() {}
-
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init raytracer basepass')
 		//engine.eventdispatcher.dispatchEvent(new Event(''))
 		_readystate = true
 		async function loadhandler(context){
-			// context loader 
-			if(!_readystate) {
-				
+			// loadhandler
+			if(_readystate) {
+				// RUNTIMEHOOK
 			} else {
-				// Runtime hook
-				console.warn('raytracer basepass init (context)')
+				// CONFIGURATION
+				_readystate = 1
 			}
 		}
 		return loadhandler

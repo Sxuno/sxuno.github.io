@@ -23,7 +23,6 @@ engine.input = (function(){
 
 	// events
 	// ---
-
 		// gesture
 		// sensor
 		// keyboard
@@ -33,14 +32,11 @@ engine.input = (function(){
 
 	// APIS
 	// ---
-
 	// MediaDevicesAPI
-
 	// Pointer Events API
 	// Touch Events API
 	// Gamepad API
 	// Keyboard API
-
 	// Device OrintationEvent
 	// DeviceMotionEvent
 
@@ -81,13 +77,8 @@ engine.input = (function(){
 	// DECLARE VAR
 	let input = {
 		init: init,
-		mode : 'orbital',
-		pointerlock : false,
-		cursor : true,
-		listener : 'click'
 	}
 	// IF FEATURESET VAR.FEATURE
 	// RETURN VAR
 	return input
-
 })()
