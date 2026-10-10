@@ -57,6 +57,12 @@ const view = (function () {
 		let _overlay
 		let _slider
 
+		const embed = {
+			load : (target, attributes, callback) => {},
+			show : {},
+			hide : {},
+			remove : {}
+		}
 		const media = {
 			load : (mediatype, source) => {},
 			show : {},

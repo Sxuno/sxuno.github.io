@@ -1,10 +1,12 @@
 /******************************/
 /*   DEFAULTS                 */
 /******************************/
+
 * { color-scheme: dark; font-family: Verdana, Geneva, Tahoma, sans-serif, sans-serif; user-select: none; }
 html, body { height: 100%; margin: 0px; display: flex; flex-direction: column;}
 a:link, a:visited, a:hover, a:active, a:focus { color: rgb(0, 128, 255); text-decoration: none; }
 h3, h4 { margin-top: 0px;}
+
 /*** MEDIA RESPONSIVE ***/
 /* TODO: replace with responsive.js */
 @media (max-width: 540px) {
@@ -30,6 +32,7 @@ h3, h4 { margin-top: 0px;}
 @media (max-height: 640px) {
     body main header {position:relative;}
 }
+
 /******************************/
 /* LAYOUT                     */
 /******************************/
@@ -83,8 +86,8 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 /*** GRID ***/
 
 .grid {display:flex;flex-wrap:wrap;gap:5px;}
-.splitV {flex-direction:row;}
 .splitH {flex-direction:column;}
+.splitV {flex-direction:row;}
 .f00-10 {flex: 0 0 calc(10% - 2.5px);}
 .f00-20 {flex: 0 0 calc(20% - 2.5px);}
 .f11-10 {flex: 1 1 calc(10% - 2.5px);}
@@ -93,7 +96,8 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 .f11-33 {flex: 1 1 calc(33% - 2.5px);}
 .f11-40 {flex: 1 1 calc(40% - 2.5px);}
 .f11-50 {flex: 1 1 calc(50% - 2.5px);}
-.f11-80 {flex: 1 1 calc(10% - 2.5px);}
+.f11-80 {flex: 1 1 calc(80% - 2.5px);}
+.f11-90 {flex: 1 1 calc(90% - 2.5px);}
 
 /*** CONTAINER ***/
 
@@ -142,9 +146,9 @@ label a { display: inline;}
     /* dabase-manager */
     #database-manager{width: 800px;}
         /* dependency :: lodhandler.media < rework */
-        #database-manager-readme {height: 620px}
-        #localnetworkserver {height: 210px;}
-        #dynamicdatabaseviewer {height: 210px;}
+        #database-manager-readme {height: 460px}
+        #localnetworkserver {height: 150px;}
+        #dynamicdatabaseviewer {height: 150px;}
 
     /* orbitcontrollsystem */
     #orbitalcontrollsystem {width:800px;}
@@ -193,7 +197,7 @@ label a { display: inline;}
         #GPU-driven {height: 200px}
         #vsc {height:200px}
         #AActor {height: 400px}
-        #cppclass {height: 200px}
+        #cppclass {height: 400px}
         #BOrbitalControllSystem {height: 400px}
 
 

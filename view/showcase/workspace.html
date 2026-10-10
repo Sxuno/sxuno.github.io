@@ -50,6 +50,16 @@
 				@media (max-height: 640px) {
 					body main header {position:relative;}
 				}
+				/*** media fallback ***/
+				#VSCWorkspaceBlenderAddon { background-image: url('./../../media/image/VSCWorkspaceBlenderAddon.png'); width: 100%; }
+				#template { background-image: url('./../../media/image/template.png'); width: 100%; }
+				#terminal { background-image: url('./../../media/image/terminal.png'); width: 100%; }
+				#BVector { background-image: url('./../../media/image/BVector.png'); width: 100%; }
+				#GPU-driven { background-image: url('./../../media/image/GPU-driven.png'); width: 100%; }
+				#vsc { background-image: url('./../../media/image/vsc.png'); width: 100%; }
+				#AActor { background-image: url('./../../media/image/AActor.png'); width: 100%; }
+				#cppclass { background-image: url('./../../media/image/cppclass.png'); width: 100%; }
+				#BOrbitalControllSystem { background-image: url('./../../media/image/BOrbitalControllSystem.png'); width: 100%; }
 			</style>
 		</noscript>
 	</head>
@@ -79,9 +89,6 @@
 					<div class = 'f11-80 grid splitV'>
 						<div class = 'f11-50'>
 							<div id = 'VSCWorkspaceBlenderAddon' data-type = 'png' class = 'media animation-hover-background'>
-								<noscript>
-									<img src = './../../media/image/VSCWorkspaceBlenderAddon.png' width = '320' style = 'display: block; width: 100%;'/>
-								</noscript>
 								<div class = 'ambient-gradient-top-bottom'></div>
 								<label style = 'color: white;font-style: normal;'>vsc workspace organisation, no auto creation of new projects yet.</label>
 							</div>
@@ -89,18 +96,12 @@
 						<div class = 'f11-50 grid splitH'>
 							<div class = 'f11-50'>
 								<div id = 'template' data-type = 'png' class = 'media animation-hover-background'>
-									<noscript>
-										<img src = './../../media/image/template.png' width = '320' style = 'display: block; width: 100%;'/>
-									</noscript>
 									<div class = 'ambient-gradient-top-bottom'></div>
 									<label  style = 'color: white;font-style: normal;'>custom launcher templates, mostly for prototyping.</label>
 								</div>
 							</div>
 							<div class = 'f11-50' >
 								<div id = 'terminal' data-type = 'png' class = 'media animation-hover-background'>
-									<noscript>
-										<img src = './../../media/image/terminal.png' width = '320' style = 'display: block; width: 100%;'/>
-									</noscript>
 									<div class = 'ambient-gradient-top-bottom'></div>
 									<label  style = 'color: white;font-style: normal;' >Script for compiling UE5 Plugins</label>
 								</div>
@@ -108,7 +109,6 @@
 						</div>
 					</div>
 				</div>
-
 			</section>			
 			<section id = 'features'>
 				<h2>Features</h2>
@@ -301,9 +301,6 @@
 					-->
 					<div class = 'f11-50'>
 						<div id = 'BVector' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/BVector.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<div class = 'ambient-gradient-top-bottom'></div>
 							<label>
 								prototype for visualizing procedrual data generation through goldx algo and how to render<br/>
@@ -314,9 +311,6 @@
 
 					<div class = 'f11-25'>
 						<div id = 'GPU-driven' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/GPU-driven.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<label>
 								PCG logic is not yet hooked up. <br />
 							</label>
@@ -326,9 +320,6 @@
 
 					<div class = 'f11-25'>
 						<div id = 'vsc' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/vsc.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<label>
 								VSC plugin for UPROPERTY autocomplete to support porting blueprint to cpp<br />
 							</label>
@@ -342,27 +333,18 @@
 				<div class = 'grid splitH'>
 					<div class = 'f11-40'>
 						<div id = 'AActor' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/AActor.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<label>Impact of Aactor overhead for spline movement.</label>
 							<div class = 'ambient-gradient-top-bottom'></div>
 						</div>
 					</div>		
 					<div class = 'f11-20'>
 						<div id = 'cppclass' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/cppclass.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<label>Prototype ports to cpp</label>
 							<div class = 'ambient-gradient-top-bottom'></div>
 						</div>
 					</div>
 					<div class = 'f11-40'>
 						<div id = 'BOrbitalControllSystem' data-type = 'png' class = 'media animation-hover-background'>
-							<noscript>
-								<img src = './../../media/image/BOrbitalControllSystem.png' width = '320' style = 'display: block; width: 100%;'/>
-							</noscript>
 							<label>Visualization to prototype coordinate rebasing.</label>
 							<div class = 'ambient-gradient-top-bottom'></div>
 						</div>

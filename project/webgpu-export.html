@@ -51,6 +51,10 @@
 				@media (max-height: 640px) {
 					body main header {position:relative;}
 				}
+				/*** media fallback ***/
+				#webgpu-export-preview {
+					background-image: url('./../media/image/webgpu-export-preview.png');height:420px;width:100%;                       
+				}
 			</style>
 		</noscript>
 	</head>
@@ -72,9 +76,6 @@
 				<h2>Preview</h2>
 				<!-- TODO: make it separate images which enlarge xor show label text // for mobile make them collapse and rotate with uniform scale-->
 				<div id = 'webgpu-export-preview' data-type = 'png' class = 'media animation-hover-background'>
-					<noscript>
-						<img src = './../media/image/webgpu-export-preview.png' style = 'display: block; max-width: 100%; height: auto;'/>
-					</noscript>
 				</div>
 			</section>
 			<section id = 'description'>
