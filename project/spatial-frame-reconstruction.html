@@ -12,15 +12,25 @@
 		<meta charset = 'UTF-8'>
 
 		<link rel = 'icon' type = 'image/x-icon' href = './../media/icon/menu.svg'>
+
 		<link rel = 'stylesheet' href = './../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../theme/default/media.css'>
 		<link rel = 'stylesheet' href = './../theme/default/engine.css'>
 
 		<script src = './../system/framework.js'></script>
-		<script src = './../engine/core.js'></script>
+		<script src = './../beta/engine/core.js'></script>
 		<script>
-			// inject custom content PATH relative to document //
+			// inject custom content PATH relative to document 
 			engine.PATH.content = './../content/'
-			engine.PATH.shader = './../engine/shader/'
+			// engine.PATH.shader = /*DEFAULT*/
+
+			// DISABLE Console output
+			delete engine.debug
+			engine.log.events = false
+			engine.log.infos = false
+			engine.log.warnings = false
+			engine.log.errors = false
+			console.log('engine log disabled')
 		</script>
 		<!-- TODO: integrate into theme/engine? -->
 		<style>
@@ -37,7 +47,6 @@
 				background-position: 0 0;
 				width: 100%;
 				height: 100%;
-
 			}
 			.before {
 				background-image: url(./spatial-frame-reconstruction/demo/reconstructed.png); /*right*/
@@ -76,7 +85,6 @@
 			#input label{margin: 10px auto 0px auto;justify-content: center;}
 			#input {display: flex;flex-direction: column;}
 		</style>
-
 		<noscript>
 			<style>
 				/*** MEDIA RESPONSIVE ***/
@@ -103,6 +111,7 @@
 				@media (max-height: 640px) {
 					body main header {position:relative;}
 				}
+				/*** media fallback ***/
 			</style>
 		</noscript>
 	</head>
@@ -153,22 +162,19 @@
 					slider.style.left = `${position * 100}%`
 					after.style.clipPath = `inset(0 ${100 - position * 100}% 0 0)`
 				}
-
+				// TODO: sparate drag detection slider resize pointer from media zoom pointer
 				comparison.addEventListener('pointerdown', event => {
 					dragging = true
 					comparison.setPointerCapture(event.pointerId)
 					move(event.clientX)
 				})
-
 				comparison.addEventListener('pointermove', event => {
 					if (dragging)
 						move(event.clientX)
 				})
-
 				comparison.addEventListener('pointerup', () => {
 					dragging = false
 				})
-
 				comparison.addEventListener('pointercancel', () => {
 					dragging = false
 				})
@@ -204,8 +210,6 @@
 				<div >
 					<a class = 'inactive' href = './spatial-frame-reconstruction/modelviewer.html'>ONNX viewer</a>
 				</div>
-                <label>
-                </label>
             </section>
 			<section id = 'download'>
 				<h2>Download</h2>
@@ -214,7 +218,7 @@
 						ONNX model
 					</div>
 					<div class = 'f11-80'>
-						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+						<a class = '' href = './spatial-frame-reconstruction/download/sfr.onnx'>download</a>
 					</div>
 				</div>
 				<div class = 'grid'>
@@ -222,7 +226,7 @@
 						ONNX weights
 					</div>
 					<div class = 'f11-80'>
-						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+						<a class = '' href = './spatial-frame-reconstruction/download/sfr.onnx.data'>download</a>
 					</div>
 				</div>
 				<div class = 'grid'>
@@ -230,7 +234,7 @@
 						ONNX bundled
 					</div>
 					<div class = 'f11-80'>
-						<a class = 'inactive' href = '#./spatial-frame-reconstruction/'>download</a>
+						<a class = '' href = './spatial-frame-reconstruction/download/sfr-bundle.onnx'>download</a>
 					</div>
 				</div>
 			</section>
