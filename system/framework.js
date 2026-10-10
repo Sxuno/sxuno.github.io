@@ -41,7 +41,12 @@ const layout = (function() {
 	console.log(`document onscreensize ${_width} x ${_height}`)
 
 	window.addEventListener('resize', (listener) => {
-		console.log(listener)
+		if(listener.target.window.innerWidth !== _observer) {
+			console.log(`size ${_observer}`)
+			_observer = listener.target.window.innerWidth
+			console.log(`scaled ${_observer}`)
+			return
+		}
 	})
 
 	const observer = (element, event, handler) => {}
@@ -108,7 +113,33 @@ const file = (function () {
 // RUNTIME 
 // ECM Module
 const runtime = (function () {
-	let _root = document.currentScript.src
+
+	const PATH = {
+		'root' : window.location.href,
+		'src' : document.currentScript.src,	
+	}
+	// PATH SOLVER
+	const pathsolver = (function(){
+		let _root
+		let _src
+
+		_root = PATH.root.split('/')
+		PATH.root = _root.slice(0,_root.length-1)
+		_src = PATH.src.split('/')
+		PATH.src = ['.']
+		for(let i = 0; i < _src.length; i++){
+			if(_root[i] !== _src[i]){
+				PATH.root = _root.slice(i-1, _root.length-1)
+				
+				for(let p = 0; p < PATH.root.length-1; p++) {
+					PATH.src.push('..')					
+				}
+				break
+			}
+		}
+		PATH.src = PATH.src.join('/')
+	})()
+
 	let _context
 
 	let _style
@@ -126,8 +157,8 @@ const runtime = (function () {
 			if (_context.length) {
 				for (let media of _context) {
 					if(media.dataset.type) {
-						let path = new URL(`../media/image/${media.id}.${media.dataset.type}`, _root)
-						_style.insertRule(`#${CSS.escape(media.id)} { background-image: url("${path.href}"); }`)
+						let path = `${PATH.src}/media/image/${media.id}.${media.dataset.type}`
+						_style.insertRule(`#${CSS.escape(media.id)} { background-image: url("${path}"); }`)
 					} else { console.warn(`media ${media.id} has no defined data-type`)} // case create new datatype? may like bufferplaceholder?
 				}
 			} else { return }
