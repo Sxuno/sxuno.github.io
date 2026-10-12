@@ -11,10 +11,7 @@
 !/engine/**
 ### MEDIA ###
 !/media/
-/media/*
-!/media/image/
-/media/image/*
-!/media/image/*.png
+!/media/*/*.png
 !/media/*/*.svg
 ### PROJECTS ###
 !/project/
@@ -32,16 +29,19 @@
 !/project/webgpu-engine/docs/
 !/project/webgpu-engine/docs/**
 
-!/project/database-manager.html
-
 !/project/spatial-frame-reconstruction.html
 !/project/spatial-frame-reconstruction/
-#!/project/spatial-frame-reconstruction/modelviewer.html
+!/project/spatial-frame-reconstruction/onnxviewer.html
 !/project/spatial-frame-reconstruction/demo/
 !/project/spatial-frame-reconstruction/demo/**
 #!/project/spatial-frame-reconstruction/demo.html
 !/project/spatial-frame-reconstruction/download/
 !/project/spatial-frame-reconstruction/download/**
+
+#!/project/ml-research-server.html
+!/project/ml-research-server/
+
+!/project/database-manager.html
 
 !/project/OrbitalControllSystem.html
 

@@ -103,13 +103,6 @@ const view = (function () {
 	}
 	return {content, overlay}
 })()
-// FILE functions
-// API Module
-const file = (function () {
-	const load = () => {}
-
-	return {load}
-})()
 // RUNTIME 
 // ECM Module
 const runtime = (function () {

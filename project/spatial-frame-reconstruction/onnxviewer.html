@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+	<head>
+		<title>Spatial Frame Reconstruction</title>
+
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content= 'SXuno, Portfolio, Project, Github, Githubpage, Machine learning, Spatial Frame Reconstruction, ONNX viewer'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>
+		
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
+
+		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/worksample.svg'>
+
+		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../../theme/default/media.css'>
+		<link rel = 'stylesheet' href = './../../theme/default/engine.css'>
+
+		<script src = './../../system/framework.js'></script>
+		<script src = './../../beta/engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document 
+			engine.PATH.content = './../../content/'
+			// DISABLE Console output
+			delete engine.debug
+			engine.log.events = false
+			engine.log.infos = false
+			engine.log.warnings = false
+			engine.log.errors = false
+			console.log('engine log disabled')
+		</script>
+		<!-- PROTOTYPE OUTPUT -->
+		 <script>
+			if (window.location.protocol !== 'file:') {		
+				(async function() {
+					STREAM = 0
+
+					let respone 
+					let bits  
+					let bytes
+
+					if(!STREAM) {
+						response = await fetch('./download/sfr-bundle.onnx')
+						bits = await response.arrayBuffer()
+						bytes = new Uint8Array(bits)
+					}
+					if (STREAM) {
+						response = await fetch('./download/sfr-bundle.onnx')
+						// START WORKER && RINGBUFFERPOOL
+						bits = response.body.getReader()
+						while (true) {
+							let {value, done} = await bits.read()
+							if (done) break
+							// CHUNK LOGIC VALIDATION AND PARSING
+							bytes = new Uint8Array(value)
+							console.log(bytes)
+						}
+					}
+					let buffer = bytes
+					document.querySelector('#preview div').textContent = String(buffer)
+				})()
+			}
+		 </script>
+		<noscript>
+			<style>
+				/*** MEDIA RESPONSIVE ***/
+				@media (max-width: 540px) {
+					body header h1 {text-align: center;}
+					body main {width: 360px;}
+					body main header {width: 360px;text-align: center;}
+				}
+				@media (max-width: 720px) {
+					body header h1 {text-align: center;}
+					body main {max-width: 420px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (max-width: 1443px) {
+					body header h1 {text-align: center;}
+					body main {width: 720px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (min-width: 1444px) {
+					body header h1 {text-align: center;}
+					body main {min-width: 1080px;}
+					body main header {left: 0px;top: 32px; position:absolute;}
+				}
+				@media (max-height: 640px) {
+					body main header {position:relative;}
+				}
+			</style>
+		</noscript>
+	</head>
+    <body>
+        <header>
+            <nav>
+                <label class = 'left'>
+                    <img src = './../../media/icon/menu.svg' />
+                    <a href='./../../index.html'>Home</a>
+                </label>
+                <label class = 'right'>
+                    English <img src = './../../media/icon/settings.svg' />
+                </label>
+            </nav>
+        </header>
+        <main id = 'spatial-frame-reconstruction'>
+            <h1><a href = './../spacial-frame-reconstruction.html'>Spatial Frame Reconstruction</a><br/><label>ONNX viewer</label></h1>	
+            <section id = 'preview'>
+				<div style = 'overflow-wrap: anywhere;'>
+					Onnx Model
+				</div>
+            </section>
+        </main>
+		<!-- FILE CONTEXT FALLBACK -->
+		<script>
+			if (window.location.protocol === 'file:') {
+				let body 
+				let input 
+				let view
+				body = document.querySelector('#preview div')
+				input = document.createElement('input')
+				view = document.createElement('view')
+				input.accept = '.onnx'
+				input.type = 'file'
+				input.style.paddingBottom = '10px'
+				body.innerHTML = ''
+				body.appendChild(input)
+
+				input.onchange = async() => {
+					console.log(input)
+					let onnx = input.files[0]
+					let bits = await onnx.arrayBuffer()
+					let bytes = new Uint8Array(bits)
+					try { body.removeChild(view)} catch {body.appendChild(view)}
+					view.textContent = bytes
+				}
+			}
+		</script>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>
