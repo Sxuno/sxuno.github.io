@@ -1,4 +1,9 @@
 /******************************/
+/* THEME DEFAULT              */
+/* version 0.1.0-dev          */
+/******************************/
+
+/******************************/
 /*   DEFAULTS                 */
 /******************************/
 
@@ -53,7 +58,6 @@ div {z-index: 0}
 
 header {min-height: 50px; width: 100%; position: fixed; top:0px; display: flex;  background: linear-gradient(to bottom, #1C1B22 0%, rgba(28,27,34,1) 50%, rgba(28,27,34,0) 100%); }
 header h1 { width: 100%; max-width: 1080px; min-width: 433px; margin: auto; font-size: 28px;}
-header div {position: fixed; left: 20px; top: 20px}
 
 /*** HEADER NAVIGATION ***/
 
