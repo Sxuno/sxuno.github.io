@@ -69,7 +69,6 @@ engine.runtime = (function () {
 	}
 
 	function render() {
-
 		let now = performance.now()
 		engine.STATS.frametime = now - engine.STATS.delta
 		engine.STATS.delta = now
@@ -77,11 +76,11 @@ engine.runtime = (function () {
 		for(let c = 0; c < _context.length; c++) {
 			let encoder = _device.createCommandEncoder()
 			// Defered Drawcalls
-			engine.pipeline.depthpass.draw(_device, _context[c], c)
-			engine.pipeline.basepass.draw(encoder, _context[c], c)
-			engine.pipeline.shadowpass.draw(encoder)
-			engine.pipeline.lightpass.draw(encoder, _context[c], c)
-			engine.pipeline.composepass.draw(encoder, _context[c], c)
+			engine.pipeline.depthpass.draw(_device, _context[c])
+			engine.pipeline.basepass.draw(encoder, _context[c])
+			engine.pipeline.shadowpass.draw(encoder, _context[c])
+			engine.pipeline.lightpass.draw(encoder, _context[c])
+			engine.pipeline.composepass.draw(encoder, _context[c])
 
 			_device.queue.submit([encoder.finish()])
 		}
@@ -129,8 +128,6 @@ engine.runtime = (function () {
 		requestAnimationFrame(render)
 	}
 
-
-
 	// ======
 	// PUBLIC
 	// ======
@@ -169,7 +166,7 @@ engine.runtime = (function () {
 				_descriptor[scene].view.push(_view[i])
 			}
 		}
-		async function loadhandler(context) {
+ 		async function loadhandler(context) {
 			// context loader
 			if(_readystate) {
 				// runtimehook

@@ -12,7 +12,7 @@ engine = (function() {
 	// PRIVATE
 	// =======
 
-	let _debug = true
+	let _debug = false
 	let _name = 'WebGPU Engine'
 	let _version = '0.1.6-dev'
 	let _extension = []
@@ -172,7 +172,7 @@ engine = (function() {
 				_eventdispatcher.dispatchEvent(new Event('InitCore'))
 				// configure PATH engine
 				_path.engine = _path.script.substring(0, _path.script.lastIndexOf('/') +1)
-				// engine.debug?.log(`PATH engine ${_path.engine}`)
+				engine.debug?.log(`PATH engine ${_path.engine}`)
 
 				await script('engine/GUI/controller.js')
 				await script('engine/runtime.js')

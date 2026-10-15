@@ -35,7 +35,7 @@ engine.pipeline.basepass = (function () {
 		for(let i = 0; i < _scene.length; i++) {
 			_data[i] = new Object
 			/* info (meta) */		
-			let projectionMatrix = engine.utils.math.perspective (0.398, context[i].canvas.width / context[i].canvas.height, _sd.camera[_scene[i].camera[0]]['near'], _sd.camera[_scene[i].camera[0]]['far'])
+			let projectionMatrix = engine.utils.math.perspectiveRZ (0.398, context[i].canvas.width / context[i].canvas.height, _sd.camera[_scene[i].camera[0]]['near'], _sd.camera[_scene[i].camera[0]]['far'])
 			let viewTransform = engine.utils.math.composeTRS(_sd.camera[_scene[i].camera[0]]['location'], _sd.camera[_scene[i].camera[0]]['rotation'], /* .camera['scale'] # UNIFORM ONLY */ [1, 1, 1]) 
 			let viewMatrix = engine.utils.math.mat4InverseUniform(viewTransform)
 			let viewProjectionMatrix = engine.utils.math.multiply(projectionMatrix, viewMatrix)
@@ -79,13 +79,13 @@ engine.pipeline.basepass = (function () {
 				materialSlotOffset += mesh.materials.length
 			}
 			// BUFFER GLOBAL
-			// TODO: update to call buffer through buffer id <context<buffer> instead of multiple vars
+			// TODO: update to call buffer through buffer id <context<buffer> instead of multible vars
 			_buffer[i] = new Object
 			_buffer[i].metadata = engine.gpu.buffer.metadata.create(_data[i].metadata) // GPUBufferUsage.UNIFORM
 			_buffer[i].material = {}
 			_buffer[i].material.color = engine.gpu.buffer.material.create(_data[i].material.rgb.lookup) // GPUBufferUsage.STORAGE
 			/* BUFFER SHARED */
-			// BUFFER Geometry
+			// BUFFER Geomentry
 			_buffer[i].vertex = engine.gpu.buffer.vertex.create( _data[i].mesh.vertex) // GPUBufferUsage.VERTEX
 			_buffer[i].vertexMaterial = engine.gpu.buffer.vertex.color.create(_data[i].mesh.vertexMaterial) // GPUBufferUsage.VERTEX	
 			_buffer[i].index = engine.gpu.buffer.index.create(_data[i].mesh.index) // GPUBufferUsage.INDEX
@@ -158,7 +158,7 @@ engine.pipeline.basepass = (function () {
 				targets: [{ format: context[id].getCurrentTexture().format }],
 			},
 			primitive: {topology: 'triangle-list', cullMode: 'back', frontFace: 'ccw'},
-			depthStencil: {format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less'}
+			depthStencil: {format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'greater'}
     	})}
 		/* cullmode none */
 		_pipeline.noculling = (id) => {return device.createRenderPipeline({
@@ -183,7 +183,7 @@ engine.pipeline.basepass = (function () {
 				targets: [{ format: context[id].getCurrentTexture().format }],
 			},
 			primitive: {topology: 'triangle-list', cullMode: 'none', frontFace: 'ccw'},
-			depthStencil: {format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'less'}
+			depthStencil: {format: 'depth24plus', depthWriteEnabled: true, depthCompare: 'greater'}
     	})}
 
 		_descriptor = (context) => {return {
@@ -192,12 +192,12 @@ engine.pipeline.basepass = (function () {
 					view: _renderTarget[context.scene],
 					loadOp: 'clear',
 					storeOp: 'store',
-					clearValue: { r: 0, g: 0, b: 0, a: 0 },
+					clearValue: { r: 0, g: 0, b: 0, a: 0.0 },
 				},
 			],
 			depthStencilAttachment: { 
 				view: engine.pipeline.depthpass.buffer.get()[context.scene].createView({label: 'basepass descriptor depthStencilAttachment zBuffer view'}),
-				depthClearValue: 1.0,
+				depthClearValue: 0.0,
 				depthLoadOp: 'clear',
 				depthStoreOp: 'store',
 			},
@@ -206,7 +206,7 @@ engine.pipeline.basepass = (function () {
 	const buffer = {
 		get() {return _buffer}
 	}
-	function draw(encoder, context, c) {
+	function draw(encoder, context) {
 		
 		// pointer based method (low-level)
 		const passEncoder = encoder.beginRenderPass(_descriptor(context))

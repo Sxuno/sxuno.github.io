@@ -15,6 +15,7 @@ engine.gpu = (function() {
 	let _format = null
 	let _features
 	/* DEVICE */
+	let _descriptor // context :: devices workloads allocations
 	var _adapter = null
 	var _device = null
 	let _limits
@@ -28,53 +29,89 @@ engine.gpu = (function() {
 
 	let _readystate
 
-	const monitor = function(device) {
-		device.lost.then(async (info) => {
-			console.log(info)
-			// await device reovery
-			_device = await _adapter.requestDevice()
-			monitor(_device)
-			engine.gpu.device = _device
-			await engine.runtime.init()
-		})
-	}
+	const controller = (function (){
+		// DEFAULTS
+		let _requestAdapter
+		let _requestDevice
+		let _submit
+		let _createCommandEncoder
 
-
+		const init = async () => {
+			// OVERRIDES
+			_requestAdapter = GPU.prototype.requestAdapter			
+			GPU.prototype.requestAdapter = async function(...args) {
+				engine.log.info('controller gpu : adapter request')
+				return await _requestAdapter.apply(this, args)
+			}
+			_requestDevice = GPUAdapter.prototype.requestDevice
+			GPUAdapter.prototype.requestDevice = async function(...args) {
+				engine.log.info('controller gpu : device request')				
+				return await _requestDevice.apply(this, args)
+			}
+			// NOTE : PLACEHOLDER FOR DETECTING UNKNOWN WORKLOADS :: USE WITH CARE 
+			_createCommandEncoder = GPUDevice.prototype.createCommandEncoder
+			GPUDevice.prototype.createCommandEncoder = function(...args) {
+				return _createCommandEncoder.apply(this, args)
+			}
+			_submit = GPUQueue.prototype.submit
+			GPUQueue.prototype.submit = function(...args) {
+				_submit.apply(this, args)
+			}
+			// INTERNAL SETUP
+			engine.debug?.timer.start('adapter request')
+			_adapter = await navigator.gpu.requestAdapter()
+			engine.debug?.timer.end('adapter request')
+			_descriptor = {device : Temporal.Now ? Temporal.Now.instant().epochMilliseconds : Date.now()}
+			engine.debug?.timer.start('device request')
+			_device = await _adapter.requestDevice({label: _descriptor.device})
+			engine.debug?.timer.end('device request')
+			_limits = _device.limits
+			controller.monitor(_device)
+		}
+		const monitor = function(device) {
+			device.lost.then(async (info) => {
+				console.log(info)
+				_device = null // note : release before request as safeguard for gpu gc
+				_descriptor = {device : Temporal.Now ? Temporal.Now.instant().epochMilliseconds : Date.now()}
+				_device = await _adapter.requestDevice({label: _descriptor.device})
+				controller.monitor(_device)
+				// note : runtime recovery works but user has to actively switch tabs to reinitialize raf
+				// engine.runtime.init()
+			})
+		}
+		return {init, monitor}
+	})() 
+	
 	// ======
 	// PUBLIC
 	// ======
 
 	const init = (function() {
-		// init dependencies
+		// DEPENDENCIES
 		engine.log.event('init gpu')
 		engine.eventdispatcher.dispatchEvent(new Event('InitGPU'))
 		_format = navigator.gpu.getPreferredCanvasFormat()
 		_features = new Array
-		for (const value of navigator.gpu.wgslLanguageFeatures.values()) {
-			_features.push(value)
+		for (const feature of navigator.gpu.wgslLanguageFeatures.values()) {
+			_features.push(feature)
 		}
 		async function loadhandler(context){
-			// context loader
-			if(!_readystate) {
+			// LOADHANDLER
+			if(_readystate) {
+				// RUNTIMEHOOK
+			} else {
+				// CONFIGURATION
 				engine.log.info('gpu init')
-				engine.debug?.timer.start('gpu init')
 				if (!_device) {
-					_adapter = await navigator.gpu.requestAdapter()
-					if(_adapter){
-						_device = await _adapter.requestDevice()
-						monitor(_device)
-						_limits = _device.limits
-					}
+					await controller.init()
 				}
 				if (_device) {
 					engine.gpu.device = _device
 					engine.gpu.format = _format
 				}
-				engine.debug?.timer.end('gpu init')
-			} else {
-				// runtimehook
+				_readystate = 1
 			}
-		}
+		} 
 		return loadhandler
 	})()
 

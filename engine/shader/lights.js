@@ -1,5 +1,5 @@
 /* License
- * This file is part of Blender WebGPU Export.
+ * This file is part of WebGPU-Engine.
  * Licensed under the GNU General Public License v3.0 or later.
  * See LICENSE.txt for details.
  */
@@ -35,14 +35,14 @@ fn main(@builtin(position) fragCoord : vec4f) -> @location(0) vec4f {
 
     // Sample depth
     let depth = textureLoad(zbuffer, vec2<i32>(fragCoord.xy), 0);
-    if (depth == 1.0) {
+    if (depth == 0.0) {
         return vec4f(0.0);
     }
 
     // Normalized device coordinates
     let ndc = vec4f(
         fragCoord.xy / metadata.canvasSize * 2.0 - vec2f(1.0),
-        depth * 2.0 - 1.0,
+        depth, // normalZ = depth * 2.0 - 1.0,
         1.0
     );
     let worldPosH = metadata.viewProj * ndc;

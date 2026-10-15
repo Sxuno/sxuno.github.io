@@ -32,10 +32,10 @@ engine.pipeline.lightpass = (function () {
                 { binding: 0, resource: engine.pipeline.basepass.buffer.get()[id].albedo },
                 { binding: 1, resource: engine.pipeline.depthpass.buffer.get()[id].createView({label: 'lightpass bindgroup view zBuffer'}) },
                 { binding: 2, resource: device.createSampler({
-				label: `binding 2 lightpass`,
-				magFilter: 'nearest',
-				minFilter: 'nearest'
-			})},
+                    label: `binding 2 lightpass`,
+                    magFilter: 'nearest',
+                    minFilter: 'nearest'
+			    })},
                 { binding: 3, resource: { buffer: engine.pipeline.shadowpass.buffer.get()[id].lights }},
                 { binding: 4, resource: { buffer: engine.pipeline.shadowpass.buffer.get()[id].metadata }}
             ]
@@ -85,7 +85,7 @@ engine.pipeline.lightpass = (function () {
         }}
     }
     const buffer = { get() { return _renderTarget}}
-    function draw(encoder, context, id) {
+    function draw(encoder, context) {
         // pointer based method (low-level)
         const passEncoder = encoder.beginRenderPass(_descriptor(context.scene))
         passEncoder.setPipeline(_pipeline)
