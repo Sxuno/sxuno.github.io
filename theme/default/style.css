@@ -1,6 +1,6 @@
 /******************************/
-/* THEME DEFAULT              */
-/* version 0.1.0-dev          */
+/* FRAMEWORK THEME DEFAULT    */
+/* version 0.1.1-dev          */
 /******************************/
 
 /******************************/
@@ -90,13 +90,20 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 
 /*** GRID ***/
 
-.grid {display:flex;flex-wrap:wrap;gap:5px;}
+.grid {display:flex;flex-wrap:wrap;gap:5px;} /* depreacting*/
+.flex {display:flex}
+.wrap {flex-direction: wrap;}
 .gap-00 {gap: 0px !important;}
 .gap-02 {gap: 2px !important;}
-.splitH {flex-direction:column;}
-.splitV {flex-direction:row;}
+.gap-05 {gap: 5px !important;}
+.gap-10 {gap: 10px !important;}
+.splitH {flex-direction:column;}/* depreacting*/
+.column {flex-direction:column;}
+.splitV {flex-direction:row;}/* depreacting*/
+.row {flex-direction:row;}
 .f00-10 {flex: 0 0 calc(10% - 2.5px);}
 .f00-20 {flex: 0 0 calc(20% - 2.5px);}
+.f00-50 {flex: 0 0 calc(50% - 2.5px);}
 .f11-10 {flex: 1 1 calc(10% - 2.5px);}
 .f11-20 {flex: 1 1 calc(20% - 2.5px);}
 .f11-25 {flex: 1 1 calc(25% - 2.5px);}
@@ -105,6 +112,7 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 .f11-50 {flex: 1 1 calc(50% - 2.5px);}
 .f11-80 {flex: 1 1 calc(80% - 2.5px);}
 .f11-90 {flex: 1 1 calc(90% - 2.5px);}
+.f11-00 {flex: 1 1 calc(100% - 2.5px);}
 
 /*** CONTAINER ***/
 
@@ -184,6 +192,19 @@ label a { display: inline;}
         #webgpu-engine #snapshot .wrap canvas:nth-child(6) { width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap canvas:nth-child(8) { margin-right:10px;width:315px;height:177px;}
         #webgpu-engine #snapshot .wrap canvas:nth-child(9) { width:315px;height:177px;}
+
+    /* ml-research-server */
+        /* demo */
+        #systemmonitor {border-bottom: 1px solid white;height: 144px;}
+        #systemmonitor canvas {height: 106px; width: 160px;margin-top:5px;box-sizing: border-box;}
+        .device {width: 355px;}
+        #tasks {border-bottom: 1px solid white;height: 144px;}
+        .task div {width: 144px;}
+        #evaluation canvas {width: 355px; height: 200px}
+        #summery {max-width: 360px;}
+        #summery section {position: relative;}
+        #summery h3 {margin-bottom: 0px;}
+        #summery section > a {position: absolute; top: 0px; right: 0px;; border-radius: inherit; font-size: 18px;}
 
     /* spatial frame reconstruction */
     #spatial-frame-reconstruction {width: 800px}

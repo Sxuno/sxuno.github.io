@@ -1,6 +1,6 @@
 /******************************/
-/* THEME DEFAULT              */
-/* version 0.1.0-dev          */
+/* FRAMEWORK THEME DEFAULT    */
+/* version 0.1.1-dev          */
 /******************************/
 
 /*** ANIMATIONS ***/
@@ -8,6 +8,11 @@
 .onhover {}
 .background-scale {background-size: 100%;-webkit-transition: background-size 1s ease-in;transition: background-size 1s ease-in;}
 .background-scale:hover {background-size: 110%}
+
+/*** CANVAS2D ***/
+
+canvas.progressbar {width:100px;height:25px;border:1px solid white;border-radius:5px;}
+canvas.chart {width:420px;height:240px;border:1px solid white;border-radius:5px;}
 
 /*** KEYFRAMES ***/
 
