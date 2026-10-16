@@ -5,7 +5,6 @@
 
 /*** ANIMATIONS ***/
 
-.onhover {}
 .background-scale {background-size: 100%;-webkit-transition: background-size 1s ease-in;transition: background-size 1s ease-in;}
 .background-scale:hover {background-size: 110%}
 
