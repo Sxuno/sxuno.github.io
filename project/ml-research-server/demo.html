@@ -87,9 +87,9 @@
 								<div>OS Linux</div>
 								<div>network 1000mbit/s</div>
 							</div>
-							<!-- <noscript> -->
-								<svg class = 'chart' style = 'width:160px;height:105px;margin-top:4px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 60 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
-									<g class = 'bars' stroke = '#363d45' stroke-width = '2.5' fill = 'none'>
+							<div class = 'chart'>
+								<svg class = 'device' style = 'width:160px;height:105px;margin-top:4px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 60 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
+									<g class = 'cores' stroke = '#363d45' stroke-width = '2.5' fill = 'none'>
 									<!-- X = (totalWidth - 2 * padding) / (barCount + (barCount - 1) * gapRatio); -->
 										<path d = 'M 2.25 99 2.25 42'/>
 										<path d = 'M 5.95 99 5.95 28'/>
@@ -108,24 +108,14 @@
 										<path d = 'M 54.05 99 54.05 18'/>
 										<path d = 'M 57.75 99 57.75 64'/>
 									</g>
-									<path vector-effect = 'non-scaling-stroke' stroke = 'red' stroke-width = '1px' fill = 'none' d = 'M 
-										0.0 50  1.6 60  3.2 50  4.8 50  6.4 80  8.0 50  9.6 50 11.2 50 12.8 50 14.4 80
-										16.0 50 17.6 60 19.2 50 20.8 50 22.4 80 24.0 50 25.6 50 27.2 50 28.8 50 30.4 80
-										32.0 50 33.6 60 35.2 50 36.8 50 38.4 80 40.0 50 41.6 50 43.2 50 44.8 50 46.4 80
-										48.0 50 49.6 60 51.2 50 52.8 50 54.4 80 56.0 50 57.6 50 59.2 50 60.8 50 62.4 80
-										64.0 50 65.6 60 67.2 50 68.8 50 70.4 80 72.0 50 73.6 50 75.2 50 76.8 50 78.4 80
-										80.0 50 81.6 60 83.2 50 84.8 50 86.4 80 88.0 50 89.6 50 91.2 50 92.8 50 94.4 80
-									' />
-									<path vector-effect = 'non-scaling-stroke' stroke = 'rgb(0, 128, 255)'  stroke-width = '1px' fill = 'none'  d = 'M 
-										0 60  1 60  2 60  3 60  4 60  5 60  6 60  7 60  8 60  9 60
-										10 60 11 60 12 60 13 60 14 60 15 60 16 60 17 60 18 60 19 60
-										20 60 21 60 22 60 23 60 24 60 25 60 26 60 27 60 28 60 29 60
-										30 70 31 70 32 70 33 70 34 70 35 70 36 70 37 70 38 70 39 70
-										40 70 41 70 42 70 43 70 44 70 45 70 46 70 47 70 48 70 49 70
-										50 70 51 70 52 70 53 70 54 70 55 70 56 70 57 70 58 70 59 70
-									' />
+									<g class = 'percent' stroke = 'red' stroke-width = '1px' fill = 'none'>
+										<path vector-effect = 'non-scaling-stroke' d = 'M 0.0 50 1.6 60 3.2 50 4.8 50 6.4 80 8.0 50 9.6 50 11.2 50 12.8 50 14.4 80 16.0 50 17.6 60 19.2 50 20.8 50 22.4 80 24.0 50 25.6 50 27.2 50 28.8 50 30.4 80 32.0 50 33.6 60 35.2 50 36.8 50 38.4 80 40.0 50 41.6 50 43.2 50 44.8 50 46.4 80 48.0 50 49.6 60 51.2 50 52.8 50 54.4 80 56.0 50 57.6 50 59.2 50 60.8 50 62.4 80 64.0 50 65.6 60 67.2 50 68.8 50 70.4 80 72.0 50 73.6 50 75.2 50 76.8 50 78.4 80 80.0 50 81.6 60 83.2 50 84.8 50 86.4 80 88.0 50 89.6 50 91.2 50 92.8 50 94.4 80' />
+									</g>
+									<g class = 'memory' stroke = 'rgb(0, 128, 255)'  stroke-width = '1px' fill = 'none'  >
+										<path vector-effect = 'non-scaling-stroke' d = 'M 0 60 1 60 2 60 3 60 4 60 5 60 6 60 7 60 8 60 9 60 10 60 11 60 12 60 13 60 14 60 15 60 16 60 17 60 18 60 19 60 20 60 21 60 22 60 23 60 24 60 25 60 26 60 27 60 28 60 29 60 30 70 31 70 32 70 33 70 34 70 35 70 36 70 37 70 38 70 39 70 40 70 41 70 42 70 43 70 44 70 45 70 46 70 47 70 48 70 49 70 50 70 51 70 52 70 53 70 54 70 55 70 56 70 57 70 58 70 59 70' />
+									</g>
 								</svg>
-							<!-- </noscript> -->
+							</div>
 							<!-- <canvas class = 'chart'></canvas> -->
 						</div>
 						<div class = 'device flex row gap-05'>
@@ -135,27 +125,16 @@
 								<div>Cuda 12.3</div>
 								<div>16 GT/s</div>
 							</div>
-							<!-- <noscript> -->
-								<svg class = 'chart' style = 'width:160px;height:105px;margin-top:4px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 60 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
-									<path vector-effect = 'non-scaling-stroke' stroke = 'green' stroke-width = '1px' fill = 'none' d = 'M 
-										0.0 50  1.6 60  3.2 50  4.8 50  6.4 80  8.0 50  9.6 50 11.2 50 12.8 50 14.4 80
-										16.0 50 17.6 60 19.2 50 20.8 50 22.4 80 24.0 50 25.6 50 27.2 50 28.8 50 30.4 80
-										32.0 50 33.6 60 35.2 50 36.8 50 38.4 80 40.0 50 41.6 50 43.2 50 44.8 50 46.4 80
-										48.0 50 49.6 60 51.2 50 52.8 50 54.4 80 56.0 50 57.6 50 59.2 50 60.8 50 62.4 80
-										64.0 50 65.6 60 67.2 50 68.8 50 70.4 80 72.0 50 73.6 50 75.2 50 76.8 50 78.4 80
-										80.0 50 81.6 60 83.2 50 84.8 50 86.4 80 88.0 50 89.6 50 91.2 50 92.8 50 94.4 80
-									' />
-									<path vector-effect = 'non-scaling-stroke' stroke = 'rgb(0, 128, 255)'  stroke-width = '1px' fill = 'none'  d = 'M 
-										0 70  1 70  2 70  3 70  4 70  5 70  6 70  7 70  8 70  9 70
-										10 70 11 70 12 70 13 70 14 70 15 70 16 70 17 70 18 70 19 70
-										20 70 21 70 22 70 23 70 24 70 25 70 26 70 27 70 28 70 29 70
-										30 60 31 60 32 60 33 60 34 60 35 60 36 60 37 60 38 60 39 60
-										40 60 41 60 42 60 43 60 44 60 45 60 46 60 47 60 48 60 49 60
-										50 60 51 60 52 60 53 60 54 60 55 60 56 60 57 60 58 60 59 60
-									' />
+							<div class = 'chart'>
+								<svg class = 'device' style = 'width:160px;height:105px;margin-top:4px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 60 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
+									<g class = 'percent' stroke = 'green' stroke-width = '1px' fill = 'none' >
+										<path vector-effect = 'non-scaling-stroke' d = 'M 0.0 50 1.6 60 3.2 50 4.8 50 6.4 80 8.0 50 9.6 50 11.2 50 12.8 50 14.4 80 16.0 50 17.6 60 19.2 50 20.8 50 22.4 80 24.0 50 25.6 50 27.2 50 28.8 50 30.4 80 32.0 50 33.6 60 35.2 50 36.8 50 38.4 80 40.0 50 41.6 50 43.2 50 44.8 50 46.4 80 48.0 50 49.6 60 51.2 50 52.8 50 54.4 80 56.0 50 57.6 50 59.2 50 60.8 50 62.4 80 64.0 50 65.6 60 67.2 50 68.8 50 70.4 80 72.0 50 73.6 50 75.2 50 76.8 50 78.4 80 80.0 50 81.6 60 83.2 50 84.8 50 86.4 80 88.0 50 89.6 50 91.2 50 92.8 50 94.4 80' />
+									</g>
+									<g class = 'memory' stroke = 'rgb(0, 128, 255)'  stroke-width = '1px' fill = 'none'>
+										<path vector-effect = 'non-scaling-stroke' d = 'M 0 70 1 70 2 70 3 70 4 70 5 70 6 70 7 70 8 70 9 70 10 70 11 70 12 70 13 70 14 70 15 70 16 70 17 70 18 70 19 70 20 70 21 70 22 70 23 70 24 70 25 70 26 70 27 70 28 70 29 70 30 60 31 60 32 60 33 60 34 60 35 60 36 60 37 60 38 60 39 60 40 60 41 60 42 60 43 60 44 60 45 60 46 60 47 60 48 60 49 60 50 60 51 60 52 60 53 60 54 60 55 60 56 60 57 60 58 60 59 60' />
+									</g>
 								</svg>
-							<!-- </noscript> -->
-							<!-- <canvas class = 'chart'></canvas> -->
+							</div>
 						</div>
 					</div>
 				</section>
@@ -230,22 +209,13 @@
 						<section id = 'evaluation'>
 							<h3>evaluation</h3>
 							<a href = '#'><b>&gt; setup task</b></a>
-							<!-- <noscript> -->
-								<svg class = 'chart' style = 'width:360px;height:200px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 100 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
-									<path vector-effect = 'non-scaling-stroke' stroke = 'white' stroke-width = '1px' fill = 'none' d = 'M
-										0 89  1 84  2 80  3 79  4 81  5 84  6 81  7 76  8 71  9 71
-										10 73 11 76 12 73 13 68 14 64 15 64 16 67 17 70 18 66 19 62
-										20 57 21 55 22 57 23 59 24 58 25 54 26 50 27 48 28 51 29 53
-										30 55 31 50 32 43 33 39 34 41 35 43 36 44 37 45 38 44 39 43
-										40 43 41 47 42 51 43 49 44 42 45 35 46 32 47 35 48 37 49 39
-										50 35 51 30 52 27 53 32 54 36 55 41 56 41 57 38 58 35 59 36
-										60 37 61 39 62 35 63 30 64 25 65 23 66 27 67 30 68 29 69 26
-										70 22 71 19 72 25 73 31 74 33 75 31 76 28 77 26 78 27 79 28
-										80 29 81 25 82 21 83 17 84 18 85 21 86 24 87 23 88 22 89 21
-										90 21 91 24 92 27 93 24 94 20 95 15 96 15 97 18 98 18 99 17
-									' />
+							<div class = 'chart'>
+								<svg class = 'summery' style = 'width:360px;height:200px;border: 1px solid white;border-radius:5px;box-sizing: border-box' viewBox = '0 0 100 100' preserveAspectRatio = 'none' xmlns = 'http://www.w3.org/2000/svg'>
+									<g class = 'evaluation' stroke = 'white' stroke-width = '1px' fill = 'none' >
+										<path vector-effect = 'non-scaling-stroke' d = 'M 0 89 1 84 2 80 3 79 4 81 5 84 6 81 7 76 8 71 9 71 10 73 11 76 12 73 13 68 14 64 15 64 16 67 17 70 18 66 19 62 20 57 21 55 22 57 23 59 24 58 25 54 26 50 27 48 28 51 29 53 30 55 31 50 32 43 33 39 34 41 35 43 36 44 37 45 38 44 39 43 40 43 41 47 42 51 43 49 44 42 45 35 46 32 47 35 48 37 49 39 50 35 51 30 52 27 53 32 54 36 55 41 56 41 57 38 58 35 59 36 60 37 61 39 62 35 63 30 64 25 65 23 66 27 67 30 68 29 69 26 70 22 71 19 72 25 73 31 74 33 75 31 76 28 77 26 78 27 79 28 80 29 81 25 82 21 83 17 84 18 85 21 86 24 87 23 88 22 89 21 90 21 91 24 92 27 93 24 94 20 95 15 96 15 97 18 98 18 99 17' />
+									</g>
 								</svg>
-							<!-- </noscript> -->
+							</div>
 							<!-- <canvas class = 'chart'></canvas> -->
 						</section>
 						<section id = 'training' class = 'flex column'>
@@ -269,14 +239,67 @@
 			</section>
 		</main>
 		<script>
-			async function monitor() {
-				let response = await fetch('/systemmonitor/gpu/test')
-				let data = await response.json()
-				console.log(data)
+			async function systemmonitor() {
+				if(window.location.protocol != 'file:' && window.location.hostname != 'sxuno.github.io') {
+					let response = await fetch('/systemmonitor/gpu/test')
+					let data = await response.json()
+					console.log(data)
+				} else {
+					console.log('systemmonitor simulation')
+				}
+			}			
+			// initial SSR / noscript fallback chart parsing
+			let charts = document.querySelectorAll('.chart svg')
+			let parent = new Array()
+			let canvas = new Array()
+
+			for(let chart of charts) {
+				console.log(chart.classList[0])
+				parent.push(chart.parentElement)
+				let viewBox = chart.getAttribute('viewBox').split(' ')
+				let fillstyle = new Array()
+				let strokewidth = new Array()
+				let lines = new Array()
+				for(let graph of chart.children) {
+					console.log(graph.classList[0])
+
+					for(let line of graph.children) {
+
+						fillstyle.push(graph.getAttribute('stroke'))
+						let pixelwidth = graph.getAttribute('stroke-width')
+						strokewidth.push(parseFloat(graph.getAttribute('stroke-width').replace('px','')))
+
+						lines.push(line.getAttribute('d').split(' '))
+						console.log(line.getAttribute('d').split(' '))
+					}
+				}
+				let element = document.createElement('canvas')
+				element.classList = 'chart'
+				element.width = chart.style.width.replace('px','')
+				element.height = chart.style.height.replace('px','')
+				element.style.boxSizing = 'border-box'
+				let ctx = element.getContext('2d')
+				canvas.push({'element': element, 'ctx': ctx, 'fillstyle': fillstyle, 'lines': lines, 'strokewidth': strokewidth, 'viewBox': viewBox})
 			}
-			if(window.location.protocol != 'file:' && window.location.hostname != 'sxuno.github.io') {
-				monitor()
-			}
+			for (let c = 0; c < canvas.length; c++) {
+				for(let l = 0; l < canvas[c].lines.length; l++) {
+					canvas[c].ctx.beginPath()
+					canvas[c].ctx.strokeStyle = canvas[c].fillstyle[l]
+					canvas[c].ctx.lineWidth = (canvas[c].strokewidth[l] > 1 ) ? canvas[c].strokewidth[l] * (+canvas[c].element.width / +canvas[c].viewBox[2]) : canvas[c].strokewidth[l]
+					for(let p = 0; p < canvas[c].lines[l].length; p++) {
+						if (canvas[c].lines[l][p] !== 'M') {
+							canvas[c].ctx.lineTo(+canvas[c].lines[l][p]*(+canvas[c].element.width / +canvas[c].viewBox[2]), +canvas[c].lines[l][p+1]*(+canvas[c].element.height / +canvas[c].viewBox[3]))
+							p++
+						} else {
+							canvas[c].ctx.moveTo(+canvas[c].lines[l][p+1]*(+canvas[c].element.width / +canvas[c].viewBox[2]), +canvas[c].lines[l][p+2]*(+canvas[c].element.height / +canvas[c].viewBox[3]))
+							p = p+2
+						}
+					}
+					canvas[c].ctx.stroke()
+				}
+				parent[c].append(canvas[c].element)
+				charts[c].remove()
+			}		
 		</script>
 		<footer>
 			<small>
