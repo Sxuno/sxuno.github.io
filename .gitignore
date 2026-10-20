@@ -11,6 +11,7 @@
 !/engine/**
 ### MEDIA ###
 !/media/
+!/media/**/
 !/media/*/*.png
 !/media/*/*.svg
 ### PROJECTS ###
@@ -41,8 +42,8 @@
 !/project/ml-research-server.html
 !/project/ml-research-server/
 !/project/ml-research-server/demo.html
-!/project/ml-research-server/preview/
-!/project/ml-research-server/preview/**
+#!/project/ml-research-server/preview/
+#!/project/ml-research-server/preview/**
 
 !/project/database-manager.html
 
