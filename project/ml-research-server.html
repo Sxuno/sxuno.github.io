@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+	<head>
+		<title>ml-research-server</title>
+
+		<meta name = 'description' content = 'Art, coding and moddeling portfolio'>
+		<meta name = 'keywords' content = 'SXuno, Portfolio, Project, Github, Githubpage, Machine learning, backend'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>
+		
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
+
+		<link rel = 'icon' type = 'image/x-icon' href = './../media/icon/menu.svg'>
+
+		<link rel = 'stylesheet' href = './../theme/default/media.css'>
+		<link rel = 'stylesheet' href = './../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../theme/default/engine.css'>
+
+		<script src = './../system/framework.js'></script>
+		<script src = './../engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document //
+			engine.PATH.content = './../content/'
+			engine.PATH.shader = './../engine/shader/'
+		</script>
+		<noscript>
+			<style>
+				/*** MEDIA RESPONSIVE ***/
+				@media (max-width: 540px) {
+					body header h1 {text-align: center;}
+					body main {width: 360px;}
+					body main header {width: 360px;text-align: center;}
+				}
+				@media (max-width: 720px) {
+					body header h1 {text-align: center;}
+					body main {max-width: 420px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (max-width: 1443px) {
+					body header h1 {text-align: center;}
+					body main {width: 720px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (min-width: 1444px) {
+					body header h1 {text-align: center;}
+					body main {min-width: 1080px;}
+					body main header {left: 0px;top: 32px; position:absolute;}
+				}
+				@media (max-height: 640px) {
+					body main header {position:relative;}
+				}
+				/*** media fallback ***/
+				#ml-research-preview {
+					background-image: url('./../media/image/ml-research-preview.png');height:460px;width:100%;                       
+				}
+			</style>
+		</noscript>
+	</head>
+	<body>
+		<header>
+			<nav>
+				<label class = 'left'>
+					<img src = './../media/icon/menu.svg' />
+					<a href='./../index.html'>Home</a>
+				</label>
+				<label class = 'right'>
+					English <img src = './../media/icon/settings.svg' />
+				</label>
+			</nav>
+		</header>
+		<main id = 'ml-research-server'>
+			<h1>ML Research Server</h1>
+			<!-- main -->
+			<section id = 'preview'>
+				<h2>Preview</h2>
+				<div id = 'ml-research-preview' data-type = 'png' class = 'media box-shadow-border animation-hover-background'></div>
+			</section>
+			<section id = 'description'>
+				<h2>Description</h2>
+                <div>
+					Configure models, setup tasks, syntezise data and monitor devices and<br/>
+					tasks via webinterface with optional SSR support.
+                </div>
+			</section>
+            <section id = 'features'>
+                <h2>Features</h2>
+                <div>
+					- ONNX file extension export<br/>
+					- cli control application<br/>
+					- discord command bot<br/>
+					- network device deligation<br/>
+					- multi device env support<br/>
+					- webinterface dashboard<br/>
+					- data mapping and visualization<br/>
+					- webgpu execution support<br/>
+                </div>
+            </section>
+			<section id = 'demo'>
+				<h2>Demo</h2>
+				<div class = 'grid'>
+					<div class = 'f11-25'>
+						proof of concept
+					</div>
+					<div class = 'f11-75'>
+						<a class = 'inactive' href = './ml-research-server/download/ml-research-server.zip'>download</a>
+					</div>
+				</div>
+				<div class = 'grid'>
+					<div class = 'f11-25'>
+						webinterface demo
+					</div>
+					<div class = 'f11-75'>
+						<a class = '' href = './ml-research-server/demo.html'>link</a>
+					</div>
+				</div>
+			</section>
+			<section id = 'download'>
+			<h2>Planed releases</h2>		
+				<h3>Github</h3>
+				<div class = 'grid'>
+					<div class = 'f00-10'>
+						source: 
+					</div>
+					<div class = 'f11-33'>
+						<a class = 'inactive' href = './../index.html#github.com/sxuno/ml-research-server/' target = '_self' rel = 'noopener noreferrer'>Access request</a>
+					</div>
+				</div>
+				<div class = 'grid'>
+					<div class = 'f00-10'>
+						release:
+					</div>
+					<div class = 'f11-33'>
+						<a class = 'inactive' href = './../index.html#github.com/sxuno/ml-research-server/releases' target='_self' rel='noopener noreferrer'>Access request</a><br /><br />
+					</div>
+				</div>
+			</section>
+		</main>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>

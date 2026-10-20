@@ -110,6 +110,7 @@ footer small { text-align: center; font-size: 12px; margin: 4px auto; padding-to
 .f11-33 {flex: 1 1 calc(33% - 2.5px);}
 .f11-40 {flex: 1 1 calc(40% - 2.5px);}
 .f11-50 {flex: 1 1 calc(50% - 2.5px);}
+.f11-75 {flex: 1 1 calc(75% - 2.5px);}
 .f11-80 {flex: 1 1 calc(80% - 2.5px);}
 .f11-90 {flex: 1 1 calc(90% - 2.5px);}
 .f11-00 {flex: 1 1 calc(100% - 2.5px);}
@@ -194,6 +195,7 @@ label a { display: inline;}
         #webgpu-engine #snapshot .wrap canvas:nth-child(9) { width:315px;height:177px;}
 
     /* ml-research-server */
+    #ml-research-server #preview .media {height: 460px}
         /* demo */
         #systemmonitor {border-bottom: 1px solid white;height: 144px;}
         #systemmonitor canvas {height: 106px; width: 160px;margin-top:5px;box-sizing: border-box;}
