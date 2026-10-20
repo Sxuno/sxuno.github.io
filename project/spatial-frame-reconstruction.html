@@ -48,10 +48,10 @@
 				height: 100%;
 			}
 			.before {
-				background-image: url(./spatial-frame-reconstruction/demo/reconstructed.png); /*right*/
+				background-image: url(./spatial-frame-reconstruction/preview/reconstructed.png); /*right*/
 			}
 			.after {
-				background-image: url(./spatial-frame-reconstruction/demo/lowres.png); /*left*/
+				background-image: url(./spatial-frame-reconstruction/preview/lowres.png); /*left*/
 				clip-path: inset(0 50% 0 0);
 			}
 			.slider {
@@ -202,12 +202,21 @@
             </section>
 			<section id = 'demo'>
                 <h2>Demo</h2>
-				<div>
-					<a class = 'inactive' href = './spatial-frame-reconstruction/demo.html'>Live sample</a>
+				<div class = 'grid'>
+					<div class = 'f00-20'>
+						Interactive demo
+					</div>
+					<div class = 'f11-80'>
+						<a class = 'inactive' href = './spatial-frame-reconstruction/demo.html'>link</a>
+					</div>
 				</div>
-				<br/>
-				<div >
-					<a class = 'inactive' href = './spatial-frame-reconstruction/onnxviewer.html'>ONNX viewer</a>
+				<div class = 'grid'>
+					<div class = 'f00-20'>
+						ONNX viewer
+					</div>
+					<div class = 'f11-80'>
+						<a class = 'inactive' href = './spatial-frame-reconstruction/onnxviewer.html'>link</a>
+					</div>
 				</div>
             </section>
 			<section id = 'download'>
