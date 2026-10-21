@@ -232,7 +232,7 @@ label a { display: inline;}
     /* spatial frame reconstruction */
     #spatial-frame-reconstruction {width: 800px}
         /* demo */
-        #spatial-frame-reconstruction #demo .input div {margin: 20px auto 0px auto;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:12px;}
+        #spatial-frame-reconstruction #demo .input div {margin: 20px auto 0px auto;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:15px;}
         #spatial-frame-reconstruction #demo .input div:hover {background-color: #22242b;}
         #spatial-frame-reconstruction #demo .input label {margin: 10px auto 0px auto;justify-content: center;}
 

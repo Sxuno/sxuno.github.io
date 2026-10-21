@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang = 'en'>
+	<head>
+		<title>Spatial Frame Reconstruction</title>
+
+		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
+		<meta name = 'keywords' content= 'SXuno, Portfolio, Project, Github, Githubpage, Machine learning, Spatial Frame Reconstruction, Live demo'>
+		<meta name = 'author' content = 'Stefan Wienold'>
+		<meta name = 'language' content = 'en'>
+		
+		<meta name = 'viewport' content = 'width = device-width, initial-scale = 1.0'>
+		<meta charset = 'UTF-8'>
+
+		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/worksample.svg'>
+
+		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../../theme/default/media.css'>
+
+		<script src = './../../system/framework.js'></script>
+		<script src = './../../beta/engine/core.js'></script>
+		<script>
+			// inject custom content PATH relative to document 
+			engine.PATH.content = './../../content/'
+
+			// DISABLE Console output
+			delete engine.debug
+			engine.log.events = false
+			engine.log.infos = false
+			engine.log.warnings = false
+			engine.log.errors = false
+			console.log('engine log disabled')
+		</script>
+		<!--<noscript>-->
+			<style>
+				/*** MEDIA RESPONSIVE ***/
+				@media (max-width: 540px) {
+					body header h1 {text-align: center;}
+					body main {width: 360px;}
+					body main header {width: 360px;text-align: center;}
+				}
+				@media (max-width: 720px) {
+					body header h1 {text-align: center;}
+					body main {max-width: 420px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+				}
+				@media (max-width: 1443px) {
+					body header h1 {text-align: center;}
+					body main {width: 720px;}
+					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
+					.comparison {max-height: 444px}
+				}
+				@media (min-width: 1444px) {
+					body header h1 {text-align: center;}
+					body main {min-width: 1080px;}
+					body main header {left: 0px;top: 32px; position:absolute;}
+				}
+				@media (max-height: 640px) {
+					body main header {position:relative;}
+				}
+			</style>
+		<!--</noscript>-->
+	</head>
+    <body>
+        <header>
+            <nav>
+                <label class = 'left'>
+                    <img src = './../../media/icon/menu.svg' />
+                    <a href='./../../index.html'>Home</a>
+                </label>
+                <label class = 'right'>
+                    English <img src = './../../media/icon/settings.svg' />
+                </label>
+            </nav>
+        </header>
+        <main id = 'spatial-frame-reconstruction'>
+            <h1><a href = './../spatial-frame-reconstruction.html'>Spatial Frame Reconstruction</a><br/><label>Demo</label></h1>
+			<section id = 'demo'>
+				<script>
+					// CONCEPT : 	trigger zones for interactivity reuse noscript fallback
+					//				combine uploader with gbl support for webgpu engine
+					// NOTE: 		canvas.drawImage(image.canvas, 0,0 , 300,600 , 0,0 , 300,600) canvas start , canvas end, image start, image end
+					// EDGECASES: 	resolution matching -> upload configuration overlay : options -adjust input scale -synthesize
+					// 				no webgpu support -> upload configuration overlay : webworker fallback notice || option?
+				</script>
+				<style>
+					
+				</style>
+				<div class = 'comparison' style = 'display: flex;height: 600px;position: relative;'>
+					<div class = 'alphagrid' style = 'width: 100%; display: flex;'>
+						<div style = 'height: 100%;width: 50%; background-image: none;background-size: 200%;border-right: 1px solid white;box-sizing: border-box;'>
+							<div style = 'height: 48px;width: calc(100% - 5px);padding-left: 5px; background-color: rgba(0,0,0,0.5);'>
+								original<br/>
+								540p
+							</div>
+						</div>
+						<div style = 'height: 100%;width: 50%; background-image: none;background-size: 200%;background-position-x: -100%;border-left: 1px solid white;box-sizing: border-box;'>
+							<div style = 'height: 48px;width: calc( 100% - 5px); background-color: rgba(0,0,0,0.5);padding-right: 5px; text-align: right;'>
+								reconstruction<br/>
+								1080p
+							</div>
+						</div>
+					</div>
+					<!-- SLIDER -->
+					<div style = 'position: absolute; left: calc(50% - 10px); top: calc(50% - 10px); width: 20px; height: 18.5px; border-radius: 20px; background-color: white;color: black;font-size: 12px; padding-top: 1.5px;text-align: center;'><b>&lt;&nbsp;&gt;</b></div>
+					<!-- SOURCE :: Placeholder for meta tag detection on fetch -->
+					<!-- <div style = 'position: absolute; left: 5px; bottom: 0px;color:grey'>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
+				</div>
+			</section>
+        </main>
+		<script>
+			let noscript = false
+			if (!noscript) {
+				(()=>{
+					let section = document.createElement('section')
+					let div = document.createElement('div')
+					let label = document.createElement('label')
+					let input = document.createElement('input')
+					input.type = 'file'
+					input.accept = 'image/png'
+					input.style.display = 'none'
+					section.classList = 'input flex column'
+					div.classList = 'flex'
+					div.textContent = 'upload image *'
+					div.addEventListener('click', () => {
+						input.click()
+						let media = document.querySelectorAll('div.alphagrid > div')
+						console.log(media)
+						media[0].style.backgroundImage = 'url(./demo/color.png)'
+						media[1].style.backgroundImage = 'url(./demo/grey.png)'
+						/* for (let view of media) {
+							view.style.backgroundImage = 'none'
+						} */
+					})
+					label.textContent = '*files are only used local and are not uploaded at all!'
+					document.querySelector('#demo').appendChild(section)
+					section.appendChild(input)
+					section.appendChild(div)
+					section.appendChild(label)
+				})()
+			}
+		</script>
+		<footer>
+			<small>
+				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+			</small>
+			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+		</footer>
+	</body>
+</html>

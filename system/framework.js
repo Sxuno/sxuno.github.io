@@ -146,7 +146,7 @@ const runtime = (function () {
 
 	const loadhandler = {
 		media : () => {
-			_context = document.querySelectorAll('div.media')
+			_context = document.querySelectorAll('div[data-type]')
 			if (_context.length) {
 				for (let media of _context) {
 					if(media.dataset.type) {

@@ -10,7 +10,7 @@
 
 /*** BACKGROUNDS **/
 
-.alphagrid {--square-size: 15px; --color: rgba(0, 0, 0, 0.5); background-image: conic-gradient(var(--color) 90deg, transparent 90deg 180deg, var(--color) 180deg 270deg, transparent 270deg);}
+.alphagrid {--square-size: 15px; --color: rgba(0, 0, 0, 0.5); background-image: conic-gradient(var(--color) 90deg, transparent 90deg 180deg, var(--color) 180deg 270deg, transparent 270deg);background-size: calc(var(--square-size) * 2) calc(var(--square-size) * 2);}
 
 /*** CANVAS2D ***/
 
