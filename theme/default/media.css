@@ -1,12 +1,16 @@
 /******************************/
-/* FRAMEWORK THEME DEFAULT    */
-/* version 0.1.1-dev          */
+/* THEME DEFAULT MEDIA        */
+/* version 0.1.2-dev          */
 /******************************/
 
 /*** ANIMATIONS ***/
 
 .background-scale {background-size: 100%;-webkit-transition: background-size 1s ease-in;transition: background-size 1s ease-in;}
 .background-scale:hover {background-size: 110%}
+
+/*** BACKGROUNDS **/
+
+.alphagrid {--square-size: 15px; --color: rgba(0, 0, 0, 0.5); background-image: conic-gradient(var(--color) 90deg, transparent 90deg 180deg, var(--color) 180deg 270deg, transparent 270deg);}
 
 /*** CANVAS2D ***/
 

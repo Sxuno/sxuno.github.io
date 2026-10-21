@@ -1,7 +1,16 @@
 /******************************/
-/* FRAMEWORK THEME DEFAULT    */
-/* version 0.1.2-dev          */
+/* THEME DEFAULT STYLE        */
+/* version 0.1.3-dev          */
 /******************************/
+
+/* TODO:    minify
+            globalize flex container
+            globalize position relative
+            rework nav and footer namespaces
+            seperate noscript
+            seperate page specifics
+            update z-index handling
+*/
 
 /******************************/
 /*   DEFAULTS                 */
@@ -44,7 +53,6 @@ h3, h4 { margin-top: 0px;}
 /******************************/
 
 /*** Z-INDEX ***/
-/* TODO: update order */
 header {z-index: 99}
 div {z-index: 0}
 .legend {z-index: 1}
@@ -150,6 +158,19 @@ label a { display: inline;}
 .network ul li {float: left;padding-right: 20px;}
 .network ul li a img {height: 32px;width: 32px;}
 
+/* migrated from engine.css */
+.webgpu {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0px auto;
+	z-index: 0;
+}
+.event.GPUEnabled{
+	visibility: hidden;
+}
+
 /*** PROJECTS ***/
 
     /*** SHARED ***/
@@ -210,6 +231,10 @@ label a { display: inline;}
 
     /* spatial frame reconstruction */
     #spatial-frame-reconstruction {width: 800px}
+        /* demo */
+        #spatial-frame-reconstruction #demo .input div {margin: 20px auto 0px auto;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:12px;}
+        #spatial-frame-reconstruction #demo .input div:hover {background-color: #22242b;}
+        #spatial-frame-reconstruction #demo .input label {margin: 10px auto 0px auto;justify-content: center;}
 
 /*** VIEWS ***/
 
