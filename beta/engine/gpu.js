@@ -82,6 +82,7 @@ engine.gpu = (function(){
 			engine.debug?.timer.end('device request')
 			_limits = _device.limits
 			controller.monitor(_device)
+			engine.eventdispatcher.dispatchEvent(new Event('GPUEnabled'))
 		}
 		const monitor = function(device) {
 			device.lost.then(async (info) => {
