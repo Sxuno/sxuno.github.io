@@ -111,14 +111,18 @@
 			let noscript = false
 			if (!noscript) {
 				(()=>{
+					// TODO: refactor namespace also may already split up into layout and loadhandler? consider framework.js namespace rework
+					let wrapper = document.querySelector('.comparison')
 					let canvas = document.createElement('canvas')
 					let section = document.createElement('section')
 					let div = document.createElement('div')
 					let label = document.createElement('label')
 					let input = document.createElement('input')
-					canvas.style.width = '300px'
-					canvas.style.height = '400px'
-					rendertarget = canvas.getContext('2d')
+					canvas.style.width = '1080px'
+					canvas.width = 1080
+					canvas.style.height = '600px'
+					canvas.height = 600
+					ctx = canvas.getContext('2d')
 					input.type = 'file'
 					input.accept = 'image/png'
 					input.style.display = 'none'
@@ -127,27 +131,27 @@
 						let raw = input.files[0]
 						let bits = await raw.arrayBuffer()
 						let bytes = new Uint8Array(bits)
-
+						// add magic byte detection to protect against wrong fileformats? input uses os based detection only.
 						let blob = new Blob([bytes], {type: 'image/png'})
 						let url = URL.createObjectURL(blob)
 						let png = new Image()
 
-						png.onload = () => {
-							// TODO : 	resolution mapping 
-							// 			apectratio mapping
-							let width = png.naturalWidth
-							let height = png.naturalHeight
-							// TODO : 	resolution based options? synthesize : with description 
-							//			resolution limit? 1080p? 
-							// console.log(width)
-							rendertarget.width = 300
-							rendertarget.height = 400
+						png.onload = () => {							
+							canvas.width = wrapper.clientWidth
+							canvas.height = wrapper.clientHeight
 
-							rendertarget.clearRect(0,0, width, height)
-							rendertarget.drawImage(png, 0, 0)
+							ctx.clearRect(0,0, canvas.width / 2, canvas.height / 2, 0, 0 )
+
+							let scale = Math.min(canvas.width / png.naturalWidth, canvas.height / png.naturalHeight)
+							let renderWidth = png.naturalWidth * scale
+							let renderHeight = png.naturalHeight * scale
+							let offsetX = (canvas.width - renderWidth) / 2
+							let offsetY = (canvas.height - renderHeight) / 2
+
+							ctx.drawImage(png, offsetX, offsetY, renderWidth, renderHeight)
 							URL.revokeObjectURL(url)
 
-							let imgData = rendertarget.getImageData(0, 0, width, height)
+							let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 							let pixelData = imgData.data
 							// let pixelCopy = new Uint8ClampedArray(pixelData) placheholder for greyscale 'while reconstruction'
 
@@ -162,9 +166,9 @@
 								pixelData[i + 2] = b
 								pixelData[i + 3] = a
 							}
-							rendertarget.putImageData(imgData, 0, 0)
+							ctx.putImageData(imgData, 0, 0)
 						}
-						// section.appendChild(canvas) // TODO : adjust scaffolding for output
+						// wrapper.children[0].children[0].appendChild(canvas) // TODO : adjust scaffolding for output
 						png.src = url
 					}
 
@@ -175,7 +179,7 @@
 						input.click()
 						let media = document.querySelectorAll('div.alphagrid > div')
 						
-						// clear background images
+						// clear background images -> hide lables prepare to move into canvas
 						// setup canvas original reconstruction discard old? or setup from start?
 
 						media[0].style.backgroundImage = 'url(./demo/color.png)'
