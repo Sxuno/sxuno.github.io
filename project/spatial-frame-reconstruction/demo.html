@@ -111,25 +111,75 @@
 			let noscript = false
 			if (!noscript) {
 				(()=>{
+					let canvas = document.createElement('canvas')
 					let section = document.createElement('section')
 					let div = document.createElement('div')
 					let label = document.createElement('label')
 					let input = document.createElement('input')
+					canvas.style.width = '300px'
+					canvas.style.height = '400px'
+					rendertarget = canvas.getContext('2d')
 					input.type = 'file'
 					input.accept = 'image/png'
 					input.style.display = 'none'
+					input.onchange = async() => {
+						console.log(input.files)
+						let raw = input.files[0]
+						let bits = await raw.arrayBuffer()
+						let bytes = new Uint8Array(bits)
+
+						let blob = new Blob([bytes], {type: 'image/png'})
+						let url = URL.createObjectURL(blob)
+						let png = new Image()
+
+						png.onload = () => {
+							// TODO : 	resolution mapping 
+							// 			apectratio mapping
+							let width = png.naturalWidth
+							let height = png.naturalHeight
+							// TODO : 	resolution based options? synthesize : with description 
+							//			resolution limit? 1080p? 
+							// console.log(width)
+							rendertarget.width = 300
+							rendertarget.height = 400
+
+							rendertarget.clearRect(0,0, width, height)
+							rendertarget.drawImage(png, 0, 0)
+							URL.revokeObjectURL(url)
+
+							let imgData = rendertarget.getImageData(0, 0, width, height)
+							let pixelData = imgData.data
+							// let pixelCopy = new Uint8ClampedArray(pixelData) placheholder for greyscale 'while reconstruction'
+
+							for (let i = 0; i < pixelData.length; i +=4) {
+								let r = pixelData[i]
+								let g = pixelData[i + 1]
+								let b = pixelData[i + 2]
+								let a = pixelData[i + 3]
+
+								pixelData[i]	 = r
+								pixelData[i + 1] = g
+								pixelData[i + 2] = b
+								pixelData[i + 3] = a
+							}
+							rendertarget.putImageData(imgData, 0, 0)
+						}
+						// section.appendChild(canvas) // TODO : adjust scaffolding for output
+						png.src = url
+					}
+
 					section.classList = 'input flex column'
 					div.classList = 'flex'
 					div.textContent = 'upload image *'
 					div.addEventListener('click', () => {
 						input.click()
 						let media = document.querySelectorAll('div.alphagrid > div')
-						console.log(media)
+						
+						// clear background images
+						// setup canvas original reconstruction discard old? or setup from start?
+
 						media[0].style.backgroundImage = 'url(./demo/color.png)'
 						media[1].style.backgroundImage = 'url(./demo/grey.png)'
-						/* for (let view of media) {
-							view.style.backgroundImage = 'none'
-						} */
 					})
 					label.textContent = '*files are only used local and are not uploaded at all!'
 					document.querySelector('#demo').appendChild(section)
