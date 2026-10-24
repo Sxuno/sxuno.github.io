@@ -84,25 +84,81 @@
 				</script>
 				<style>
 					/* TODO : simplify, refactor namespace ( flex-media? grow-lft? grow-rgt? like as in slide attribute for canvas pixelmapping) */
-					.comparison {display: flex;height: 600px;position: relative;}
-					.canvas{width: 100%; display: flex;}
-					.original {height: 100%;width: 50%; background-image: none;background-size: 200%;border-right: 1px solid white;box-sizing: border-box;}
-					.original label {display: block;font-style:normal;color: white; height: 48px;width: calc(100% - 5px);padding-left: 5px; background-color: rgba(0,0,0,0.5);}
-					.reconstruction {height: 100%;width: 50%; background-image: none;background-size: 200%;background-position-x: -100%;border-left: 1px solid white;box-sizing: border-box;}
-					.reconstruction label {display: block;font-style:normal;color: white;height: 48px;width: calc( 100% - 5px); background-color: rgba(0,0,0,0.5);padding-right: 5px; text-align: right;}
-					.source {position: absolute; left: 5px; bottom: 0px;color:grey}
-					.slider {position: absolute; left: calc(50% - 10px); top: calc(50% - 10px); width: 20px; height: 18.5px; border-radius: 20px; background-color: white;color: black;font-size: 12px; padding-top: 1.5px;text-align: center;}
+					.comparison {
+						display: flex;
+						height: 600px;
+						position: relative;
+					}
+					.canvas{
+						width: 100%; 
+						display: flex;
+					}
+					.original {
+						height: 100%;
+						width: 50%; 
+						background-image: none;
+						background-size: 200%;
+						/* border-right: 1px solid white; // use div instead for simpler show/hide */
+						box-sizing: border-box;
+					}
+					.original label {
+						display: block;
+						font-style:normal;
+						color: white; 
+						height: 48px;
+						width: calc(100% - 5px);
+						padding-left: 5px; 
+						background-color: rgba(0,0,0,0.5);
+					}
+					.reconstruction {
+						height: 100%;
+						width: 50%; 
+						background-image: none;
+						background-size: 200%;
+						background-position-x: -100%; 
+						/*border-left: 1px solid white; // use div instead for simpler show/hide */
+						box-sizing: border-box;
+					}
+					.reconstruction label {
+						display: block;
+						font-style:normal;
+						color: white;
+						height: 48px;
+						width: calc( 100% - 5px); 
+						background-color: rgba(0,0,0,0.5);
+						padding-right: 5px; 
+						text-align: right;
+					}
+					.source { /*change to label? */
+						position: absolute; 
+						left: 5px; 
+						bottom: 0px;
+						color:grey
+					}
+					.slider {
+						position: absolute; 
+						left: calc(50% - 10px); 
+						top: calc(50% - 10px); 
+						width: 20px; 
+						height: 18.5px; 
+						border-radius: 20px; 
+						background-color: white;
+						color: black;
+						font-size: 12px; 
+						padding-top: 1.5px;
+						text-align: center;
+					}
 				</style>
 				<div class = 'comparison'>
 					<div class = 'canvas alphagrid'>
 						<div class = 'original'>
-							<label>
+							<label style = 'display:none;'>
 								original<br/>
 								540p
 							</label>
 						</div>
 						<div class = 'reconstruction'>
-							<label>
+							<label style = 'display:none;'>
 								reconstruction<br/>
 								1080p
 							</label>
@@ -110,7 +166,7 @@
 					</div>
 					<!-- SOURCE :: Placeholder for meta tag detection on fetch -->
 					<!-- <div>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
-					<div class = 'slider'><b>&lt;&nbsp;&gt;</b></div>
+					<div class = 'slider' style = 'display:none;'><b>&lt;&nbsp;&gt;</b></div>
 				</div>
 			</section>
         </main>
@@ -119,26 +175,50 @@
 			if (!noscript) {
 				(()=>{
 					// TODO: refactor namespace also may already split up into layout and loadhandler? consider framework.js namespace rework
-					let wrapper = document.querySelector('.comparison')
-					let canvas = document.createElement('canvas')
+
+					// input layout
 					let section = document.createElement('section')
 					let div = document.createElement('div')
 					let label = document.createElement('label')
 					let input = document.createElement('input')
+					document.querySelector('#demo').appendChild(section)
+					section.appendChild(input)
+					section.appendChild(div)
+					section.appendChild(label)
+					section.classList = 'input flex column'
+					div.classList = 'flex'
+					div.textContent = 'upload image *'
+					label.textContent = '*files are only used local and are not uploaded at all!'
+					// input setup
+					input.type = 'file'
+					input.accept = 'image/png'
+					input.style.display = 'none'
+					// input eventhandler
+					div.addEventListener('click', () => {
+						input.click()
+						let media = document.querySelectorAll('div.alphagrid > div')
+						// clear background images -> hide lables prepare to move into canvas
+						// setup canvas original reconstruction discard old? or setup from start?
+
+						// media[0].style.backgroundImage = 'url(./demo/color.png)'
+						// media[1].style.backgroundImage = 'url(./demo/grey.png)'
+					})
+					// input target // move to .onchange?
+					let wrapper = document.querySelector('.comparison')
+					let canvas = document.createElement('canvas')
 					canvas.style.width = '1080px'
 					canvas.width = 1080
 					canvas.style.height = '600px'
 					canvas.height = 600
 					ctx = canvas.getContext('2d')
-					input.type = 'file'
-					input.accept = 'image/png'
-					input.style.display = 'none'
+					// input loadhanlder
 					input.onchange = async() => {
 						console.log(input.files)
 						let raw = input.files[0]
 						let bits = await raw.arrayBuffer()
 						let bytes = new Uint8Array(bits)
 						// add magic byte detection to protect against wrong fileformats? input uses os based detection only.
+						// use for function selection via key?
 						let blob = new Blob([bytes], {type: 'image/png'})
 						let url = URL.createObjectURL(blob)
 						let png = new Image()
@@ -175,28 +255,9 @@
 							}
 							ctx.putImageData(imgData, 0, 0)
 						}
-						// wrapper.children[0].children[0].appendChild(canvas) // TODO : adjust scaffolding for output
+						wrapper.children[0].children[0].appendChild(canvas) // TODO : adjust scaffolding for output
 						png.src = url
 					}
-
-					section.classList = 'input flex column'
-					div.classList = 'flex'
-					div.textContent = 'upload image *'
-					div.addEventListener('click', () => {
-						input.click()
-						let media = document.querySelectorAll('div.alphagrid > div')
-						
-						// clear background images -> hide lables prepare to move into canvas
-						// setup canvas original reconstruction discard old? or setup from start?
-
-						media[0].style.backgroundImage = 'url(./demo/color.png)'
-						media[1].style.backgroundImage = 'url(./demo/grey.png)'
-					})
-					label.textContent = '*files are only used local and are not uploaded at all!'
-					document.querySelector('#demo').appendChild(section)
-					section.appendChild(input)
-					section.appendChild(div)
-					section.appendChild(label)
 				})()
 			}
 		</script>
