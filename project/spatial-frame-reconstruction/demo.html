@@ -77,33 +77,40 @@
 			<section id = 'demo'>
 				<script>
 					// CONCEPT : 	trigger zones for interactivity reuse noscript fallback
-					//				combine uploader with glb support for webgpu engine
-					// NOTE: 		canvas.drawImage(image.canvas, 0,0 , 300,600 , 0,0 , 300,600) canvas start , canvas end, image start, image end
-					// EDGECASES: 	resolution matching -> upload configuration overlay : options -adjust input scale -synthesize
-					// 				no webgpu support -> upload configuration overlay : webworker fallback notice || option?
+					//				combine uploader with glb/glft support for webgpu engine may also blend?
+					// 				onclick load 'canvas alpha grid' -> media preview -> button load display none -> show configuration at bottom
+					// EDGECASES: 	resolution matching -> upload configuration: options -adjust input scale -synthesize
+					// 				no webgpu support -> upload configuration: webworker fallback notice || option?
 				</script>
 				<style>
-					
+					/* TODO : simplify, refactor namespace ( flex-media? grow-lft? grow-rgt? like as in slide attribute for canvas pixelmapping) */
+					.comparison {display: flex;height: 600px;position: relative;}
+					.canvas{width: 100%; display: flex;}
+					.original {height: 100%;width: 50%; background-image: none;background-size: 200%;border-right: 1px solid white;box-sizing: border-box;}
+					.original label {display: block;font-style:normal;color: white; height: 48px;width: calc(100% - 5px);padding-left: 5px; background-color: rgba(0,0,0,0.5);}
+					.reconstruction {height: 100%;width: 50%; background-image: none;background-size: 200%;background-position-x: -100%;border-left: 1px solid white;box-sizing: border-box;}
+					.reconstruction label {display: block;font-style:normal;color: white;height: 48px;width: calc( 100% - 5px); background-color: rgba(0,0,0,0.5);padding-right: 5px; text-align: right;}
+					.source {position: absolute; left: 5px; bottom: 0px;color:grey}
+					.slider {position: absolute; left: calc(50% - 10px); top: calc(50% - 10px); width: 20px; height: 18.5px; border-radius: 20px; background-color: white;color: black;font-size: 12px; padding-top: 1.5px;text-align: center;}
 				</style>
-				<div class = 'comparison' style = 'display: flex;height: 600px;position: relative;'>
-					<div class = 'alphagrid' style = 'width: 100%; display: flex;'>
-						<div style = 'height: 100%;width: 50%; background-image: none;background-size: 200%;border-right: 1px solid white;box-sizing: border-box;'>
-							<div style = 'height: 48px;width: calc(100% - 5px);padding-left: 5px; background-color: rgba(0,0,0,0.5);'>
+				<div class = 'comparison'>
+					<div class = 'canvas alphagrid'>
+						<div class = 'original'>
+							<label>
 								original<br/>
 								540p
-							</div>
+							</label>
 						</div>
-						<div style = 'height: 100%;width: 50%; background-image: none;background-size: 200%;background-position-x: -100%;border-left: 1px solid white;box-sizing: border-box;'>
-							<div style = 'height: 48px;width: calc( 100% - 5px); background-color: rgba(0,0,0,0.5);padding-right: 5px; text-align: right;'>
+						<div class = 'reconstruction'>
+							<label>
 								reconstruction<br/>
 								1080p
-							</div>
+							</label>
 						</div>
 					</div>
-					<!-- SLIDER -->
-					<div style = 'position: absolute; left: calc(50% - 10px); top: calc(50% - 10px); width: 20px; height: 18.5px; border-radius: 20px; background-color: white;color: black;font-size: 12px; padding-top: 1.5px;text-align: center;'><b>&lt;&nbsp;&gt;</b></div>
 					<!-- SOURCE :: Placeholder for meta tag detection on fetch -->
-					<!-- <div style = 'position: absolute; left: 5px; bottom: 0px;color:grey'>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
+					<!-- <div>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
+					<div class = 'slider'><b>&lt;&nbsp;&gt;</b></div>
 				</div>
 			</section>
         </main>
@@ -136,7 +143,7 @@
 						let url = URL.createObjectURL(blob)
 						let png = new Image()
 
-						png.onload = () => {							
+						png.onload = () => {
 							canvas.width = wrapper.clientWidth
 							canvas.height = wrapper.clientHeight
 
