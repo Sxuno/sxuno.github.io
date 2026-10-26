@@ -1,3 +1,8 @@
+<!-- 
+Developer note:
+	despite targeting noscript as well as file context, optimizing this demo to fully construct script dom is somehow out of proportion due to its interactive nature.
+	Therefore there will be no component fetching, or file context exclusive dynamic scripts. Instead, everything will be within one file for 'simpler' use.
+-->
 <!DOCTYPE html>
 <html lang = 'en'>
 	<head>
@@ -48,6 +53,7 @@
 					body main {width: 720px;}
 					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
 					.comparison {max-height: 444px}
+					.original canvas {max-width: 800px; max-height: 444px}
 				}
 				@media (min-width: 1444px) {
 					body header h1 {text-align: center;}
@@ -78,9 +84,7 @@
 				<script>
 					// CONCEPT : 	trigger zones for interactivity reuse noscript fallback
 					//				combine uploader with glb/glft support for webgpu engine may also blend?
-					// 				onclick load 'canvas alpha grid' -> media preview -> button load display none -> show configuration at bottom
-					// EDGECASES: 	resolution matching -> upload configuration: options -adjust input scale -synthesize
-					// 				no webgpu support -> upload configuration: webworker fallback notice || option?
+					// EDGECASES: 	no webgpu support -> upload configuration: webworker fallback notice || option?
 				</script>
 				<style>
 					/* TODO : simplify, refactor namespace ( flex-media? grow-lft? grow-rgt? like as in slide attribute for canvas pixelmapping) */
@@ -168,53 +172,102 @@
 					<!-- <div>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
 					<div class = 'slider' style = 'display:none;'><b>&lt;&nbsp;&gt;</b></div>
 				</div>
+				<style>
+					input[type="range"] {
+						accent-color: rgb(0, 128, 255)
+					}
+				</style>
+				<section id = 'configuration flex column'>
+					<h3>configuration</h3>
+					<h4>model</h4>
+					<div class = 'flex'>
+						<div class = 'f11-50'>
+							version
+						</div>
+						<select class = 'f11-50'>
+							<option>sfr 0.1.0-dev #poc</option>
+						</select>
+					</div>
+					<div class = 'flex'>
+						<div class = 'f11-50'>
+							resolutionscale
+						</div>
+						<div class = 'f11-50 flex row'>
+							<div>0%</div>
+							<input type = 'range' min = '0' max = '100' value = '50' disabled class = 'f11-50' >
+							<div>200%</div>
+						</div>
+					</div>
+					<br/>
+					<h4>degenerate input</h4>
+					<div class = 'flex'>
+						<div class = 'f11-50'>
+							blur
+						</div>
+						<div class = 'f11-50 flex row'>
+							<div>0%</div>
+							<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+							<div>100%</div>
+						</div>
+					</div>
+					<div class = 'flex'>
+						<div class = 'f11-50'>
+							downscale i 'nearest'
+						</div>
+						<div class = 'f11-50 flex row'>
+							<div>0%</div>
+							<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+							<div>100%</div>
+						</div>
+					</div>
+					<div style = 'border: 1px solid white;border-radius:5px;width: 200px; margin: auto;margin-top: 20px;text-align: center;height: 36px;padding-top:10px'>reconstruct</div>
+				</section>
+				<section class = 'input flex column'>
+					<input type = 'file' accept = 'image/png'>
+					<div class = 'flex'>load image *</div>
+					<label>*flies are processed strictly local.</label>
+				</section>
 			</section>
         </main>
+		<script>
+			// canvas api?
+			c2d = (function(){
+				const nearest = () => {
+
+				}
+				return {nearest}
+			})()
+		</script>
 		<script>
 			let noscript = false
 			if (!noscript) {
 				(()=>{
-					// TODO: refactor namespace also may already split up into layout and loadhandler? consider framework.js namespace rework
-
-					// input layout
-					let section = document.createElement('section')
-					let div = document.createElement('div')
-					let label = document.createElement('label')
-					let input = document.createElement('input')
-					document.querySelector('#demo').appendChild(section)
-					section.appendChild(input)
-					section.appendChild(div)
-					section.appendChild(label)
-					section.classList = 'input flex column'
-					div.classList = 'flex'
-					div.textContent = 'upload image *'
-					label.textContent = '*files are only used local and are not uploaded at all!'
-					// input setup
-					input.type = 'file'
-					input.accept = 'image/png'
-					input.style.display = 'none'
-					// input eventhandler
-					div.addEventListener('click', () => {
-						input.click()
+					// NEW
+					let input = new Object()
+					input.button  = document.querySelector('.input div')
+					input.handler = document.querySelector('input[type="file"]')
+					input.handler.style.display = 'none' // move to style
+					// eventhandler
+					input.button.addEventListener('click', () => {
+						input.handler.click()
 						let media = document.querySelectorAll('div.alphagrid > div')
 						// clear background images -> hide lables prepare to move into canvas
 						// setup canvas original reconstruction discard old? or setup from start?
 
-						// media[0].style.backgroundImage = 'url(./demo/color.png)'
-						// media[1].style.backgroundImage = 'url(./demo/grey.png)'
 					})
 					// input target // move to .onchange?
 					let wrapper = document.querySelector('.comparison')
 					let canvas = document.createElement('canvas')
-					canvas.style.width = '1080px'
-					canvas.width = 1080
-					canvas.style.height = '600px'
-					canvas.height = 600
+					canvas.style.width = `${wrapper.clientWidth}px`
+					canvas.width = wrapper.clientWidth
+					canvas.style.height = `${wrapper.clientHeight}px`
+					canvas.height = wrapper.clientHeight
 					ctx = canvas.getContext('2d')
 					// input loadhanlder
-					input.onchange = async() => {
-						console.log(input.files)
-						let raw = input.files[0]
+					input.handler.onchange = async() => {
+						// image logic
+						console.log(input.handler.files)
+						let raw = input.handler.files[0]
 						let bits = await raw.arrayBuffer()
 						let bytes = new Uint8Array(bits)
 						// add magic byte detection to protect against wrong fileformats? input uses os based detection only.
@@ -222,10 +275,13 @@
 						let blob = new Blob([bytes], {type: 'image/png'})
 						let url = URL.createObjectURL(blob)
 						let png = new Image()
-
 						png.onload = () => {
 							canvas.width = wrapper.clientWidth
 							canvas.height = wrapper.clientHeight
+
+							// placeholder for labels
+							// `input resolution ${png.naturalWidth}x${png.naturalHeight}`
+							// `target resoultion${Math.floor((png.naturalWidth*2)/32)*32}x${Math.floor((png.naturalHeight*2)/32)*32} \u24D8 edge padding loss width ${(png.naturalWidth*2) % 32} height ${(png.naturalHeight * 2) % 32}`
 
 							ctx.clearRect(0,0, canvas.width / 2, canvas.height / 2, 0, 0 )
 
@@ -241,7 +297,7 @@
 							let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 							let pixelData = imgData.data
 							// let pixelCopy = new Uint8ClampedArray(pixelData) placheholder for greyscale 'while reconstruction'
-
+							// placeholder for pixeldata manipulation
 							for (let i = 0; i < pixelData.length; i +=4) {
 								let r = pixelData[i]
 								let g = pixelData[i + 1]
