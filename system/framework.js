@@ -31,25 +31,43 @@ const system = (function () {
 
 // RESPONSIVE functions
 // API
-const layout = (function() {
+const layout = (function() { // TODO: less hacky | more logical
 	let _observer
 	let _width
-	let _height
 
-	_width = window.innerWidth
-	_height = window.innerHeight
-	console.log(`document onscreensize ${_width} x ${_height}`)
+	const observer = new EventTarget()
 
-	window.addEventListener('resize', (listener) => {
-		if(listener.target.window.innerWidth !== _observer) {
-			console.log(`size ${_observer}`)
-			_observer = listener.target.window.innerWidth
-			console.log(`scaled ${_observer}`)
-			return
+	const observe = (function(){ 
+		let _range
+
+		function width(value) {
+			function range(value) {
+				if(value > 1440) return 1440
+				else if (value > 1080) return 1080
+				else if (value > 720) return 720
+				else if (value > 480) return 480
+			}
+			_range = range(value)
+			if(_observer !== _range) {
+				_observer = _range
+				observer.dispatchEvent(new Event(`@media-${_range}`))
+			}
 		}
-	})
+		return {width}
+	})()
 
-	const observer = (element, event, handler) => {}
+	const init = (function(){
+		_width = window.innerWidth
+		observe.width(_width)
+
+		window.addEventListener('resize', (listener) => {
+			if (listener.target.window.innerWidth !== _width) {
+				_width = listener.target.window.innerWidth
+				observe.width(_width)
+			}		
+		})
+	})()
+
 	return {observer}
 })()
 
