@@ -29,8 +29,7 @@ const system = (function () {
 	return {session, language, theme}
 })()
 
-// RESPONSIVE functions
-// API
+// RESPONSIVNES
 const layout = (function() { // TODO: less hacky | more logical
 	let _observer
 	let _width
@@ -56,10 +55,15 @@ const layout = (function() { // TODO: less hacky | more logical
 		return {width}
 	})()
 
+	const width = () => {				
+				if(_width > 1440) return 1440
+				else if (_width > 1080) return 1080
+				else if (_width > 720) return 720
+				else if (_width > 480) return 480
+			}
+
 	const init = (function(){
 		_width = window.innerWidth
-		observe.width(_width)
-
 		window.addEventListener('resize', (listener) => {
 			if (listener.target.window.innerWidth !== _width) {
 				_width = listener.target.window.innerWidth
@@ -68,7 +72,7 @@ const layout = (function() { // TODO: less hacky | more logical
 		})
 	})()
 
-	return {observer}
+	return {observer, width}
 })()
 
 // VIEW functions

@@ -1,8 +1,5 @@
-<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
-    <g class="layer">
-        <title>menu</title>
-        <rect x="14" y="23" height="8" width="100" rx="6" ry="6" style="fill: grey" />
-        <rect x="14" y="55" height="8" width="100" rx="6" ry="6" style="fill: grey" />
-        <rect x="14" y="87" height="8" width="100" rx="6" ry="6" style="fill: grey" />
+<svg width = '20px' viewBox = '0 0 10 10' xmlns = 'http://www.w3.org/2000/svg'>
+    <g stroke = 'grey' stroke-width = '1.25px' stroke-linejoin = 'round' stroke-linecap = 'round'>
+        <path d = 'M 1 2 9 2 M 1 5 9 5 M 1 8 9 8'  />
     </g>
 </svg>
