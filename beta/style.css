@@ -1,64 +1,51 @@
-*{
-    user-select:none;
-    color-scheme:dark;
-    font-family:Verdana,Geneva,Tahoma,sans-serif,sans-serif;
+:root {
 
-    margin: 0px;
-    padding: 0px;
+    user-select: none;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    box-sizing: border-box;
+
+    color-scheme: dark;
+        
+        --color-default:    rgb(255, 255, 255);
+        --color-active:     rgb(  0, 128, 255);
+        --color-inactive:   rgb(128, 128, 128);
+
+        --color-background: rgb( 28,  27,  34); /* #1C1B22  */
 }
-html {
-    height: 100%;
+a:link, a:hover, a:active, a:focus {
+    text-decoration: none;
 }
-a:link, a:visited, a:hover, a:active, a:focus { 
-    color: rgb(0, 128, 255); 
-    text-decoration: none; 
+a:link, a:visited, a:hover, a:active, a:focus {
+    color: var(--color-active);
+}
+button {
+    border: unset;
+    background-color: unset;
+    padding: unset;
+}
+button:hover {
+    background-color: unset;
 }
 body {
-    height: 100%;
-    display: flex;
+    display:flex;
     flex-direction: column;
-    align-items: center;
+    margin: 0px;
 }
-header {
-    height: 35px;
-    width: 100%;
-}
-nav {
-    width: 100%;
-    padding: 5px 0px;
-    position: fixed;
-    z-index: 1;
-}
-main {
-    z-index: 0;
-    padding: 5px 0px;
-    flex: 1 0 auto;
-}
-footer {
-    height: 25px;
-    width: 100%;
-    padding: 5px 0px;
-    display: flex;
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    align-items: center;
-}
-small {
-    margin: 0px auto;
-}
-/* shared */
-nav, footer {
-    background-color: black;
-}
-#betalayout {
-    width: 80%;
-}
-/* classes */
-.icon {
-    height: 24px;
-    width: 24px;
-}
-.logo {
-    height: 32px;
-    width: 32px;
-}
+header {height: 20px;}
+header section {display:flex;flex-direction: row;position: fixed;width: 100%;height:60px;
+    background: linear-gradient(to bottom, var(--color-background) 0%, var(--color-background) 50%, rgb(from var(--color-background) r g b / 0)100%)}
+
+nav {display: flex;flex: 0 1 calc(50% - 10px);padding: 5px;}
+nav:first-child {flex-direction: row;}
+nav:last-child {flex-direction: row-reverse;}
+nav a:link, nav a:visited, nav a:hover, nav a:active, nav a:focus {color: var(--color-inactive);}
+nav:first-child a {padding-left: 5px;}
+nav:last-child a {padding-right: 5px; pointer-events: none;}
+nav button {width: 24px; height: 24px;}
+nav:first-child button {background-position: center;background-size: contain;background-image: url('./../../media/icon/menu.svg')}
+nav:last-child button {background-position: center;background-size: contain;background-image: url('./../../media/icon/settings.svg')}
+
+menu {display: none;}
+main {flex-grow: 1 0 auto;}
+footer {flex-shrink: 0;}
