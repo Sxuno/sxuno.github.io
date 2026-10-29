@@ -202,8 +202,27 @@ var media = {
 			media.cache.video.setAttribute('id', 'video')
 			media.cache.video.setAttribute('height', `${media.height}px`)
 			media.cache.video.setAttribute('width', `${media.width}px`)
+			media.cache.video.setAttribute('type', 'text/html')
 			media.cache.video.setAttribute('frameborder', '0')
-			media.cache.video.setAttribute('src', 'https://www.youtube.com/embed/8atRYanX8yk?modestbranding=1&rel=0&showinfo=0')
+			media.cache.video.setAttribute('allow', 'accelerometer;autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share')
+			media.cache.video.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
+		
+			media.cache.video.setAttribute('src', 'https://www.youtube-nocookie.com/embed/8atRYanX8yk?si=wugzFSPXBNXvWS6X')
+
+			/*
+			<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/8atRYanX8yk?si=wugzFSPXBNXvWS6X" 
+				title="YouTube video player" 
+				frameborder="0" 
+				allow="accelerometer; 
+				autoplay; 
+				clipboard-write; 
+				encrypted-media; 
+				gyroscope; picture-in-picture; 
+				web-share" 
+				referrerpolicy="strict-origin-when-cross-origin" 
+				allowfullscreen>
+			</iframe>
+			*/
 
 			media.cache.video.style.top = `${((document.documentElement.clientHeight-media.height)/2)+window.scrollY}px`
 			media.cache.video.style.left = `${(document.documentElement.clientWidth-media.width)/2}px`
