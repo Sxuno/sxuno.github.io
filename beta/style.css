@@ -1,40 +1,34 @@
 :root {
+	user-select: none;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
 
-    user-select: none;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+	box-sizing: border-box;
 
-    box-sizing: border-box;
+	color-scheme: dark;
+		
+		--color-default:    rgb(225, 225, 225);
+		--color-active:     rgb(  0, 128, 225);
+		--color-inactive:   rgb(128, 128, 128);
 
-    color-scheme: dark;
-        
-        --color-default:    rgb(255, 255, 255);
-        --color-active:     rgb(  0, 128, 255);
-        --color-inactive:   rgb(128, 128, 128);
+		--color-background: rgb( 28,  27,  34); /* #1C1B22  */
+}
 
-        --color-background: rgb( 28,  27,  34); /* #1C1B22  */
-}
-a:link, a:hover, a:active, a:focus {
-    text-decoration: none;
-}
-a:link, a:visited, a:hover, a:active, a:focus {
-    color: var(--color-active);
-}
-button {
-    border: unset;
-    background-color: unset;
-    padding: unset;
-}
-button:hover {
-    background-color: unset;
-}
+a:link, a:hover, a:active, a:focus {text-decoration: none;}
+a:link, a:visited, a:hover, a:active, a:focus {color: var(--color-active);}
+
+button {border: unset;background-color: unset;padding: unset;}
+button:hover {background-color: unset;}
+
 body {
-    display:flex;
-    flex-direction: column;
-    margin: 0px;
+	display:flex;
+	flex-direction: column;
+	margin: 0px;
+	color: var(--color-default);
+	background-color: var(--color-background);
 }
+
 header {height: 20px;}
-header section {display:flex;flex-direction: row;position: fixed;width: 100%;height:60px;
-    background: linear-gradient(to bottom, var(--color-background) 0%, var(--color-background) 50%, rgb(from var(--color-background) r g b / 0)100%)}
+header section {display:flex;flex-direction: row;position: fixed;width: 100%;height:60px;background: linear-gradient(to bottom, var(--color-background) 0%, var(--color-background) 50%, rgb(from var(--color-background) r g b / 0)100%)}
 
 nav {display: flex;flex: 0 1 calc(50% - 10px);padding: 5px;}
 nav:first-child {flex-direction: row;}
@@ -43,9 +37,9 @@ nav a:link, nav a:visited, nav a:hover, nav a:active, nav a:focus {color: var(--
 nav:first-child a {padding-left: 5px;}
 nav:last-child a {padding-right: 5px; pointer-events: none;}
 nav button {width: 24px; height: 24px;}
-nav:first-child button {background-position: center;background-size: contain;background-image: url('./../../media/icon/menu.svg')}
-nav:last-child button {background-position: center;background-size: contain;background-image: url('./../../media/icon/settings.svg')}
+nav:first-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/menu.svg')}
+nav:last-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/settings.svg')}
 
 menu {display: none;}
-main {flex-grow: 1 0 auto;}
+main {flex-grow: 1;}
 footer {flex-shrink: 0;}
