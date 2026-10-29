@@ -1,0 +1,47 @@
+<script>
+function nearestNeighborDownscale(sourceCanvas, targetWidth, targetHeight) {
+  const srcCtx = sourceCanvas.getContext('2d');
+  const srcData = srcCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+  
+  // Create an offscreen canvas for the result
+  const resultCanvas = document.createElement('canvas');
+  resultCanvas.width = targetWidth;
+  resultCanvas.height = targetHeight;
+  const resCtx = resultCanvas.getContext('2d');
+  const resData = resCtx.createImageData(targetWidth, targetHeight);
+  
+  const xRatio = sourceCanvas.width / targetWidth;
+  const yRatio = sourceCanvas.height / targetHeight;
+  
+  for (let y = 0; y < targetHeight; y++) {
+    for (let x = 0; x < targetWidth; x++) {
+      // Find the nearest pixel coordinate in the original image
+      const px = Math.floor(x * xRatio);
+      const py = Math.floor(y * yRatio);
+      
+      // Calculate indices in the 1D Uint8ClampedArray (r, g, b, a)
+      const srcIndex = (py * sourceCanvas.width + px) * 4;
+      const resIndex = (y * targetWidth + x) * 4;
+      
+      // Copy the RGBA channels directly
+      resData.data[resIndex]     = srcData.data[srcIndex];     // R
+      resData.data[resIndex + 1] = srcData.data[srcIndex + 1]; // G
+      resData.data[resIndex + 2] = srcData.data[srcIndex + 2]; // B
+      resData.data[resIndex + 3] = srcData.data[srcIndex + 3]; // A
+    }
+  }
+  
+  resCtx.putImageData(resData, 0, 0);
+  return resultCanvas;
+}
+</script>
+<script>
+  const ctx = canvas.getContext('2d');
+
+// 1. Turn OFF image smoothing BEFORE drawing
+ctx.imageSmoothingEnabled = false;
+
+// 2. Draw your image/source canvas downscaled
+// ctx.drawImage(source, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+ctx.drawImage(originalCanvas, 0, 0, 1920, 1080, 0, 0, 960, 540); 
+</script>

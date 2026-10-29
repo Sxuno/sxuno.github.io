@@ -1,0 +1,231 @@
+
+            // Apply human-eye luminosity weights
+            const gray = (0.299 * r) + (0.587 * g) + (0.114 * b);
+
+            // Write the desaturated colors into the active canvas buffer
+            pixelData[i]     = gray; // Red
+            pixelData[i + 1] = gray; // Green
+            pixelData[i + 2] = gray; // Blue
+            pixelData[i + 3] = a;    // Alpha stays exactly as it was
+<script>
+input.onchange = async () => {
+    const rawFiles = input.files;
+    if (!rawFiles || rawFiles.length === 0) return;
+
+    const bits = await rawFiles[0].arrayBuffer();
+    const bytes = new Uint8Array(bits);
+
+    // 1. HARDWARE-LEVEL FORMAT DECOMPRESSION BRIDGE
+    // Instantly routes the payload into the browser's underlying image decoder engine.
+    // This automatically resolves: zlib compression, Indexed Palettes, Grayscale conversion,
+    // 16-bit downsampling, and embedded color spaces (sRGB / gAMA / iCCP).
+    const blob = new Blob([bytes], { type: 'image/png' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+
+    img.onload = () => {
+        // 2. DYNAMIC DIMENSION EXTRACTION
+        // The native image object reads the true structural boundaries post-decompression
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = width;
+        canvas.height = height;
+
+        // Clean slate to prevent historical buffer bleed
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url); // Immediate memory cleanup
+
+        // 3. THE UNIFIED RGBA PIXEL DATA STORE
+        // The browser hands you an absolute, fully normalized 32-bit RGBA pixel stream
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const pixelData = imgData.data;
+
+        // 4. THE EXPLICIT PROTOTYPE LOOP
+        // Completely safe regardless of whether the original file was Grayscale, Indexed, RGB, or RGBA.
+        for (let i = 0; i < pixelData.length; i += 4) {
+            let r = pixelData[i];
+            let g = pixelData[i + 1];
+            let b = pixelData[i + 2];
+            let a = pixelData[i + 3]; // Fully preserved native alpha values
+
+            // -----------------------------------------------------------------
+            // PROTOTYPE STAGE: Universal Sandbox
+            // Every PNG is now perfectly standardized into flat, unpackaged RGBA.
+            // -----------------------------------------------------------------
+
+            pixelData[i]     = r;
+            pixelData[i + 1] = g;
+            pixelData[i + 2] = b;
+            pixelData[i + 3] = a; 
+        }
+
+        // Write the altered array back onto the screen viewport
+        ctx.putImageData(imgData, 0, 0);
+        console.log(`Successfully processed a ${width}x${height} PNG asset.`);
+    };
+
+    img.src = url;
+};
+</script>
+<!-- promis version -->
+<script>
+ // A tiny reusable utility to make image loading sequential
+const loadAsset = (img) => new Promise(resolve => img.onload = resolve);
+
+input.onchange = async () => {
+    const rawFiles = input.files;
+    if (!rawFiles || rawFiles.length === 0) return;
+
+    // 1. Convert file data into a pointer
+    const bits = await rawFiles.arrayBuffer();
+    const blob = new Blob([bits], { type: 'image/png' });
+    const url = URL.createObjectURL(blob);
+    
+    // 2. Initialize the native rendering pipeline
+    const img = new Image();
+    img.src = url;
+
+    // 3. Pause execution right here until the browser fully decodes the PNG
+    await loadAsset(img);
+
+    // 4. Read the dynamic dimensions natively populated by the browser
+    const width = img.naturalWidth;
+    const height = img.naturalHeight;
+
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+
+    // 5. Transfer decoded pixels to canvas buffer and IMMEDIATELY destroy the pointer
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url); 
+
+    // 6. Access the normalized 32-bit RGBA pixel stream
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const pixelData = imgData.data;
+
+    // 7. Execute your universal prototype loop
+    for (let i = 0; i < pixelData.length; i += 4) {
+        let r = pixelData[i];
+        let g = pixelData[i + 1];
+        let b = pixelData[i + 2];
+        let a = pixelData[i + 3];
+
+        // Custom manipulations go here...
+
+        pixelData[i]     = r;
+        pixelData[i + 1] = g;
+        pixelData[i + 2] = b;
+        pixelData[i + 3] = a;
+    }
+
+    // 8. Commit and paint modifications
+    ctx.putImageData(imgData, 0, 0);
+    console.log("Sequential loop completed successfully.");
+};
+</script>
+<!-- sample for byte views -->
+<script>
+    input.onchange = async () => {
+    const rawFiles = input.files;
+    if (!rawFiles || rawFiles.length === 0) return;
+
+    const file = rawFiles[0];
+    const bits = await file.arrayBuffer();
+    const bytes = new Uint8Array(bits);
+
+    // 1. FAST METADATA EXTRACTION (Zero DataView Overhead)
+    // Verify PNG Magic Signature bytes: [0x89, 0x50, 0x4E, 0x47]
+    if (bytes[0] !== 0x89 || bytes[1] !== 0x50 || bytes[2] !== 0x4E || bytes[3] !== 0x47) {
+        console.error("Not a valid PNG file!");
+        return;
+    }
+
+    // Read 32-bit Big-Endian integers directly via bit-shifting
+    // Width starts at byte 16 | Height starts at byte 20
+    const width =  (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+    const height = (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23];
+    
+    // Check Color Type at byte 25
+    // 2 = RGB, 6 = RGBA. (Bit flag 4 represents Alpha channel existence)
+    const hasAlphaChannelInHeader = (bytes[25] & 4) !== 0;
+
+    // 2. SCANNING CHUNKS FOR sRGB METADATA
+    let containsSRGB = false;
+    let offset = 8; // Skip 8-byte PNG file signature to scan chunks
+
+    while (offset < bytes.length - 12) {
+        // Read the chunk data length (4 bytes)
+        const chunkLength = (bytes[offset] << 24) | (bytes[offset+1] << 16) | (bytes[offset+2] << 8) | bytes[offset+3];
+        
+        // Read 4-byte ASCII chunk name
+        const chunkType = String.fromCharCode(bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]);
+
+        if (chunkType === "sRGB") {
+            containsSRGB = true;
+            // Byte after chunk name holds rendering intent (0=Perceptual, 1=Relative, etc.)
+            const intent = bytes[offset + 8]; 
+            console.log(`sRGB chunk found! Intent profile: ${intent}`);
+            break; 
+        }
+        if (chunkType === "IEND") break; // End of file
+
+        // Move pointer: 4 (length) + 4 (name) + chunk data length + 4 (CRC check bytes)
+        offset += 12 + chunkLength;
+    }
+
+    console.log(`Metadata -> Dimensions: ${width}x${height} | sRGB Profile: ${containsSRGB}`);
+
+    // 3. SECURE DECOMPRESSION VIA BACKING BRIDGE
+    // Converts any internal zlib compression blocks seamlessly into a flat pixel payload
+    const blob = new Blob([bytes], { type: 'image/png' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+
+    img.onload = () => {
+        // Setup visual canvases
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw image onto an offscreen scratch canvas to pull the decoded raw bytes
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url); // Instantly release memory block
+
+        // 4. YOUR EXPLICIT RGBA PROCESSING LOOP
+        // imgData.data is a flat Uint8ClampedArray containing raw [R,G,B,A, R,G,B,A...]
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const pixelData = imgData.data;
+
+        for (let i = 0; i < pixelData.length; i += 4) {
+            let r = pixelData[i];
+            let g = pixelData[i + 1];
+            let b = pixelData[i + 2];
+            let a = pixelData[i + 3];
+
+            // ----------------------------------------------------
+            // PROTOTYPE STAGE: Add custom alterations here
+            // Example: Force greyscale manipulation or channel shifts
+            // ----------------------------------------------------
+
+            pixelData[i]     = r; 
+            pixelData[i + 1] = g; 
+            pixelData[i + 2] = b; 
+            pixelData[i + 3] = a; 
+        }
+
+        // Commit modifications back onto the Canvas viewport
+        ctx.putImageData(imgData, 0, 0);
+        console.log("Canvas processing pipeline executed cleanly.");
+    };
+
+    img.src = url;
+};
+
+</script>

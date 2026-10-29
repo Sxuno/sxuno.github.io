@@ -1,0 +1,120 @@
+<!-- DISCLAIMER : AI GENERATED -->
+
+<script>
+// ─── RUNTIME CONTROL PIPELINE ───────────────────────────────────────
+const STREAM = 0; // 0 = Monolithic Memory File, 1 = Live Streaming Chunks
+
+let response; 
+let bits;   // ArrayBuffer or Stream Reader Reference
+let bytes;  // Active Uint8Array operating pointer
+
+// ─── FILE FORMAT BLUEPRINT REGISTRY ──────────────────────────────────
+// Each layout blueprint handles fingerprint validation & address mapping
+const FormatRegistry = {
+    png: {
+        validate(bytes, view) {
+            if (bytes.byteLength < 8) return false;
+            // PNGs always start with this exact 8-byte signature sequence
+            const signature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+            return signature.every((val, i) => bytes[i] === val);
+        },
+        parse(bytes, view, decoder) {
+            // PNG Architecture: [8B Header] + [Sequential Data Chunks]
+            return { format: "png", mode: "Chunk-Sequential Data Stream" };
+        }
+    },
+
+    glb: {
+        validate(bytes, view) {
+            if (bytes.byteLength < 12) return false;
+            // Checks if first 4 bytes match ASCII string "glTF"
+            return bytes[0] === 0x67 && bytes[1] === 0x4C && bytes[2] === 0x54 && bytes[3] === 0x46;
+        },
+        parse(bytes, view, decoder) {
+            const version = view.getUint32(4, true);
+            const totalFileLength = view.getUint32(8, true);
+            return { format: "glb", version, totalFileLength, mode: "Dual JSON/BIN Container" };
+        }
+    },
+
+    onnx: {
+        validate(bytes, view) {
+            if (bytes.byteLength < 10) return false;
+            // Protobuf check: Typically starts with Varint tags 0x08 or 0x0A 
+            // Assert that it is definitely NOT a standard container like PNG or GLB
+            const isStandardContainer = (bytes[0] === 0x89 && bytes[1] === 0x50) || 
+                                        (bytes[0] === 0x67 && bytes[1] === 0x4C);
+            return !isStandardContainer && (bytes[0] === 0x08 || bytes[0] === 0x0A || bytes[0] === 0x12);
+        },
+        parse(bytes, view, decoder) {
+            // ONNX Architecture: Protocol Buffers message-field tag iteration
+            return { format: "onnx", mode: "Dynamic Protobuf Serialization Graph" };
+        }
+    },
+
+    mytensor: { // Custom Sandbox Format
+        validate(bytes, view) {
+            if (bytes.byteLength < 12) return false;
+            // Checks if first 4 bytes match ASCII string "MYT!"
+            return bytes[0] === 0x4D && bytes[1] === 0x59 && bytes[2] === 0x54 && bytes[3] === 0x21;
+        },
+        parse(bytes, view, decoder) {
+            const version = view.getUint32(4, true);
+            const jsonSize = view.getUint32(8, true);
+            return { format: "mytensor", version, jsonSize, mode: "Fixed Header-Payload Architecture" };
+        }
+    }
+};
+
+// ─── MASTER UNIFIED COORDINATOR PARSER ──────────────────────────────
+function orchestrateParser(fileBytes) {
+    if (!fileBytes || fileBytes.byteLength === 0) return { format: "empty", info: null };
+
+    const view = new DataView(fileBytes.buffer, fileBytes.byteOffset, fileBytes.byteLength);
+    const decoder = new TextDecoder('utf-8');
+
+    // Run active loop across registry fingerprints to find matching blueprint layout
+    for (const [formatKey, blueprint] of Object.entries(FormatRegistry)) {
+        if (blueprint.validate(fileBytes, view)) {
+            const mappedLayout = blueprint.parse(fileBytes, view, decoder);
+            return { format: formatKey, layout: mappedLayout };
+        }
+    }
+    return { format: "unknown", layout: { mode: "Raw unmapped byte sequence block" } };
+}
+
+// ─── MAIN EXECUTION BLOCK ───────────────────────────────────────────
+async function runSandbox() {
+    if (!STREAM) {
+        response = await fetch('./download/sfr-bundle.onnx');
+        bits = await response.arrayBuffer();
+        bytes = new Uint8Array(bits);
+        
+        // Execute structural layout check immediately for monolithic mode
+        const analysis = orchestrateParser(bytes);
+        console.log("Monolithic Match Result:", analysis);
+        document.querySelector('#preview div').innerHTML = `Format: <b>${analysis.format}</b><br>Layout Context: ${JSON.stringify(analysis.layout)}`;
+    }
+
+    if (STREAM) {
+        response = await fetch('./download/sfr-bundle.onnx');
+        bits = response.body.getReader();
+        
+        while (true) {
+            let { value, done } = await bits.read();
+            if (done) break;
+            
+            bytes = value; // value is already a raw Uint8Array chunk
+            
+            // Execute structural layout check per incoming packet chunk
+            const analysis = orchestrateParser(bytes);
+            console.log("Chunk Processing Result:", analysis);
+            
+            document.querySelector('#preview div').innerHTML = `Streaming... Last Chunk Format: <b>${analysis.format}</b>`;
+        }
+    }
+}
+
+// Fire up runtime context window
+runSandbox();
+</script>
