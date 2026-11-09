@@ -6,11 +6,15 @@
 
 	color-scheme: dark;
 		
-		--color-default:    rgb(225, 225, 225);
-		--color-active:     rgb(  0, 128, 225);
-		--color-inactive:   rgb(128, 128, 128);
+		--color-default:    	rgb(225, 225, 225);
+		--color-active:     	rgb(  0, 128, 225);
+		--color-inactive:		rgb(128, 128, 128);
 
-		--color-background: rgb( 28,  27,  34); /* #1C1B22  */
+		--color-background:		rgb( 28,  27,  34); /* #1C1B22  */
+		--color-overlay:		rgb( 27,  27,  27);
+
+		--color-border:			rgb(255, 255, 255);
+		--color-border-invert:	rgb(  0,   0,   0);
 }
 
 a:link, a:hover, a:active, a:focus {text-decoration: none;}
@@ -18,6 +22,8 @@ a:link, a:visited, a:hover, a:active, a:focus {color: var(--color-active);}
 
 button {border: unset;background-color: unset;padding: unset;}
 button:hover {background-color: unset;}
+
+menu {display: none;}
 
 body {
 	display:flex;
@@ -29,17 +35,23 @@ body {
 
 header {height: 20px;}
 header section {display:flex;flex-direction: row;position: fixed;width: 100%;height:60px;background: linear-gradient(to bottom, var(--color-background) 0%, var(--color-background) 50%, rgb(from var(--color-background) r g b / 0)100%)}
+header nav {display: flex;flex: 0 1 calc(50% - 10px);padding: 5px; font-style: italic;}
+header nav:first-child {flex-direction: row;}
+header nav:last-child {flex-direction: row-reverse;}
+header nav a:link, header nav a:visited, header nav a:hover, header nav a:active, header nav a:focus {color: var(--color-inactive);}
+header nav:first-child a {padding-left: 5px;}
+header nav:last-child a {padding-right: 5px; pointer-events: none;}
+header nav button {width: 24px; height: 24px;}
+header nav:first-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/menu.svg')}
+header nav:last-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/settings.svg')}
 
-nav {display: flex;flex: 0 1 calc(50% - 10px);padding: 5px;}
-nav:first-child {flex-direction: row;}
-nav:last-child {flex-direction: row-reverse;}
-nav a:link, nav a:visited, nav a:hover, nav a:active, nav a:focus {color: var(--color-inactive);}
-nav:first-child a {padding-left: 5px;}
-nav:last-child a {padding-right: 5px; pointer-events: none;}
-nav button {width: 24px; height: 24px;}
-nav:first-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/menu.svg')}
-nav:last-child button {background-position: center;background-size: contain;background-image: url('./../media/icon/settings.svg')}
-
-menu {display: none;}
 main {flex-grow: 1;}
-footer {flex-shrink: 0;}
+
+footer {flex-shrink: 0; display: flex; flex-direction: row ;background-color: var(--color-overlay); border-top: 1px solid var(--color-border-invert)}
+footer nav {display: flex;flex-direction: row-reverse; font-style: italic;}
+footer nav label {color: var(--color-inactive);padding-right: 5px;}
+footer nav p {width: 6px; height: 6px; margin: 10px 5px 0px 0px;border-radius: 50%;background-color: var(--color-active);}
+footer nav:nth-child(1) {flex: 0 1 calc(25% - 10px); padding: 5px; justify-content: flex-end; position: fixed; bottom: 0px; display: none;}
+footer nav:nth-child(2) {flex: 0 1 calc(100% - 10px); padding: 5px; justify-content: center;}
+footer nav:nth-child(3) {flex: 0 1 calc(25% - 10px); padding: 5px; position: absolute; right:0px;}
+footer nav:nth-child(3) button {background-position: center; background-size: contain;background-image: url('./../media/logo/webgpu.svg'); width: 24px; height: 24px;}
