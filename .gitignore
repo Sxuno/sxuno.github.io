@@ -32,17 +32,15 @@
 
 !/project/spatial-frame-reconstruction.html
 !/project/spatial-frame-reconstruction/
-!/project/spatial-frame-reconstruction/onnxviewer.html
+!/project/spatial-frame-reconstruction/*.html
 !/project/spatial-frame-reconstruction/preview/
 !/project/spatial-frame-reconstruction/preview/**
-!/project/spatial-frame-reconstruction/demo.html
-!/project/spatial-frame-reconstruction/demo/
 !/project/spatial-frame-reconstruction/download/
 !/project/spatial-frame-reconstruction/download/**
 
 !/project/ml-research-server.html
 !/project/ml-research-server/
-!/project/ml-research-server/demo.html
+!/project/ml-research-server/*.html
 #!/project/ml-research-server/download/
 #!/project/ml-research-server/download/**
 
