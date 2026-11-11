@@ -1,5 +1,5 @@
 <!-- 
-Developer note:
+Development note:
 	despite targeting noscript as well as file context, optimizing this demo to fully construct script dom is somehow out of proportion due to its interactive nature.
 	Therefore there will be no component fetching, or file context exclusive dynamic scripts. Instead, everything will be within one file for 'simpler' use.
 -->
@@ -17,9 +17,15 @@ Developer note:
 		<meta charset = 'UTF-8'>
 
 		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/worksample.svg'>
-
-		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
+	
+		<!-- <link rel = 'stylesheet' href = './../../theme/default/style.css'> -->
+		<link rel = 'stylesheet' href = './../../beta/style.css'>
 		<link rel = 'stylesheet' href = './../../theme/default/media.css'>
+
+		<!--- PAGE SPECIFIC -->
+		<style>
+
+		</style>
 
 		<script src = './../../system/framework.js'></script>
 		<script src = './../../beta/engine/core.js'></script>
@@ -35,7 +41,8 @@ Developer note:
 			engine.log.errors = false
 			console.log('engine log disabled')
 		</script>
-		<!--<noscript>-->
+		<!--
+		<noscript>
 			<style>
 				/*** MEDIA RESPONSIVE ***/
 				@media (max-width: 540px) {
@@ -53,7 +60,7 @@ Developer note:
 					body main {width: 720px;}
 					body main header {width: 100%;text-align: center;left:auto;margin: 0 auto;}
 					.comparison {max-height: 444px}
-					.original canvas {max-width: 800px; max-height: 444px}
+					.original canvas {max-width: 800px; max-height: 444px} /* move to responsive eventlistner */
 				}
 				@media (min-width: 1444px) {
 					body header h1 {text-align: center;}
@@ -64,182 +71,171 @@ Developer note:
 					body main header {position:relative;}
 				}
 			</style>
-		<!--</noscript>-->
+		</noscript>
+	-->
 	</head>
     <body>
-        <header>
-            <nav>
-                <label class = 'left'>
-                    <img src = './../../media/icon/menu.svg' />
-                    <a href='./../../index.html'>Home</a>
-                </label>
-                <label class = 'right'>
-                    English <img src = './../../media/icon/settings.svg' />
-                </label>
-            </nav>
+        <header id = 'home'>
+			<section id = 'navigation'>
+				<nav id = 'sidemap'>
+					<menu class = 'sidemap'></menu>	
+					<button class = 'menu'></button>										
+					<a href = '#'>home</a>
+				</nav>
+				<nav id = 'settings'>
+					<menu id = 'settings'></menu>
+					<button class = 'menu'></button>
+					<a class = 'inactive' href = '#'>english</a>
+				</nav>
+			</section>
         </header>
         <main id = 'spatial-frame-reconstruction'>
             <h1><a href = './../spatial-frame-reconstruction.html'>Spatial Frame Reconstruction</a><br/><label>Demo</label></h1>
 			<section id = 'demo'>
-				<script>
-					// CONCEPT : 	trigger zones for interactivity reuse noscript fallback
-					//				combine uploader with glb/glft support for webgpu engine may also blend?
-					// EDGECASES: 	no webgpu support -> upload configuration: webworker fallback notice || option?
-				</script>
-				<style>
-					/* TODO : simplify, refactor namespace ( flex-media? grow-lft? grow-rgt? like as in slide attribute for canvas pixelmapping) */
-					.comparison {
-						display: flex;
-						height: 600px;
-						position: relative;
-					}
-					.canvas{
-						width: 100%; 
-						display: flex;
-					}
-					.original {
-						height: 100%;
-						width: 50%; 
-						background-image: none;
-						background-size: 200%;
-						/* border-right: 1px solid white; // use div instead for simpler show/hide */
-						box-sizing: border-box;
-					}
-					.original label {
-						display: block;
-						font-style:normal;
-						color: white; 
-						height: 48px;
-						width: calc(100% - 5px);
-						padding-left: 5px; 
-						background-color: rgba(0,0,0,0.5);
-					}
-					.reconstruction {
-						height: 100%;
-						width: 50%; 
-						background-image: none;
-						background-size: 200%;
-						background-position-x: -100%; 
-						/*border-left: 1px solid white; // use div instead for simpler show/hide */
-						box-sizing: border-box;
-					}
-					.reconstruction label {
-						display: block;
-						font-style:normal;
-						color: white;
-						height: 48px;
-						width: calc( 100% - 5px); 
-						background-color: rgba(0,0,0,0.5);
-						padding-right: 5px; 
-						text-align: right;
-					}
-					.source { /*change to label? */
-						position: absolute; 
-						left: 5px; 
-						bottom: 0px;
-						color:grey
-					}
-					.slider {
-						position: absolute; 
-						left: calc(50% - 10px); 
-						top: calc(50% - 10px); 
-						width: 20px; 
-						height: 18.5px; 
-						border-radius: 20px; 
-						background-color: white;
-						color: black;
-						font-size: 12px; 
-						padding-top: 1.5px;
-						text-align: center;
-					}
-				</style>
-				<div class = 'comparison'>
-					<div class = 'canvas alphagrid'>
-						<div class = 'original'>
-							<label style = 'display:none;'>
-								original<br/>
-								540p
-							</label>
+				<section id = 'inference'>
+					<div class = 'viewbox'>
+						<div class = 'control'>
+							<div class = 'slider'></div>
+							<div class = 'handler'><b>&lt;&nbsp;&gt;</b></div>
 						</div>
-						<div class = 'reconstruction'>
-							<label style = 'display:none;'>
-								reconstruction<br/>
-								1080p
-							</label>
-						</div>
+						<canvas id = 'original'></canvas>
+						<canvas id = 'reconstruction'></canvas>
 					</div>
-					<!-- SOURCE :: Placeholder for meta tag detection on fetch -->
-					<!-- <div>source: https://www.youtube.com/watch?v=1275-iS04oU</div> -->
-					<div class = 'slider' style = 'display:none;'><b>&lt;&nbsp;&gt;</b></div>
-				</div>
-				<style>
-					input[type="range"] {
-						accent-color: rgb(0, 128, 255)
-					}
-				</style>
-				<section id = 'configuration flex column'>
-					<h3>configuration</h3>
-					<h4>model</h4>
-					<div class = 'flex'>
-						<div class = 'f11-50'>
-							version
+					<section id = 'configuration'>
+						<h2>configuration</h2>
+						<h3>model</h3>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								runtime
+							</div>
+							<select class = 'f11-50'>
+								<option>WebGPU</option>
+								<option>WebWorker</option>
+							</select>
 						</div>
-						<select class = 'f11-50'>
-							<option>sfr 0.1.0-dev #poc</option>
-						</select>
-					</div>
-					<div class = 'flex'>
-						<div class = 'f11-50'>
-							resolutionscale
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								version
+							</div>
+							<select class = 'f11-50'>
+								<option>sfr 0.1.0-dev #poc</option>
+							</select>
 						</div>
-						<div class = 'f11-50 flex row'>
-							<div>0%</div>
-							<input type = 'range' min = '0' max = '100' value = '50' disabled class = 'f11-50' >
-							<div>200%</div>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								resolutionscale
+							</div>
+							<div class = 'f11-50 flex row'>
+								<div>0%</div>
+								<input type = 'range' min = '0' max = '100' value = '50' disabled class = 'f11-50' >
+								<div>200%</div>
+							</div>
 						</div>
-					</div>
-					<br/>
-					<h4>degenerate input</h4>
-					<div class = 'flex'>
-						<div class = 'f11-50'>
-							blur
+						<h3>degenerate input</h3>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								blur
+							</div>
+							<div class = 'f11-50 flex row'>
+								<div>0%</div>
+								<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+								<div>100%</div>
+							</div>
 						</div>
-						<div class = 'f11-50 flex row'>
-							<div>0%</div>
-							<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
-							<div>100%</div>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								downscale i 'nearest'
+							</div>
+							<div class = 'f11-50 flex row'>
+								<div>0%</div>
+								<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+								<div>100%</div>
+							</div>
 						</div>
-					</div>
-					<div class = 'flex'>
-						<div class = 'f11-50'>
-							downscale i 'nearest'
-						</div>
-						<div class = 'f11-50 flex row'>
-							<div>0%</div>
-							<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
-							<div>100%</div>
-						</div>
-					</div>
-					<div style = 'border: 1px solid white;border-radius:5px;width: 200px; margin: auto;margin-top: 20px;text-align: center;height: 36px;padding-top:10px'>reconstruct</div>
-				</section>
-				<section class = 'input flex column'>
-					<input type = 'file' accept = 'image/png'>
-					<div class = 'flex'>load image *</div>
-					<label>*flies are processed strictly local.</label>
+						<div class = 'button'>reconstruct</div>
+					</section>
+					<section id = 'input'>
+						<input type = 'file' accept = 'image/png' style = 'display: none;'>
+						<div>load image *</div>
+						<label>*files are processed strictly local.</label>
+					</section>
+					<div class = 'notification'></div>
 				</section>
 			</section>
         </main>
 		<script>
-			// canvas api?
-			c2d = (function(){
-				const nearest = () => {
-
+			const demo = (function(){
+				// dependency check
+				if (!layout) {
+					console.error('missing dependency : framework layout')
+					return
 				}
-				return {nearest}
+				console.info('init demo')
+				// setup layout
+				let _layout
+				let _context
+
+				_layout = new CSSStyleSheet()
+				_layout.insertRule(`#demo {}`)
+				_context = _layout.cssRules[0].style
+				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _layout]
+
+				function rescale() {_context.width = `${(layout.width() > 720) ? 900 : layout.width()}px`}
+
+				// register demo functionality as module
+				const inference = (function(){
+					let _context
+					// setup viewbox
+					const viewbox = (function(){
+						let _context
+
+						const rescale = () => {_context.height = `${(layout.width() > 720) ? 900 * (9/16) : layout.width() * (9/16)}px`}
+
+						const init = (function (context) {
+							if (!_context) {
+								_layout.insertRule(`.viewbox {}`)
+								_context = _layout.cssRules[0].style
+								rescale()
+							}
+						})()
+						
+						return {rescale, init}
+					})()
+					// setup methods
+					const exec = (model, runtime) => {
+						switch(model) {
+							case 'sfr' : break
+							default : console.error(`model ${model} does not exist.`)
+						}
+					}
+					// EXPORT
+					return {viewbox, exec}
+				})()
+
+				// init
+				rescale()
+
+				layout.observer.addEventListener('@media-480', () => {
+					rescale()
+					inference.viewbox.rescale()
+				})
+				layout.observer.addEventListener('@media-720', () => {
+					rescale()
+					inference.viewbox.rescale()
+				})
+				layout.observer.addEventListener('@media-1080', () => {
+					rescale()
+					inference.viewbox.rescale()
+				})
+				layout.observer.addEventListener('@media-1440', () => {
+					rescale()
+					inference.viewbox.rescale()
+				})
+				// EXPORT
+				return {inference}
 			})()
-		</script>
-		<script>
-			let noscript = false
+
+			let noscript = true
 			if (!noscript) {
 				(()=>{
 					// NEW
@@ -251,9 +247,6 @@ Developer note:
 					input.button.addEventListener('click', () => {
 						input.handler.click()
 						let media = document.querySelectorAll('div.alphagrid > div')
-						// clear background images -> hide lables prepare to move into canvas
-						// setup canvas original reconstruction discard old? or setup from start?
-
 					})
 					// input target // move to .onchange?
 					let wrapper = document.querySelector('.comparison')
@@ -270,8 +263,7 @@ Developer note:
 						let raw = input.handler.files[0]
 						let bits = await raw.arrayBuffer()
 						let bytes = new Uint8Array(bits)
-						// add magic byte detection to protect against wrong fileformats? input uses os based detection only.
-						// use for function selection via key?
+
 						let blob = new Blob([bytes], {type: 'image/png'})
 						let url = URL.createObjectURL(blob)
 						let png = new Image()
@@ -279,9 +271,8 @@ Developer note:
 							canvas.width = wrapper.clientWidth
 							canvas.height = wrapper.clientHeight
 
-							// placeholder for labels
 							// `input resolution ${png.naturalWidth}x${png.naturalHeight}`
-							// `target resoultion${Math.floor((png.naturalWidth*2)/32)*32}x${Math.floor((png.naturalHeight*2)/32)*32} \u24D8 edge padding loss width ${(png.naturalWidth*2) % 32} height ${(png.naturalHeight * 2) % 32}`
+							// `target resolution${Math.floor((png.naturalWidth*2)/32)*32}x${Math.floor((png.naturalHeight*2)/32)*32} \u24D8 edge padding loss width ${(png.naturalWidth*2) % 32} height ${(png.naturalHeight * 2) % 32}`
 
 							ctx.clearRect(0,0, canvas.width / 2, canvas.height / 2, 0, 0 )
 
@@ -295,9 +286,8 @@ Developer note:
 							URL.revokeObjectURL(url)
 
 							let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-							let pixelData = imgData.data
-							// let pixelCopy = new Uint8ClampedArray(pixelData) placheholder for greyscale 'while reconstruction'
-							// placeholder for pixeldata manipulation
+							let pixelData = imgData.data // Uint8ClampedArray
+
 							for (let i = 0; i < pixelData.length; i +=4) {
 								let r = pixelData[i]
 								let g = pixelData[i + 1]
@@ -318,10 +308,22 @@ Developer note:
 			}
 		</script>
 		<footer>
-			<small>
-				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
-			</small>
-			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+			<nav>
+				<menu></menu>
+				<input type = 'text'>
+				<label>console</label>
+			</nav>
+			<nav>
+				<menu></menu>
+				<a href = '#'>@sxuno</a>
+				<label>copyright by</label>
+			</nav>
+			<nav>
+				<menu></menu>
+				<button></button>
+				<label>webgpu</label>
+				<p></p>		
+			</nav>
 		</footer>
 	</body>
 </html>

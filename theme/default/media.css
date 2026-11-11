@@ -8,9 +8,14 @@
 .background-scale {background-size: 100%;-webkit-transition: background-size 1s ease-in;transition: background-size 1s ease-in;}
 .background-scale:hover {background-size: 110%}
 
-/*** BACKGROUNDS **/
+/*** CONTAINER **/
 
-.alphagrid {--square-size: 15px; --color: rgba(0, 0, 0, 0.5); background-image: conic-gradient(var(--color) 90deg, transparent 90deg 180deg, var(--color) 180deg 270deg, transparent 270deg);background-size: calc(var(--square-size) * 2) calc(var(--square-size) * 2);}
+.viewbox {
+	--viewbox-grid: 15px; 
+	--viewbox-color: rgba(0,0,0,0.5); 
+	background-image: conic-gradient(var(--viewbox-color) 90deg, transparent 90deg 180deg, var(--viewbox-color) 180deg 270deg, transparent 270deg);
+	background-size: calc(var(--viewbox-grid)*2) calc(var(--viewbox-grid) *2);
+}
 
 /*** CANVAS2D ***/
 
