@@ -36,16 +36,17 @@ const layout = (function() { // TODO: less hacky | more logical
 
 	const observer = new EventTarget()
 
+	const range = (value) => {
+		if(value > 1440) return 1440
+		else if (value > 1080) return 1080
+		else if (value > 720) return 720
+		else return 480
+	}
+
 	const observe = (function(){ 
 		let _range
 
 		function width(value) {
-			function range(value) {
-				if(value > 1440) return 1440
-				else if (value > 1080) return 1080
-				else if (value > 720) return 720
-				else if (value > 480) return 480
-			}
 			_range = range(value)
 			if(_observer !== _range) {
 				_observer = _range
@@ -55,12 +56,7 @@ const layout = (function() { // TODO: less hacky | more logical
 		return {width}
 	})()
 
-	const width = () => {				
-				if(_width > 1440) return 1440
-				else if (_width > 1080) return 1080
-				else if (_width > 720) return 720
-				else if (_width > 480) return 480
-			}
+	const width = () => range(_width)
 
 	const init = (function(){
 		_width = window.innerWidth
