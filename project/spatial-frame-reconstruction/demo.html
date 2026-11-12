@@ -185,7 +185,6 @@ Development note:
 				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
 
 				function rescale() {_layout.width = `${(layout.width() > 720) ? 900 : layout.width()}px`}
-
 				// register demo functionality as module
 				const inference = (function(){
 					let _context // input reference
@@ -247,7 +246,6 @@ Development note:
 						inference.viewbox.rescale()
 					})
 				})()
-
 				// EXPORT
 				return {inference}
 			})()
@@ -263,7 +261,7 @@ Development note:
 				<a href = 'https://github.com/Sxuno' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 				<label>copyright by</label>
 			</nav>
-			<nav>
+			<nav class = 'event GPUEnabled'>
 				<menu></menu>
 				<button></button>
 				<label>webgpu</label>

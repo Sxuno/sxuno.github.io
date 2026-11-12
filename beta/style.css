@@ -52,7 +52,7 @@ footer nav label {color: var(--color-inactive);padding-right: 5px;}
 footer nav p {width: 6px; height: 6px; margin: 10px 5px 0px 0px;border-radius: 50%;background-color: var(--color-active);}
 footer nav:nth-child(1) {padding: 5px; justify-content: flex-end; position: fixed; bottom: 0px; display: none;}
 footer nav:nth-child(2) {flex: 0 1 100%; padding: 5px; justify-content: center;}
-footer nav:nth-child(3) {padding: 5px; position: absolute; right:0px;}
+footer nav:nth-child(3) {padding: 5px; position: absolute; right:0px; visibility:hidden;}
 footer nav:nth-child(3) button {background-image: url('./../media/logo/webgpu.svg');}
 
 /* flex classes */
@@ -80,7 +80,6 @@ footer nav:nth-child(3) button {background-image: url('./../media/logo/webgpu.sv
 
 /* framework classes */
 .roadmap {display: flex;}
-.roadmap .container {margin-left: 24px;}
-.roadmap .container:first-child {margin: 0px;}
+.roadmap .container:not(:first-child) {margin-left: 24px;}
 .roadmap .content {border: 1px solid var(--color-default); border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;}
-.roadmap label {color: var(--color-inactive)}
+.roadmap .container label {color: var(--color-inactive)}
