@@ -1,5 +1,6 @@
 ### IGNORE ALL ###
 *
+!.gitignore
 ### BETA ###
 !/beta/
 !/beta/**
@@ -18,11 +19,11 @@
 !/project/
 !/project/webgpu-export.html
 !/project/webgpu-export/
+!/project/webgpu-export/*.html
 !/project/webgpu-export/docs/
 !/project/webgpu-export/docs/**
 !/project/webgpu-export/download/
 !/project/webgpu-export/download/**
-!/project/webgpu-export/*.html
 
 !/project/webgpu-engine.html
 !/project/webgpu-engine/

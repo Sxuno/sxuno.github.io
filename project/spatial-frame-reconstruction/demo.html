@@ -24,7 +24,12 @@ Development note:
 
 		<!--- PAGE SPECIFIC -->
 		<style>
-
+			.control {display: none;}
+			.configuration > div {margin-top: 5px}
+			.configuration > h3 {margin-bottom: 5px}
+			.input { text-align: center;margin: 20px 0px;}
+			.input > div {width: 25%; margin: 0px auto; padding: 10px 0px; border: 1px solid var(--color-default);border-radius: 5px;}
+			.notification {display: none;}
 		</style>
 
 		<script src = './../../system/framework.js'></script>
@@ -80,7 +85,7 @@ Development note:
 				<nav id = 'sidemap'>
 					<menu class = 'sidemap'></menu>	
 					<button class = 'menu'></button>										
-					<a href = '#'>home</a>
+					<a href = './../../index.html'>home</a>
 				</nav>
 				<nav id = 'settings'>
 					<menu id = 'settings'></menu>
@@ -93,15 +98,15 @@ Development note:
             <h1><a href = './../spatial-frame-reconstruction.html'>Spatial Frame Reconstruction</a><br/><label>Demo</label></h1>
 			<section id = 'demo'>
 				<section id = 'inference'>
-					<div class = 'viewbox'>
+					<section class = 'viewbox'>
 						<div class = 'control'>
 							<div class = 'slider'></div>
 							<div class = 'handler'><b>&lt;&nbsp;&gt;</b></div>
 						</div>
-						<canvas id = 'original'></canvas>
-						<canvas id = 'reconstruction'></canvas>
-					</div>
-					<section id = 'configuration'>
+						<canvas class = 'original'></canvas>
+						<canvas class = 'reconstruction'></canvas>
+					</section>
+					<section class = 'configuration'>
 						<h2>configuration</h2>
 						<h3>model</h3>
 						<div class = 'flex'>
@@ -123,11 +128,11 @@ Development note:
 						</div>
 						<div class = 'flex'>
 							<div class = 'f11-50'>
-								resolutionscale
+								resolution scale
 							</div>
 							<div class = 'f11-50 flex row'>
 								<div>0%</div>
-								<input type = 'range' min = '0' max = '100' value = '50' disabled class = 'f11-50' >
+								<input type = 'range' min = '0' max = '100' value = '100' disabled class = 'f11-50' >
 								<div>200%</div>
 							</div>
 						</div>
@@ -152,12 +157,11 @@ Development note:
 								<div>100%</div>
 							</div>
 						</div>
-						<div class = 'button'>reconstruct</div>
 					</section>
-					<section id = 'input'>
+					<section class = 'input'>
 						<input type = 'file' accept = 'image/png' style = 'display: none;'>
 						<div>load image *</div>
-						<label>*files are processed strictly local.</label>
+						<label><i>*files are processed strictly local.</i></label>
 					</section>
 					<div class = 'notification'></div>
 				</section>
@@ -315,7 +319,7 @@ Development note:
 			</nav>
 			<nav>
 				<menu></menu>
-				<a href = '#'>@sxuno</a>
+				<a href = 'https://github.com/Sxuno' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
 				<label>copyright by</label>
 			</nav>
 			<nav>
