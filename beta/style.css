@@ -79,7 +79,6 @@ footer nav:nth-child(3) button {background-image: url('./../media/logo/webgpu.sv
 .f11-00 {flex: 1 1 100%;}
 
 /* framework classes */
-.roadmap {display: flex;}
-.roadmap .container:not(:first-child) {margin-left: 24px;}
-.roadmap .content {border: 1px solid var(--color-default); border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;}
-.roadmap .container label {color: var(--color-inactive)}
+.container:not(:first-child) {margin-left: 24px;}
+.container > div {border: 1px solid var(--color-default); border-radius: 24px; margin-top: 10px; padding: 0px 10px 10px 10px; width: 240px;height: 650px;}
+.container div label {color: var(--color-inactive)}
