@@ -26,9 +26,13 @@ Development note:
 		<style>
 			.control {display: none;}
 			.configuration > div {margin-top: 5px}
-			.configuration > h3 {margin-bottom: 5px}
-			.input { text-align: center;margin: 20px 0px;}
-			.input > div {width: 25%; margin: 0px auto; padding: 10px 0px; border: 1px solid var(--color-default);border-radius: 5px;}
+			.configuration > h3 {margin-bottom: 5px;}
+			.input {flex-direction: row-reverse;}
+			.input > button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-backdrop);}
+			.input > button:hover {background-color: var(--color-hover);}
+			.input > label {flex-grow: 1}
+			.submit { text-align: center;margin: 20px 0px; display: flex; flex-direction: column;}
+			.submit > button {width: 25%; margin: 0px auto; padding: 10px 0px; border: 1px solid var(--color-default);border-radius: 5px;font-size: medium;}
 			.notification {display: none;}
 		</style>
 
@@ -123,7 +127,7 @@ Development note:
 								version
 							</div>
 							<select class = 'f11-50'>
-								<option>sfr 0.1.0-dev #poc</option>
+								<option>0.1.0-dev #poc</option>
 							</select>
 						</div>
 						<div class = 'flex'>
@@ -136,7 +140,26 @@ Development note:
 								<div>200%</div>
 							</div>
 						</div>
-						<h3>degenerate input</h3>
+						<h3>input</h3>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								type
+							</div>
+							<select class = 'f11-50'>
+								<option>file</option>
+							</select>
+						</div>
+						<div class = 'flex'>
+							<div class = 'f11-50'>
+								source
+							</div>
+							<div class = 'flex f11-50 input'>
+								<button>select</button>
+								<label>&lt;target&gt;</label>
+								<input type = 'file' accept = 'image/png' style = 'display: none;'>
+							</div>
+						</div>
+						<h3>sythesize</h3>
 						<div class = 'flex'>
 							<div class = 'f11-50'>
 								blur
@@ -158,10 +181,9 @@ Development note:
 							</div>
 						</div>
 					</section>
-					<section class = 'input'>
-						<input type = 'file' accept = 'image/png' style = 'display: none;'>
-						<div>load image *</div>
-						<label><i>*files are processed strictly local.</i></label>
+					<section class = 'submit'>
+						<button>reconstruct *</button>
+						<label><i>*input is processed strictly local.</i></label>
 					</section>
 					<div class = 'notification'></div>
 				</section>
@@ -188,32 +210,36 @@ Development note:
 				// register demo functionality as module
 				const inference = (function(){
 					let _context // input reference
-					// setup viewbox
+					// module viewbox
 					const viewbox = (function(){
 						let _layout
-
 						let _context // input buffer
 
 						const rescale = () => {_layout.height = `${(layout.width() > 720) ? 900 * (9/16) : layout.width() * (9/16)}px`}
+						// module controller
+						const controller = {}
 
 						const init = (function (context) {
 							if (!_layout) {
 								_style.insertRule(`.viewbox {}`)
 								_layout = _style.cssRules[0].style
 								rescale()
-								// setup input controller
+								// setup controller
 							}
 							if (context) {
 								console.info('viewbox : init context')
 							}
 						})()
-						
+						// EXPORT
 						return {rescale, init}
 					})()
+					// module input
 					const input = (function () {
+						let _features
 						const init = () => {}
-						const handler = (file) => {}
-						return {init, handler}
+						const features = {}
+						// EXPORT
+						return {init}
 					})()
 					// setup methods
 					const exec = (model, runtime) => {
