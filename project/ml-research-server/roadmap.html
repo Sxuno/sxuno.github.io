@@ -13,7 +13,7 @@
 
 		<link rel = 'icon' type = 'image/x-icon' href = './../../media/icon/menu.svg'>
 
-		<link rel = 'stylesheet' href = './../../theme/default/style.css'>
+		<link rel = 'stylesheet' href = './../../beta/style.css'>
 		<link rel = 'stylesheet' href = './../../theme/default/media.css'>
 
 		<script src = './../../system/framework.js'></script>
@@ -23,7 +23,8 @@
 			engine.PATH.content = './../../content/'
 			engine.PATH.shader = './../../engine/shader/'
 		</script>
-		<noscript>
+		<!-- static page only -->
+		<!-- <noscript> -->
 			<style>
 				/*** MEDIA RESPONSIVE ***/
 				@media (max-width: 540px) {
@@ -50,20 +51,23 @@
 					body main header {position:relative;}
 				}
 			</style>
-		</noscript>
+		<!-- </noscript> -->
 	</head>
 	<body>
-		<header>
-			<nav>
-				<label class = 'left'>
-					<img src = './../../media/icon/menu.svg' />
-					<a href='./../../index.html'>Home</a>
-				</label>
-				<label class = 'right'>
-					English <img src = './../../media/icon/settings.svg' />
-				</label>
-			</nav>
-		</header>
+        <header id = 'home'>
+			<section id = 'navigation'>
+				<nav id = 'sidemap'>
+					<menu class = 'sidemap'></menu>	
+					<button class = 'menu'></button>										
+					<a href = './../../index.html'>home</a>
+				</nav>
+				<nav id = 'settings'>
+					<menu id = 'settings'></menu>
+					<button class = 'menu'></button>
+					<a class = 'inactive' href = '#'>english</a>
+				</nav>
+			</section>
+        </header>
 		<main id = 'ml-research-server'>
 			<h1><a href = './../ml-research-server.html'>ML Research Server</a><br/><label>Roadmap</label></h1>	
 			<section id = 'roadmap'>
@@ -71,12 +75,11 @@
 					<div class = 'container'>
 						<div class = 'label'>2027 in development...</div>
 						<div class = 'content'>
-							<h2>version<br/>ProofOfConcept<br/><br/></h2>        
+							<h2>version<br/>ProofOfConcept<br/></h2>        
 							<h3>CLI interface<br/><label>application controller</label></h3>
 							- subprocess managment<br/>
 							- module orchestration<br/>
                             - trie parser<br />
-							<br />
 							<h3>webinterface<br/><label>module controller</label></h3>
 							- task scheduler<br/>
 							- systemmonitor<br/>
@@ -86,10 +89,22 @@
 			</section>
 		</main>
 		<footer>
-			<small>
-				copyright by <a href = 'https://sxuno.github.io/' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
-			</small>
-			<label class = 'event GPUEnabled'><p></p>webgpu <img src = './../../media/logo/webgpu.svg' /></label>
+			<nav>
+				<menu></menu>
+				<input type = 'text'>
+				<label>console</label>
+			</nav>
+			<nav>
+				<menu></menu>
+				<a href = 'https://github.com/Sxuno' target = '_blank' rel = 'noopener noreferrer'>@sxuno</a>
+				<label>copyright by</label>
+			</nav>
+			<nav>
+				<menu></menu>
+				<button></button>
+				<label>webgpu</label>
+				<p></p>		
+			</nav>
 		</footer>
 	</body>
 </html>
