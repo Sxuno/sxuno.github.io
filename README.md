@@ -12,7 +12,7 @@ This repository contains experimental samples for the WebGPU-Engine project.
 The code is provided for demonstration and personal experimentation only.  
 See [LICENSE](./LICENSE.txt) for details.
 
-## Project structure
+## Repo structure
 
 ```
     beta            >>> webgpu-engine development branch mirror
@@ -23,7 +23,20 @@ See [LICENSE](./LICENSE.txt) for details.
     theme           >>> style system
     views           >>> portfolio landing page
 ```
+### Project overview
+```
+    ml-research-server              >>> multiprocess device and task managment application
+    spatial-frame-reconstruction    >>> neural network upscaler
+    webgpu-engine                   >>> javascript browser render engine
+    webgpu-export                   >>> blender data mapping exporter for webgpu-engine
+    database-manager                >>> dynamic database routing
+    vsc-UnrealRefSense              >>> unreal macro linter
+    OrbitalControlSystem            >>> prototype for actor/pcg rebaseing
+```
 
 ## Workspace Tools
+📎 [development scripts](https://github.com/Sxuno/workspacetools/tree/githubpage)  
+
+### additional
 📎 [Blender Webgpu Export](https://sxuno.github.io/project/webgpu-export.html)  
 📎 [WebGPU Engine](https://sxuno.github.io/project/webgpu-engine.html)
