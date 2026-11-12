@@ -171,39 +171,50 @@ Development note:
 			const demo = (function(){
 				// dependency check
 				if (!layout) {
-					console.error('missing dependency : framework layout')
+					console.error('missing script dependency : framework layout')
 					return
 				}
 				console.info('init demo')
 				// setup layout
+				let _style
 				let _layout
-				let _context
 
-				_layout = new CSSStyleSheet()
-				_layout.insertRule(`#demo {}`)
-				_context = _layout.cssRules[0].style
-				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _layout]
+				_style = new CSSStyleSheet()
+				_style.insertRule(`#demo {}`)
+				_layout = _style.cssRules[0].style
+				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
 
-				function rescale() {_context.width = `${(layout.width() > 720) ? 900 : layout.width()}px`}
+				function rescale() {_layout.width = `${(layout.width() > 720) ? 900 : layout.width()}px`}
 
 				// register demo functionality as module
 				const inference = (function(){
-					let _context
+					let _context // input reference
 					// setup viewbox
 					const viewbox = (function(){
-						let _context
+						let _layout
 
-						const rescale = () => {_context.height = `${(layout.width() > 720) ? 900 * (9/16) : layout.width() * (9/16)}px`}
+						let _context // input buffer
+
+						const rescale = () => {_layout.height = `${(layout.width() > 720) ? 900 * (9/16) : layout.width() * (9/16)}px`}
 
 						const init = (function (context) {
-							if (!_context) {
-								_layout.insertRule(`.viewbox {}`)
-								_context = _layout.cssRules[0].style
+							if (!_layout) {
+								_style.insertRule(`.viewbox {}`)
+								_layout = _style.cssRules[0].style
 								rescale()
+								// setup input controller
+							}
+							if (context) {
+								console.info('viewbox : init context')
 							}
 						})()
 						
 						return {rescale, init}
+					})()
+					const input = (function () {
+						const init = () => {}
+						const handler = (file) => {}
+						return {init, handler}
 					})()
 					// setup methods
 					const exec = (model, runtime) => {
@@ -215,101 +226,31 @@ Development note:
 					// EXPORT
 					return {viewbox, exec}
 				})()
+				// init demo
+				const init = (function(){
+					rescale()
+					// register eventlistener
+					layout.observer.addEventListener('@media-480', () => {
+						rescale()
+						inference.viewbox.rescale()
+					})
+					layout.observer.addEventListener('@media-720', () => {
+						rescale()
+						inference.viewbox.rescale()
+					})
+					layout.observer.addEventListener('@media-1080', () => {
+						rescale()
+						inference.viewbox.rescale()
+					})
+					layout.observer.addEventListener('@media-1440', () => {
+						rescale()
+						inference.viewbox.rescale()
+					})
+				})()
 
-				// init
-				rescale()
-
-				layout.observer.addEventListener('@media-480', () => {
-					rescale()
-					inference.viewbox.rescale()
-				})
-				layout.observer.addEventListener('@media-720', () => {
-					rescale()
-					inference.viewbox.rescale()
-				})
-				layout.observer.addEventListener('@media-1080', () => {
-					rescale()
-					inference.viewbox.rescale()
-				})
-				layout.observer.addEventListener('@media-1440', () => {
-					rescale()
-					inference.viewbox.rescale()
-				})
 				// EXPORT
 				return {inference}
 			})()
-
-			let noscript = true
-			if (!noscript) {
-				(()=>{
-					// NEW
-					let input = new Object()
-					input.button  = document.querySelector('.input div')
-					input.handler = document.querySelector('input[type="file"]')
-					input.handler.style.display = 'none' // move to style
-					// eventhandler
-					input.button.addEventListener('click', () => {
-						input.handler.click()
-						let media = document.querySelectorAll('div.alphagrid > div')
-					})
-					// input target // move to .onchange?
-					let wrapper = document.querySelector('.comparison')
-					let canvas = document.createElement('canvas')
-					canvas.style.width = `${wrapper.clientWidth}px`
-					canvas.width = wrapper.clientWidth
-					canvas.style.height = `${wrapper.clientHeight}px`
-					canvas.height = wrapper.clientHeight
-					ctx = canvas.getContext('2d')
-					// input loadhanlder
-					input.handler.onchange = async() => {
-						// image logic
-						console.log(input.handler.files)
-						let raw = input.handler.files[0]
-						let bits = await raw.arrayBuffer()
-						let bytes = new Uint8Array(bits)
-
-						let blob = new Blob([bytes], {type: 'image/png'})
-						let url = URL.createObjectURL(blob)
-						let png = new Image()
-						png.onload = () => {
-							canvas.width = wrapper.clientWidth
-							canvas.height = wrapper.clientHeight
-
-							// `input resolution ${png.naturalWidth}x${png.naturalHeight}`
-							// `target resolution${Math.floor((png.naturalWidth*2)/32)*32}x${Math.floor((png.naturalHeight*2)/32)*32} \u24D8 edge padding loss width ${(png.naturalWidth*2) % 32} height ${(png.naturalHeight * 2) % 32}`
-
-							ctx.clearRect(0,0, canvas.width / 2, canvas.height / 2, 0, 0 )
-
-							let scale = Math.min(canvas.width / png.naturalWidth, canvas.height / png.naturalHeight)
-							let renderWidth = png.naturalWidth * scale
-							let renderHeight = png.naturalHeight * scale
-							let offsetX = (canvas.width - renderWidth) / 2
-							let offsetY = (canvas.height - renderHeight) / 2
-
-							ctx.drawImage(png, offsetX, offsetY, renderWidth, renderHeight)
-							URL.revokeObjectURL(url)
-
-							let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-							let pixelData = imgData.data // Uint8ClampedArray
-
-							for (let i = 0; i < pixelData.length; i +=4) {
-								let r = pixelData[i]
-								let g = pixelData[i + 1]
-								let b = pixelData[i + 2]
-								let a = pixelData[i + 3]
-
-								pixelData[i]	 = r
-								pixelData[i + 1] = g
-								pixelData[i + 2] = b
-								pixelData[i + 3] = a
-							}
-							ctx.putImageData(imgData, 0, 0)
-						}
-						wrapper.children[0].children[0].appendChild(canvas) // TODO : adjust scaffolding for output
-						png.src = url
-					}
-				})()
-			}
 		</script>
 		<footer>
 			<nav>
