@@ -25,12 +25,21 @@ Development note:
 		<!--- PAGE SPECIFIC -->
 		<style>
 			.control {display: none;}
-			.configuration > div {margin-top: 5px}
+			.configuration section > div {margin-top: 5px}
 			.configuration > h3 {margin-bottom: 5px;}
-			.input {flex-direction: row-reverse;}
-			.input > button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-overlay);}
-			.input > button:hover {background-color: var(--color-hover);}
-			.input > label {flex-grow: 1}
+
+			.input .type {display: flex;}
+
+			.source {display: flex; flex-direction: column;}
+			.source div {display: flex; flex-direction: row;}
+			.source div div:last-child {flex-direction: row-reverse;}
+			.source div div button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-overlay);}
+			.source div div button:hover {background-color: var(--color-hover);}
+			.source div div label {flex-grow: 1}
+
+			.source .device {display: none;}
+			.source .engine {display: none;}
+
 			.submit { text-align: center;margin: 20px 0px; display: flex; flex-direction: column;}
 			.submit > button {width: 25%; margin: 0px auto; padding: 10px 0px; border: 1px solid var(--color-default);border-radius: 5px;font-size: medium;}
 			.notification {display: none;}
@@ -112,74 +121,98 @@ Development note:
 					</section>
 					<section class = 'configuration'>
 						<h2>configuration</h2>
-						<h3>model</h3>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								runtime
+						<section class = 'model'>
+							<h3>model</h3>
+							<div class = 'flex'>
+								<div class = 'f11-50'>
+									runtime
+								</div>
+								<select class = 'f11-50'>
+									<option>WebGPU</option>
+									<option>WebWorker</option>
+								</select>
 							</div>
-							<select class = 'f11-50'>
-								<option>WebGPU</option>
-								<option>WebWorker</option>
-							</select>
-						</div>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								version
+							<div class = 'flex'>
+								<div class = 'f11-50'>
+									version
+								</div>
+								<select class = 'f11-50'>
+									<option>0.1.0-dev #poc</option>
+								</select>
 							</div>
-							<select class = 'f11-50'>
-								<option>0.1.0-dev #poc</option>
-							</select>
-						</div>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								resolution scale
+							<div class = 'flex'>
+								<div class = 'f11-50'>
+									resolution scale
+								</div>
+								<div class = 'f11-50 flex row'>
+									<div>0%</div>
+									<input type = 'range' min = '0' max = '100' value = '100' disabled class = 'f11-50' >
+									<div>200%</div>
+								</div>
 							</div>
-							<div class = 'f11-50 flex row'>
-								<div>0%</div>
-								<input type = 'range' min = '0' max = '100' value = '100' disabled class = 'f11-50' >
-								<div>200%</div>
+						</section>
+						<section class = 'input'>
+							<h3>input</h3>
+							<div class = 'type'>
+								<div class = 'f11-50'>
+									type
+								</div>
+								<select class = 'f11-50'>
+									<option>file</option>
+								</select>
 							</div>
-						</div>
-						<h3>input</h3>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								type
+							<div class = 'source'>
+								<div class = 'device'>
+									<div class = 'f11-50'>
+										source
+									</div>
+									<select class = 'f11-50'>
+										<option>device</option>
+									</select>
+								</div>
+								<div class = 'engine'>
+									<div class = 'f11-50'>
+										source
+									</div>
+									<select class = 'f11-50'>
+										<option>engine data</option>
+									</select>
+								</div>
+								<div class = 'file'>
+									<div class = 'f11-50'>
+										source
+									</div>
+									<div class = 'flex f11-50'>
+										<button>select</button>
+										<label>&lt;target&gt;</label>
+										<input type = 'file' accept = 'image/png' style = 'display: none;'>
+									</div>
+								</div>
 							</div>
-							<select class = 'f11-50'>
-								<option>file</option>
-							</select>
-						</div>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								source
+						</section>
+						<section class = 'synthesize'>
+						<h3>synthesize</h3>
+							<div class = 'flex'>
+								<div class = 'f11-50'>
+									blur
+								</div>
+								<div class = 'f11-50 flex row'>
+									<div>0%</div>
+									<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+									<div>100%</div>
+								</div>
 							</div>
-							<div class = 'flex f11-50 input'>
-								<button>select</button>
-								<label>&lt;target&gt;</label>
-								<input type = 'file' accept = 'image/png' style = 'display: none;'>
+							<div class = 'flex'>
+								<div class = 'f11-50'>
+									downscale i 'nearest'
+								</div>
+								<div class = 'f11-50 flex row'>
+									<div>0%</div>
+									<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
+									<div>100%</div>
+								</div>
 							</div>
-						</div>
-						<h3>sythesize</h3>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								blur
-							</div>
-							<div class = 'f11-50 flex row'>
-								<div>0%</div>
-								<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
-								<div>100%</div>
-							</div>
-						</div>
-						<div class = 'flex'>
-							<div class = 'f11-50'>
-								downscale i 'nearest'
-							</div>
-							<div class = 'f11-50 flex row'>
-								<div>0%</div>
-								<input type = 'range' min = '0' max = '100' value = '0' class = 'f11-50' >
-								<div>100%</div>
-							</div>
-						</div>
+						</section>
 					</section>
 					<section class = 'submit'>
 						<button>reconstruct *</button>
@@ -205,7 +238,7 @@ Development note:
 				_style.insertRule(`#demo {}`)
 				_layout = _style.cssRules[0].style
 				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
-
+				// module layout
 				const layout = (function() {
 					let _descriptor
 					let _context
@@ -219,23 +252,25 @@ Development note:
 
 					return {controller}
 				})()
-
 				// module infrence
 				const inference = (function(){
 					let _context // input reference
 					let _model
-
 					let _viewbox
-
 					// module viewbox
 					const viewbox = (function(){
 						let _layout
 						let _context // input buffer
-
-						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
+						
 						// module pointerevents
-						const pointerevents = {}
-
+						const pointerevents = {
+							// event onhover & mouse down : viewbox => canvas context move
+							// event onhover & mouse wheel : viewbox => canvas context resize
+							// if context == scene :: event onhover & double click : viewbox => enable engine.input.controller
+						}
+						// methods
+						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
+						// setup
 						const init = (function (context) {
 							if (!_layout) {
 								_style.insertRule(`.viewbox {}`)
@@ -248,6 +283,10 @@ Development note:
 							}
 							if (context) {
 								console.info('viewbox : init context')
+								// reset canvas context
+								// reset viewbox controlls
+								// reset viewbox states
+								// reset pointer states
 							}
 						})()
 						// EXPORT
@@ -256,7 +295,7 @@ Development note:
 					// module model
 					const model = (function() {
 						let _weights
-
+						// methods
 						const init = () => {}
 						const weights = () => {return _weights}
 						// EXPORT
@@ -265,15 +304,31 @@ Development note:
 					// module input
 					const input = (function () {
 						let _features
+						let _type
+						// types
+						let _device
+						let _engine
+						let _file
 
-						const init = () => {
-							// setup input routing
-						}
+						let _submit
+						// module features
 						const features = {}
+						// setup
+						const init = (function () {
+							_type = document.querySelector('.input .type select')
+							console.log(_type.value)
+							_device = document.querySelector('.input .source .device select')
+							console.log(_device)
+							_engine = document.querySelector('.input .source .engine select')
+							console.log(_engine)
+							_file = document.querySelector('.input .source .file button')
+							console.log(_file)
+							_submit = document.querySelector('.submit button')
+							console.log(_submit)
+						})()						
 						// EXPORT
 						return {init}
 					})()
-
 					// methods
 					const exec = (model, runtime) => {
 						switch(model) {
@@ -283,7 +338,11 @@ Development note:
 					}
 					// setup
 					const init = (function(context) {
-						// setup 
+						if (!context) {
+							console.info('init module : inference')
+						} else {
+							console.info('module infrance : init (context)')
+						}
 					})()
 					// EXPORT
 					return {viewbox, exec}
