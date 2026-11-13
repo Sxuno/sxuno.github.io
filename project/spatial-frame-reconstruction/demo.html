@@ -28,6 +28,18 @@ Development note:
 			.configuration section > div {margin-top: 5px}
 			.configuration > h3 {margin-bottom: 5px;}
 
+			.model div {display: flex;}
+			.model .resolutionscale div {position: relative;}
+			.model .resolutionscale input {text-align: right; padding-right: 34px;}
+			.model .resolutionscale label {pointer-events: none; font-size: small; position: absolute; right: 22px; top: 50%; transform: translateY(-50%);}
+			.model .resolutionscale:has(input:disabled) label {color: var(--color-inactive)}
+			.model .resolutionscale button {width: 16px; height: 10px; position: absolute; right: 1px; border: unset; background-position: center; background-size: 8px 8px; background-repeat: no-repeat;border-radius: 2px;}
+			.model .resolutionscale button:hover {background-color: var(--color-overlay);}
+			.model .resolutionscale button.increment {top: 1px; background-image: url('./../../media/icon/arrow.svg');}
+			.model .resolutionscale:has(input:disabled) button.increment {background-image: url('./../../media/icon/arrow-inactive.svg')}
+			.model .resolutionscale button.decrement {top: 11px; background-image: url('./../../media/icon/arrow.svg'); transform: rotate(180deg)}
+			.model .resolutionscale:has(input:disabled) button.decrement {background-image: url('./../../media/icon/arrow-inactive.svg')}
+
 			.input .type {display: flex;}
 
 			.source {display: flex; flex-direction: column;}
@@ -123,7 +135,7 @@ Development note:
 						<h2>configuration</h2>
 						<section class = 'model'>
 							<h3>model</h3>
-							<div class = 'flex'>
+							<div class = 'runtime'>
 								<div class = 'f11-50'>
 									runtime
 								</div>
@@ -132,7 +144,7 @@ Development note:
 									<option>WebWorker</option>
 								</select>
 							</div>
-							<div class = 'flex'>
+							<div class = 'version'>
 								<div class = 'f11-50'>
 									version
 								</div>
@@ -140,14 +152,15 @@ Development note:
 									<option>0.1.0-dev #poc</option>
 								</select>
 							</div>
-							<div class = 'flex'>
+							<div class = 'resolutionscale'>
 								<div class = 'f11-50'>
 									resolution scale
 								</div>
 								<div class = 'f11-50 flex row'>
-									<div>0%</div>
-									<input type = 'range' min = '0' max = '100' value = '100' disabled class = 'f11-50' >
-									<div>200%</div>
+									<input type = 'text' inputmode = 'numeric' pattern = '[0-9]*' value = '200' disabled class = 'f11-50' >
+									<label>%</label>
+									<button class = 'increment'></button>
+									<button class = 'decrement'></button>
 								</div>
 							</div>
 						</section>
