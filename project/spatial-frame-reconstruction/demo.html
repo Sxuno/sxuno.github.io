@@ -28,7 +28,7 @@ Development note:
 			.configuration > div {margin-top: 5px}
 			.configuration > h3 {margin-bottom: 5px;}
 			.input {flex-direction: row-reverse;}
-			.input > button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-backdrop);}
+			.input > button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-overlay);}
 			.input > button:hover {background-color: var(--color-hover);}
 			.input > label {flex-grow: 1}
 			.submit { text-align: center;margin: 20px 0px; display: flex; flex-direction: column;}
@@ -81,7 +81,7 @@ Development note:
 				}
 			</style>
 		</noscript>
-	-->
+		-->
 	</head>
     <body>
         <header id = 'home'>
@@ -192,7 +192,7 @@ Development note:
 		<script>
 			const demo = (function(){
 				// dependency check
-				if (!layout) {
+				if (!window.layout) {
 					console.error('missing script dependency : framework layout')
 					return
 				}
@@ -206,25 +206,45 @@ Development note:
 				_layout = _style.cssRules[0].style
 				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
 
-				function rescale() {_layout.width = `${(layout.width() > 720) ? 900 : layout.width()}px`}
-				// register demo functionality as module
+				const layout = (function() {
+					let _descriptor
+					let _context
+					// let _layout
+					// let _style
+
+					// let _style = new CSSStyleSheet()					
+					// document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
+
+					var controller = new Array
+
+					return {controller}
+				})()
+
+				// module infrence
 				const inference = (function(){
 					let _context // input reference
+					let _model
+
+					let _viewbox
+
 					// module viewbox
 					const viewbox = (function(){
 						let _layout
 						let _context // input buffer
 
-						const rescale = () => {_layout.height = `${(layout.width() > 720) ? 900 * (9/16) : layout.width() * (9/16)}px`}
-						// module controller
-						const controller = {}
+						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
+						// module pointerevents
+						const pointerevents = {}
 
 						const init = (function (context) {
 							if (!_layout) {
 								_style.insertRule(`.viewbox {}`)
 								_layout = _style.cssRules[0].style
 								rescale()
-								// setup controller
+								// setup input canvas
+								// setup reconstruction canvas
+								// setup control
+								// setup pointer events
 							}
 							if (context) {
 								console.info('viewbox : init context')
@@ -233,41 +253,64 @@ Development note:
 						// EXPORT
 						return {rescale, init}
 					})()
+					// module model
+					const model = (function() {
+						let _weights
+
+						const init = () => {}
+						const weights = () => {return _weights}
+						// EXPORT
+						return {init, weights}
+					})()
 					// module input
 					const input = (function () {
 						let _features
-						const init = () => {}
+
+						const init = () => {
+							// setup input routing
+						}
 						const features = {}
 						// EXPORT
 						return {init}
 					})()
-					// setup methods
+
+					// methods
 					const exec = (model, runtime) => {
 						switch(model) {
 							case 'sfr' : break
 							default : console.error(`model ${model} does not exist.`)
 						}
 					}
+					// setup
+					const init = (function(context) {
+						// setup 
+					})()
 					// EXPORT
 					return {viewbox, exec}
 				})()
-				// init demo
+				// methods
+				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
+				// setup demo
 				const init = (function(){
+					// initialize layout
 					rescale()
 					// register eventlistener
-					layout.observer.addEventListener('@media-480', () => {
+					window.layout.observer.addEventListener('@media-480', () => {
+						/* for (let i = 0; i < layout.controller.length; i++) {
+							layout.controller[i].rescale()
+						}*/
 						rescale()
 						inference.viewbox.rescale()
 					})
-					layout.observer.addEventListener('@media-720', () => {
+					window.layout.observer.addEventListener('@media-720', () => {
 						rescale()
 						inference.viewbox.rescale()
 					})
-					layout.observer.addEventListener('@media-1080', () => {
+					window.layout.observer.addEventListener('@media-1080', () => {
 						rescale()
 						inference.viewbox.rescale()
 					})
-					layout.observer.addEventListener('@media-1440', () => {
+					window.layout.observer.addEventListener('@media-1440', () => {
 						rescale()
 						inference.viewbox.rescale()
 					})

@@ -30,7 +30,7 @@ const system = (function () {
 })()
 
 // RESPONSIVNES
-const layout = (function() { // TODO: less hacky | more logical
+var layout = (function() { // TODO: less hacky | more logical
 	let _observer
 	let _width
 
@@ -73,7 +73,7 @@ const layout = (function() { // TODO: less hacky | more logical
 
 // VIEW functions
 // API Module
-const view = (function () {
+var view = (function () {
 	let _vdom
 	const content = (function(){
 		let _section

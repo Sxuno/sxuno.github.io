@@ -14,10 +14,10 @@
 		--color-active:     	rgb(  0, 128, 225);
 		--color-inactive:		rgb(128, 128, 128);
 		--color-hover:			rgb( 82,  82,  94);
-		--color-backdrop: 		rgb(43,42,51);
+		--color-overlay: 		rgb( 43,  42,  51);
 
 		--color-background:		rgb( 28,  27,  34); /* #1C1B22  */
-		--color-overlay:		rgb( 27,  27,  27);
+		--color-backdrop:		rgb( 27,  27,  27);
 }
 
 * {box-sizing: border-box;}
@@ -25,12 +25,11 @@
 a:link, a:hover, a:active, a:focus {text-decoration: none;}
 a:link, a:visited, a:hover, a:active, a:focus {color: var(--color-active);}
 
-button {border: 1px solid var(--color-default);background-color: var(--color-backdrop);padding: unset;}
+button {border: 1px solid var(--color-default);background-color: var(--color-overlay);padding: unset;}
 button:hover {background-color: var(--color-hover);}
 
 nav button {width: 24px; height: 24px; border: unset; background-color: unset; background-repeat: no-repeat;background-position: center; background-size: contain;}
 nav button:hover {background-color: unset;}
-
 
 menu {display: none;}
 
@@ -50,7 +49,7 @@ header nav:last-child button {background-image: url('./../media/icon/settings.sv
 
 main {flex-grow: 1; margin: 0px auto;}
 
-footer {flex-shrink: 0; display: flex; flex-direction: row ;background-color: var(--color-overlay); border-top: 1px solid var(--color-invert)}
+footer {flex-shrink: 0; display: flex; flex-direction: row ;background-color: var(--color-backdrop); border-top: 1px solid var(--color-invert)}
 footer nav {display: flex;flex-direction: row-reverse; font-style: italic;}
 footer nav label {color: var(--color-inactive);padding-right: 5px;}
 footer nav p {width: 6px; height: 6px; margin: 10px 5px 0px 0px;border-radius: 50%;background-color: var(--color-active);}
@@ -67,7 +66,9 @@ footer nav:nth-child(3) button {background-image: url('./../media/logo/webgpu.sv
 .gap-05 {gap: 5px !important;}
 .gap-10 {gap: 10px !important;}
 .column {flex-direction:column;}
+.column-reverse {flex-direction: column-reverse;}
 .row {flex-direction:row;}
+.row-reverse {flex-direction: row-reverse;}
 .f00-10 {flex: 0 0 10%;}
 .f00-20 {flex: 0 0 20%;}
 .f00-50 {flex: 0 0 50%;}
