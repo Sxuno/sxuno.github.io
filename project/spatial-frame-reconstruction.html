@@ -30,59 +30,6 @@
 			engine.log.errors = false
 			console.log('engine log disabled')
 		</script>
-		<!-- TODO: integrate into theme/engine? -->
-		<style>
-			.comparison {
-				position: relative;
-				overflow: hidden;
-				width: 1080px;
-				height: 608px;
-			}
-			.image {
-				position: absolute;
-				inset: 0;
-				background-size: 100% 100%;
-				background-position: 0 0;
-				width: 100%;
-				height: 100%;
-			}
-			.before {
-				background-image: url(./spatial-frame-reconstruction/preview/reconstructed.png); /*right*/
-			}
-			.after {
-				background-image: url(./spatial-frame-reconstruction/preview/lowres.png); /*left*/
-				clip-path: inset(0 50% 0 0);
-			}
-			.slider {
-				position: absolute;
-				top: 0;
-				bottom: 0;
-				left: 50%;
-
-				width: 1px;
-				background: white;
-
-				z-index: 10;
-				cursor: ew-resize;
-			}
-			.handle {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-
-				width: 32px;
-				height: 32px;
-
-				border: 2px solid white;
-				border-radius: 50%;
-				background: black;
-
-				transform: translate(-50%, -50%);
-			}
-			#input div {margin: 20px auto 0px auto;display:flex;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:12px;}
-			#input label{margin: 10px auto 0px auto;justify-content: center;}
-			#input {display: flex;flex-direction: column;}
-		</style>
 		<noscript>
 			<style>
 				/*** MEDIA RESPONSIVE ***/
@@ -130,7 +77,18 @@
 			<section id = 'preview'>
 				<h2>Preview</h2>
 			</section>
-			<!-- TODO: update css to integrate into preview -->
+			<!-- TODO: .simplify .integrate -->
+			<style>
+				.comparison {position: relative; overflow: hidden; width: 1080px; height: 608px;}
+				.image {position: absolute; inset: 0; background-size: 100% 100%; background-position: 0 0; width: 100%; height: 100%;}
+				.before {background-image: url(./spatial-frame-reconstruction/preview/reconstructed.png); /*right*/}
+				.after {background-image: url(./spatial-frame-reconstruction/preview/lowres.png); /*left*/clip-path: inset(0 50% 0 0);}
+				.slider {position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: white; z-index: 10; cursor: ew-resize;}
+				.handle {position: absolute; top: 50%; left: 50%; width: 32px; height: 32px; border: 2px solid white; border-radius: 50%; background: black; transform: translate(-50%, -50%);}
+				#input div {margin: 20px auto 0px auto;display:flex;width:200px;height:40px;border: 1px solid white;border-radius: 5px;justify-content: center;padding-top:12px;}
+				#input label{margin: 10px auto 0px auto;justify-content: center;}
+				#input {display: flex;flex-direction: column;}
+			</style>
 			<section id = 'demo'>
                 <div class='comparison'>
 					<div class='image before'></div>
@@ -140,7 +98,6 @@
 					</div>
 				</div>
             </section>
-			<!-- TODO: integrate into system/framework -->
 			<script>
 				const comparison = document.querySelector('.comparison')
 				const slider = document.querySelector('.slider')
@@ -155,7 +112,6 @@
 					slider.style.left = `${position * 100}%`
 					after.style.clipPath = `inset(0 ${100 - position * 100}% 0 0)`
 				}
-				// TODO: sparate drag detection slider resize pointer from media zoom pointer
 				comparison.addEventListener('pointerdown', event => {
 					dragging = true
 					comparison.setPointerCapture(event.pointerId)
@@ -172,7 +128,7 @@
 					dragging = false
 				})
 			</script>
-
+			<!-- TODO end -->
 			<section id = 'description'>
 				<h2>Description</h2>
                 <div>

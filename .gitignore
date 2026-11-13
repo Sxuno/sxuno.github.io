@@ -59,9 +59,10 @@
 !/theme/default/*.css
 ### view ###
 !/view/
-!/view/*.html
+!/view/projects.html
 !/view/showcase/
-!/view/showcase/*.html
+!/view/showcase/worksample.html
+!/view/showcase/workspace.html
 ### Defaults ###
 !README.md
 !LICENSE.txt
