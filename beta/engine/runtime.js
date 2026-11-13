@@ -23,6 +23,7 @@ engine.runtime = (function() {
 	let _visibility
 	let _scene
 	let _camera
+	let _renderer
 	let _view
 
 	let _devicePixelRatio
