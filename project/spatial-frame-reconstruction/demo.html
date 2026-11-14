@@ -24,7 +24,7 @@ Development note:
 
 		<!--- PAGE SPECIFIC -->
 		<style>
-			.control {display: none;}
+			.controller {display: none;}
 			.configuration section > div {margin-top: 5px}
 			.configuration > h3 {margin-bottom: 5px;}
 
@@ -130,8 +130,14 @@ Development note:
 				<section id = 'inference'>
 					<section class = 'viewbox'>
 						<div class = 'controller'>
-							<div class = 'slider'></div>
-							<div class = 'handler'><b>&lt;&nbsp;&gt;</b></div>
+							<div class = 'comparison'>
+								<div class = 'slider'></div>
+								<div class = 'handler'><b>&lt;&nbsp;&gt;</b></div>
+							</div>
+							<div class = 'viewport'>
+								<menu></menu>
+								<button class = 'func'></button>
+							</div>
 						</div>
 						<div class = 'renderer'>
 							<canvas class = 'original'></canvas>
@@ -179,6 +185,8 @@ Development note:
 								</div>
 								<select class = 'f11-50'>
 									<option>file</option>
+									<option>device</option>
+									<option>engine</option>
 								</select>
 							</div>
 							<div class = 'source'>
@@ -327,29 +335,43 @@ Development note:
 					// module model
 					const model = (function() {
 						let _weights
+						// module runtime
+						const runtime = {}
 						// methods
+						const weights = () => {return _weights}
+						// setup
 						const init = (model) => {
 							if (!_weights) {
 								console.log('... load weights') // path = demo/model+version
 							}
 						}
-						const weights = () => {return _weights}
 						// EXPORT
 						return {init, weights}
 					})()
 					// module input
 					const input = (function () {
 						let _type
-						// types
-						let _device
-						let _engine
-						let _file
+						let _source
 						// context
 						let _exec
 						// module feature
-						const feature = (function() {
+						const feature = (function() { 
+							// env check : 	.engine 
+							// 				.webgpu (may check webgpu at runtime select)
+							// may even change to method instead
 							const init = () => {}
 							return {init}
+						})()
+						// module type
+						const tpye = (function() {
+							let _descriptor // type list
+							let _context // current type
+							// method
+							const select = () => {}
+							// setup
+							const init = () => {/*register function*/}
+							// EXPORT
+							return {init, select}
 						})()
 						// module synthesize
 						const synthesize = (function() {
@@ -361,15 +383,16 @@ Development note:
 						// setup
 						const init = (function () {
 							_type = document.querySelector('.input .type select')
-							console.log(_type.value)
-							_device = document.querySelector('.input .source .device select')
-							console.log(_device)
-							_engine = document.querySelector('.input .source .engine select')
-							console.log(_engine)
-							_file = document.querySelector('.input .source .file button')
-							console.log(_file)
-							_exec = document.querySelector('.exec button')
-							console.log(_exec)
+							_source = document.querySelector('.input .source')
+							// typeselector concept #query selector for eventlistener elements?
+							for(let s = 0; s < _source.children.length; s++) {
+								_style.insertRule(`.source .${_source.children[s].classList[0]} {display: none;}`)
+								_source.children[s].layout = _style.cssRules[0].style
+								if (_source.children[s].classList[0] === _type.value) {
+									_source.children[s].layout.display = 'flex'
+								}
+							}
+
 						})()						
 						// EXPORT
 						return {init}
