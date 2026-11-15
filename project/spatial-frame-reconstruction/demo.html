@@ -114,7 +114,7 @@ Development note:
 			<section id = 'navigation'>
 				<nav id = 'sidemap'>
 					<menu class = 'sidemap'></menu>	
-					<button class = 'menu'></button>										
+					<button class = 'menu'></button>
 					<a href = './../../index.html'>home</a>
 				</nav>
 				<nav id = 'settings'>
@@ -195,7 +195,7 @@ Development note:
 										source
 									</div>
 									<select class = 'f11-50'>
-										<option>device</option>
+										<option>mediadevice</option>
 									</select>
 								</div>
 								<div class = 'engine'>
@@ -210,7 +210,7 @@ Development note:
 									<div class = 'f11-50'>
 										source
 									</div>
-									<div class = 'flex f11-50'>
+									<div class = 'f11-50'>
 										<button class = 'inputhandler'>select</button>
 										<label>&lt;target&gt;</label>
 										<input type = 'file' accept = 'image/png' style = 'display: none;'>
@@ -274,7 +274,7 @@ Development note:
 					// let _layout
 					// let _style
 
-					// let _style = new CSSStyleSheet()					
+					// let _style = new CSSStyleSheet()
 					// document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
 
 					var controller = new Array
@@ -287,7 +287,7 @@ Development note:
 					let _viewbox
 					let _model
 					let _version
-					let _runtime					
+					let _runtime
 					// module viewbox
 					const viewbox = (function() {
 						let _layout
@@ -334,9 +334,27 @@ Development note:
 					})()
 					// module model
 					const model = (function() {
-						let _weights
+						let _weights // buffer pointer
 						// module runtime
-						const runtime = {}
+						const runtime = (function() {
+							// methods
+							const select = () => {}
+							// setup
+							const init = (function() {
+								if (!navigator.gpu) {// minimal viable logic
+									document.querySelector('.model .runtime select').children[0].remove()
+								}
+							})()
+							return {init, select}
+						})()
+						// module version
+						const version = (function() {/*fetch from server endpoint::emulate with json?*/
+							// methods
+							const select = () => {}
+							// setup
+							const init = () => {}
+							return {init, select}
+						})()
 						// methods
 						const weights = () => {return _weights}
 						// setup
@@ -346,43 +364,46 @@ Development note:
 							}
 						}
 						// EXPORT
-						return {init, weights}
+						return {init, runtime, version}
 					})()
 					// module input
 					const input = (function () {
 						let _type
 						let _source
-						// context
-						let _exec
-						// module feature
-						const feature = (function() { 
-							// env check : 	.engine 
-							// 				.webgpu (may check webgpu at runtime select)
-							// may even change to method instead
-							const init = () => {}
-							return {init}
-						})()
 						// module type
-						const tpye = (function() {
-							let _descriptor // type list
-							let _context // current type
+						const type = (function() {
+							let _descriptor // type validation list
 							// method
-							const select = () => {}
+							const select = () => { 
+								for(let s = 0; s < _source.children.length; s++) {
+									_source.children[s].layout.display = 'none'
+									if (_source.children[s].classList[0] === _type.value) {
+										_source.children[s].layout.display = 'flex'
+									}
+								}
+							}
 							// setup
-							const init = () => {/*register function*/}
+							const init = (function() {
+								// type support verification concept
+								// combine webcam and display as device? aswell caputre? matching execution logic, stream?
+								_descriptor = new Object
+								_descriptor.file = Boolean(window.File && window.FileReader && window.Blob)
+								_descriptor.webcam = Boolean(navigator.mediaDevices?.getUserMedia)
+								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
+								_descriptor.engine = Boolean(navigator.gpu && engine)
+								// _descriptor.mobilecapture = Boolean('capture' in document.querySelector('input'))
+								// console.log(_descriptor)
+							})()
 							// EXPORT
 							return {init, select}
 						})()
-						// module synthesize
-						const synthesize = (function() {
-							const blur = () => {}
-							const downscale = () => {}
-							const init = (function() { })
-							return {blur, downscale}
+						const source = (function() {
+							const select = () => {}
 						})()
 						// setup
 						const init = (function () {
 							_type = document.querySelector('.input .type select')
+							_type.onchange = (event) => {type.select()}
 							_source = document.querySelector('.input .source')
 							// typeselector concept #query selector for eventlistener elements?
 							for(let s = 0; s < _source.children.length; s++) {
@@ -392,11 +413,17 @@ Development note:
 									_source.children[s].layout.display = 'flex'
 								}
 							}
-
-						})()						
+						})()
 						// EXPORT
-						return {init}
+						return {init, type}
 					})()
+					// module synthesize
+					const synthesize = (function() {
+							const blur = () => {}
+							const downscale = () => {}
+							const init = (function() { })
+							return {blur, downscale}
+						})()
 					// methods
 					const exec = () => {
 						switch(_model) {
@@ -413,7 +440,7 @@ Development note:
 						}
 					})()
 					// EXPORT
-					return {viewbox, exec}
+					return {viewbox, input, exec}
 				})()
 				// methods
 				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
