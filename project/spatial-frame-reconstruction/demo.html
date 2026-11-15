@@ -203,7 +203,9 @@ Development note:
 										source
 									</div>
 									<select class = 'f11-50'>
-										<option>engine data</option>
+										<optgroup label = 'scene'>
+											<option>default</option>
+										</optgroup>										
 									</select>
 								</div>
 								<div class = 'file'>
@@ -397,6 +399,7 @@ Development note:
 							// EXPORT
 							return {init, select}
 						})()
+						// module source
 						const source = (function() {
 							const select = () => {}
 						})()
@@ -413,6 +416,16 @@ Development note:
 									_source.children[s].layout.display = 'flex'
 								}
 							}
+							// concept
+							function enginedata() {
+								_source.children[1].children[1].children[0].children[0].remove()
+								for(let i = 0; i < engine.scene.info.length; i++) {
+									let scene = document.createElement('option')
+									scene.textContent = engine.scene.info[i].name
+									_source.children[1].children[1].children[0].appendChild(scene)
+								}
+							}
+							if (!engine.scene?.info) {engine.eventdispatcher.addEventListener('SceneInfo', () => {enginedata()})} else {enginedata()}
 						})()
 						// EXPORT
 						return {init, type}
@@ -445,7 +458,7 @@ Development note:
 				// methods
 				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
 				// setup demo
-				const init = (function(){
+				const init = (function() {
 					// initialize layout
 					rescale()
 					// register eventlistener

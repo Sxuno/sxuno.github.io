@@ -25,6 +25,7 @@ engine.scene = (function() {
 
 	async function info() {
 		await engine.utils.scr.load('content/info.js')
+		engine.eventdispatcher.dispatchEvent(new Event('SceneInfo'))
 	}
 	async function data(){ // TODO: .optimize logic namespaces .extend priority presistent
 		for(let i = 0, len = engine.runtime.descriptor().length; i < len; i++) {
