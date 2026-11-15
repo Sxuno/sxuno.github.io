@@ -375,6 +375,25 @@ Development note:
 						// module type
 						const type = (function() {
 							let _descriptor // type validation list
+							// module file // validation only? format specifics in source?
+							const file = (function() {
+								const png = {}
+								// EXPORT
+								return {png}
+							})()
+							// module device
+							const device = (function() {
+								const webcam = {}
+								const display = {}
+								const captuer = {}
+								return {webcam, display, captuer}
+							})()
+							// module engine
+							const engine = (function() {
+								const scene = {}
+								// EXPORT
+								return {scene}
+							})()
 							// method
 							const select = () => { 
 								for(let s = 0; s < _source.children.length; s++) {
@@ -394,14 +413,14 @@ Development note:
 								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
 								_descriptor.engine = Boolean(navigator.gpu && engine)
 								// _descriptor.mobilecapture = Boolean('capture' in document.querySelector('input'))
-								// console.log(_descriptor)
+								if(!_descriptor.engine) {document.querySelector('.input .type select').children[2].remove()} // quickfix :: remove engine type
 							})()
 							// EXPORT
-							return {init, select}
+							return {init, file, device, engine, select}
 						})()
 						// module source
 						const source = (function() {
-							const select = () => {}
+							const select = () => {/* type.file['png'].init() */}
 						})()
 						// setup
 						const init = (function () {
