@@ -285,22 +285,32 @@ Development note:
 				})()
 				// module infrence
 				const inference = (function() {
-					let _context // input reference
-					let _viewbox
+					// TODO : 	rethink privates
+					// NOTE : 	store html objects? as in acessor 
+					//			store active only? 
+					// 			store all? while context is active and descriptor keyword pointer?
+
+					let _descriptor // lookup table
+					let _context // active context
+					let _viewbox // canvas contetxt?
 					let _model
 					let _version
 					let _runtime
-					// module viewbox
+					let _input
+					// mdoules
 					const viewbox = (function() {
 						let _layout
 						let _context // input buffer
-						// module renderer
+						// modules
 						const renderer = (function() {
-							const draw = () => {/*raf scheduler?*/}
+							// methods
+							const draw = () => {
+								// runtime = modelexecution :: cpu webworker canvas2d || gpu webgpu
+							}
+							// execution control module
 							const init = () => {}
 							return {draw}
 						})()
-						// module pointerevents
 						const event = (function() {
 							let _observer
 							let _dispatcher
@@ -312,7 +322,7 @@ Development note:
 						})()
 						// methods
 						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
-						// setup
+						// execution control module
 						const init = (function (context) {
 							if (!_layout) {
 								_style.insertRule(`.viewbox {}`)
@@ -334,14 +344,13 @@ Development note:
 						// EXPORT
 						return {rescale, init}
 					})()
-					// module model
 					const model = (function() {
 						let _weights // buffer pointer
-						// module runtime
+						// modules
 						const runtime = (function() {
 							// methods
 							const select = () => {}
-							// setup
+							// execution control module
 							const init = (function() {
 								if (!navigator.gpu) {// minimal viable logic
 									document.querySelector('.model .runtime select').children[0].remove()
@@ -349,17 +358,16 @@ Development note:
 							})()
 							return {init, select}
 						})()
-						// module version
 						const version = (function() {/*fetch from server endpoint::emulate with json?*/
 							// methods
 							const select = () => {}
-							// setup
+							// execution controll module
 							const init = () => {}
 							return {init, select}
 						})()
 						// methods
 						const weights = () => {return _weights}
-						// setup
+						// execution control module
 						const init = (model) => {
 							if (!_weights) {
 								console.log('... load weights') // path = demo/model+version
@@ -368,33 +376,45 @@ Development note:
 						// EXPORT
 						return {init, runtime, version}
 					})()
-					// module input
 					const input = (function () {
 						let _type
 						let _source
-						// module type
+						// modules
 						const type = (function() {
 							let _descriptor // type validation list
-							// module file // validation only? format specifics in source?
+							// modules // validation only? format specifics in source?
 							const file = (function() {
+								// NOTE : 		CONDITIONAL export failes _descriptor declared after
+								// SOLUTION : 	add file format validation, 
+								// 				redundent at first thought but essential for child scope
 								const png = {}
+								const jpg = {}
+								const gltf = {}
 								// EXPORT
-								return {png}
+								let file = new Object
+								// CONDITIONAL
+								if (_descriptor?.file) {
+									file.png = png,
+									file.jpg = jpg
+								}
+								if (_descriptor?.engine) {
+									file.gltf = gltf
+								}
+								// RETURN VAR
+								return file
 							})()
-							// module device
 							const device = (function() {
 								const webcam = {}
 								const display = {}
-								const captuer = {}
-								return {webcam, display, captuer}
+								const capture = {}
+								return {webcam, display, capture}
 							})()
-							// module engine
 							const engine = (function() {
 								const scene = {}
 								// EXPORT
 								return {scene}
 							})()
-							// method
+							// methods
 							const select = () => { 
 								for(let s = 0; s < _source.children.length; s++) {
 									_source.children[s].layout.display = 'none'
@@ -403,7 +423,7 @@ Development note:
 									}
 								}
 							}
-							// setup
+							// execution control module
 							const init = (function() {
 								// type support verification concept
 								// combine webcam and display as device? aswell caputre? matching execution logic, stream?
@@ -418,11 +438,18 @@ Development note:
 							// EXPORT
 							return {init, file, device, engine, select}
 						})()
-						// module source
 						const source = (function() {
-							const select = () => {/* type.file['png'].init() */}
+							// methods
+							const select = (test) => {
+								/* type.file['png'].init() */
+								console.log(test)
+							}
+							// execution control module
+							const init = (function() { })()
+							// EXPORT
+							return {select}
 						})()
-						// setup
+						// execution control module
 						const init = (function () {
 							_type = document.querySelector('.input .type select')
 							_type.onchange = (event) => {type.select()}
@@ -445,25 +472,38 @@ Development note:
 								}
 							}
 							if (!engine.scene?.info) {engine.eventdispatcher.addEventListener('SceneInfo', () => {enginedata()})} else {enginedata()}
+							// inputhanlder 
+							let _inputhandler = _source.querySelectorAll('.source :is(select, button)')
+							for(let i = 0; i < _inputhandler.length; i++){
+								if (_inputhandler[i].tagName === 'SELECT') {
+									_inputhandler[i].onchange = (event) => source.select(_inputhandler[i].value)
+								}
+								if(_inputhandler[i].tagName === 'BUTTON') {
+									_inputhandler[i].onclick = () => {
+										_inputhandler[i].parentElement.querySelector('input').click()
+									}
+								}
+							}
 						})()
 						// EXPORT
 						return {init, type}
 					})()
-					// module synthesize
 					const synthesize = (function() {
+							// methods
 							const blur = () => {}
 							const downscale = () => {}
+							// execution control module
 							const init = (function() { })
 							return {blur, downscale}
 						})()
 					// methods
-					const exec = () => {
+					const exec = () => { // to be replaced by init(arg) : only exec if arg is given
 						switch(_model) {
 							case 'sfr' : break
 							default : console.error(`model ${model} does not exist.`)
 						}
 					}
-					// setup
+					// execution controll method
 					const init = (function(context) {
 						if (!context) {
 							console.info('init module : inference')
@@ -476,7 +516,7 @@ Development note:
 				})()
 				// methods
 				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
-				// setup demo
+				// execution controll method
 				const init = (function() {
 					// initialize layout
 					rescale()
