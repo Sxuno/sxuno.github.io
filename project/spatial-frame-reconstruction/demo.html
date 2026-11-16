@@ -46,8 +46,8 @@ Development note:
 			.source {display: flex; flex-direction: column;}
 			.source div {display: flex; flex-direction: row;}
 			.source div div:last-child {flex-direction: row-reverse;}
-			.source div div button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-overlay);}
-			.source div div button:hover {background-color: var(--color-hover);}
+			.source button {border-radius: 5px; padding: 0px 10px;background-color: var(--color-overlay);}
+			.source button:hover {background-color: var(--color-hover);}
 			.source div div label {flex-grow: 1}
 
 			.source .device {display: none;}
@@ -185,26 +185,33 @@ Development note:
 								</div>
 								<select class = 'f11-50'>
 									<option>file</option>
-									<option>device</option>
-									<option>engine</option>
+									<option>camera</option>
+									<option>display</option>
+									<option>engine</option>						
 								</select>
 							</div>
 							<div class = 'source'>
-								<div class = 'device'>
+								<div class = 'camera'>
 									<div class = 'f11-50'>
 										source
 									</div>
 									<select class = 'f11-50'>
-										<option>mediadevice</option>
+										<option selected hidden></option>									
 									</select>
+								</div>
+								<div class = 'display'>
+									<div class = 'f11-50'>
+										source
+									</div>
+									<button data-handler = 'mediadevices'>select</button>
 								</div>
 								<div class = 'engine'>
 									<div class = 'f11-50'>
 										source
 									</div>
 									<select class = 'f11-50'>
+										<option selected hidden></option>
 										<optgroup label = 'scene'>
-											<option>default</option>
 										</optgroup>										
 									</select>
 								</div>
@@ -213,7 +220,7 @@ Development note:
 										source
 									</div>
 									<div class = 'f11-50'>
-										<button class = 'inputhandler'>select</button>
+										<button data-handler = 'input'>select</button>
 										<label>&lt;target&gt;</label>
 										<input type = 'file' accept = 'image/png' style = 'display: none;'>
 									</div>
@@ -289,14 +296,10 @@ Development note:
 					// NOTE : 	store html objects? as in acessor 
 					//			store active only? 
 					// 			store all? while context is active and descriptor keyword pointer?
-
 					let _descriptor // lookup table
 					let _context // active context
 					let _viewbox // canvas contetxt?
 					let _model
-					let _version
-					let _runtime
-					let _input
 					// mdoules
 					const viewbox = (function() {
 						let _layout
@@ -345,6 +348,8 @@ Development note:
 						return {rescale, init}
 					})()
 					const model = (function() {
+						let _version
+						let _runtime
 						let _weights // buffer pointer
 						// modules
 						const runtime = (function() {
@@ -379,6 +384,7 @@ Development note:
 					const input = (function () {
 						let _type
 						let _source
+						let _handler // placeholder
 						// modules
 						const type = (function() {
 							let _descriptor // type validation list
@@ -429,7 +435,7 @@ Development note:
 								// combine webcam and display as device? aswell caputre? matching execution logic, stream?
 								_descriptor = new Object
 								_descriptor.file = Boolean(window.File && window.FileReader && window.Blob)
-								_descriptor.webcam = Boolean(navigator.mediaDevices?.getUserMedia)
+								_descriptor.camera = Boolean(navigator.mediaDevices?.getUserMedia)
 								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
 								_descriptor.engine = Boolean(navigator.gpu && engine)
 								// _descriptor.mobilecapture = Boolean('capture' in document.querySelector('input'))
@@ -440,9 +446,9 @@ Development note:
 						})()
 						const source = (function() {
 							// methods
-							const select = (test) => {
+							const select = (target) => {
 								/* type.file['png'].init() */
-								console.log(test)
+								console.log(target)
 							}
 							// execution control module
 							const init = (function() { })()
@@ -464,23 +470,30 @@ Development note:
 							}
 							// concept
 							function enginedata() {
-								_source.children[1].children[1].children[0].children[0].remove()
 								for(let i = 0; i < engine.scene.info.length; i++) {
 									let scene = document.createElement('option')
-									scene.textContent = engine.scene.info[i].name
-									_source.children[1].children[1].children[0].appendChild(scene)
+									scene.textContent = engine.scene.info[i].name					
+									_source.querySelector('.engine').children[1].children[1].appendChild(scene)
 								}
 							}
 							if (!engine.scene?.info) {engine.eventdispatcher.addEventListener('SceneInfo', () => {enginedata()})} else {enginedata()}
 							// inputhanlder 
+							// [input][mediadevices]
 							let _inputhandler = _source.querySelectorAll('.source :is(select, button)')
 							for(let i = 0; i < _inputhandler.length; i++){
 								if (_inputhandler[i].tagName === 'SELECT') {
-									_inputhandler[i].onchange = (event) => source.select(_inputhandler[i].value)
+									_inputhandler[i].onchange = (event) => source.select(event)
 								}
 								if(_inputhandler[i].tagName === 'BUTTON') {
-									_inputhandler[i].onclick = () => {
-										_inputhandler[i].parentElement.querySelector('input').click()
+									if(_inputhandler[i].dataset.handler === 'input') {
+										_inputhandler[i].onclick = () => {
+											let _input = _inputhandler[i].parentElement.querySelector('input')
+											_input.onchange = (event) => source.select(event)
+											_input.click()										
+										}
+									}
+									if(_inputhandler[i].dataset.handler === 'mediadevices') {
+										_inputhandler[i].onclick = (event) => source.select(event)
 									}
 								}
 							}
