@@ -153,7 +153,6 @@ Development note:
 									runtime
 								</div>
 								<select class = 'f11-50'>
-									<option>WebGPU</option>
 									<option>WebWorker</option>
 								</select>
 							</div>
@@ -184,10 +183,7 @@ Development note:
 									type
 								</div>
 								<select class = 'f11-50'>
-									<option>file</option>
-									<option>camera</option>
-									<option>display</option>
-									<option>engine</option>						
+									<option selected hidden></option>				
 								</select>
 							</div>
 							<div class = 'source'>
@@ -297,9 +293,19 @@ Development note:
 							// methods
 							const draw = () => {
 								// runtime = modelexecution :: cpu webworker canvas2d || gpu webgpu
+								// video mapping = source.requestVideoFrameCallback()
+								// note: 	may just use method draw, render instead of module renderer ?
+								// 			if navigator.gpu && engine = dispatch render?
+								// question is about doing an sample renderer vs only implement into engine
 							}
 							// execution control module
-							const init = () => {}
+							const init = (function() {
+								// loadhandler
+								async function loadhandler(context) {
+									console.log('loadhandler renderer', context)
+								}
+								return loadhandler
+							})
 							return {draw}
 						})()
 						const event = (function() {
@@ -319,10 +325,7 @@ Development note:
 								_style.insertRule(`.viewbox {}`)
 								_layout = _style.cssRules[0].style
 								rescale()
-								// setup input canvas
-								// setup reconstruction canvas
-								// setup control
-								// setup pointer events
+								// setup html elements
 							}
 							async function loadhandler(context) {
 								console.log('loadhandler viewbox')
@@ -341,8 +344,12 @@ Development note:
 							const select = () => {}
 							// execution control module
 							const init = (function() {
-								if (!navigator.gpu) {// minimal viable logic
-									document.querySelector('.model .runtime select').children[0].remove()
+								if (navigator.gpu) {
+									let option
+									option = document.createElement('option')
+									option.textContent = 'WebGPU'
+									option.selected = true
+									document.querySelector('.model .runtime select').prepend(option)
 								}
 							})()
 							return {init, select}
@@ -363,7 +370,6 @@ Development note:
 						// methods
 						// execution control module
 						const init = (function() {
-							console.log('init model')
 							// loadhandler
 							async function loadhandler(context) {
 								console.log('loadhandler model', context)
@@ -378,7 +384,7 @@ Development note:
 						let _source
 						// modules
 						const type = (function() {
-							let _descriptor // type validation list :: to be replaced by conditional export
+							let _descriptor // type validation list :: to be replaced by conditional export?
 							// modules
 							const file = (function() {
 								// NOTE : 		CONDITIONAL export failes _descriptor declared after
@@ -424,6 +430,17 @@ Development note:
 							const display = (function() {
 								// execution control module
 								const init = () => {
+									// device feature test sample functions
+
+									/* copyExternalImageToTexture
+									navigator.gpu?.requestAdapter().then(a => a?.requestDevice()).then(d => {
+										console.log("copyExternalImageToTexture supported:", typeof d?.queue?.copyExternalImageToTexture === "function");
+									}); */
+									/* importExternalTexture
+									navigator.gpu?.requestAdapter().then(a => a?.requestDevice()).then(d => {
+									console.log("importExternalTexture supported:", typeof d?.importExternalTexture === "function");
+									}); */
+
 									// loadhandler
 									async function loadhandler(context) {
 										console.log('loadhandler display', context)
@@ -446,7 +463,6 @@ Development note:
 							})()
 							// methods
 							const select = async (context) => {
-								console.log(context.target.value)
 								if (context.target.value === 'camera') {
 									let _devices = await navigator.mediaDevices.enumerateDevices()
 									// navigator.mediaDevices.ondevicechange
@@ -461,13 +477,21 @@ Development note:
 							}
 							// execution control module
 							const init = (function() {
-								// type support verification concept
+								// type support verification concept // allow source format stream if navigator.gpu
 								_descriptor = new Object
 								_descriptor.file = Boolean(window.File && window.FileReader && window.Blob)
-								_descriptor.camera = Boolean(navigator.mediaDevices?.getUserMedia)
-								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
+								_descriptor.camera = Boolean(navigator.gpu && navigator.mediaDevices?.getUserMedia)
+								_descriptor.display = Boolean(navigator.gpu && navigator.mediaDevices?.getDisplayMedia)
 								_descriptor.engine = Boolean(navigator.gpu && engine)
-								if(!_descriptor.engine) {document.querySelector('.input .type select').children[3].remove()} // quickfix :: remove engine type
+								for(let [key, value] of Object.entries(_descriptor)) {
+									if (value) {
+										let option
+										option = document.createElement('option')
+										option.textContent = key
+										if (key === 'file') {option.selected = true}
+										document.querySelector('.input .type select').appendChild(option)
+									}
+								}
 								async function loadhandler(context) {
 									console.log('loadhandler type', context)
 								}
@@ -519,7 +543,7 @@ Development note:
 							}
 							if (!engine.scene?.info) {engine.eventdispatcher.addEventListener('SceneInfo', () => {enginedata()})} else {enginedata()}
 							// inputhanlder 
-							// [input][mediadevices]
+							// [input].[file][display][camera][engine]
 							let _inputhandler = _source.querySelectorAll('.source :is(select, button)')
 							for(let i = 0; i < _inputhandler.length; i++){
 								if (_inputhandler[i].tagName === 'SELECT') {
@@ -553,6 +577,7 @@ Development note:
 							const downscale = () => {}
 							// execution control module
 							const init = (function() {
+								// loadhandler
 								async function loadhandler(context) {
 									console.log('loadhandler synthesize', context)
 								}
@@ -563,7 +588,7 @@ Development note:
 					// methods
 					// execution controll method
 					const init = (function() {
-						console.info('init module : inference')
+						console.info('init inference')
 						// loadhandler
 						async function loadhandler(context) {
 							console.log('loadhandler inference', context)
