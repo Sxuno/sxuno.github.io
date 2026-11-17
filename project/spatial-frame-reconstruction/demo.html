@@ -271,7 +271,7 @@ Development note:
 				// privates
 				let _style
 				let _layout
-				// module layout
+				// modules
 				const layout = (function() {
 					// let _layout
 					// let _style
@@ -286,14 +286,12 @@ Development note:
 					// EXPORT
 					return {controller}
 				})()
-				// module infrence
 				const inference = (function() {
 					let _viewbox // canvas contetxt?
 					let _model
 					// mdoules
 					const viewbox = (function() {
 						let _layout
-						let _context // input buffer
 						// modules
 						const renderer = (function() {
 							// methods
@@ -326,16 +324,13 @@ Development note:
 								// setup control
 								// setup pointer events
 							}
-							if (context) {
-								console.info('viewbox : init context')
-								// reset canvas context
-								// reset viewbox controlls
-								// reset viewbox states
-								// reset pointer states
+							async function loadhandler(context) {
+								console.log('loadhandler viewbox')
 							}
+							return loadhandler
 						})()
 						// EXPORT
-						return {rescale, init}
+						return {init, rescale}
 					})()
 					const model = (function() {
 						let _version
@@ -355,17 +350,26 @@ Development note:
 						const version = (function() {/*fetch from server endpoint::emulate with json?*/
 							// methods
 							const select = () => {}
-							// execution controll module
-							const init = () => {}
+							// execution control module
+							const init = () => {
+								// loadhandler
+								async function loadhandler(context) {
+									console.log('loadhandler version', context)
+								}
+								return loadhandler
+							}
 							return {init, select}
 						})()
 						// methods
 						// execution control module
-						const init = (model) => {
-							if (!_weights) {
-								console.log('... load weights') // path = demo/model+version
+						const init = (function() {
+							console.log('init model')
+							// loadhandler
+							async function loadhandler(context) {
+								console.log('loadhandler model', context)
 							}
-						}
+							return loadhandler
+						})()
 						// EXPORT
 						return {init, runtime, version}
 					})()
@@ -374,8 +378,8 @@ Development note:
 						let _source
 						// modules
 						const type = (function() {
-							let _descriptor // type validation list :: to be removed by conditional export
-							// modules // add mobilecapture? dependency softreload handling : experimental only?
+							let _descriptor // type validation list :: to be replaced by conditional export
+							// modules
 							const file = (function() {
 								// NOTE : 		CONDITIONAL export failes _descriptor declared after
 								// SOLUTION : 	add file format validation || enforce execution control model
@@ -383,7 +387,13 @@ Development note:
 								const jpg = {}
 								const gltf = {}
 								// execution control module
-								const init = () => {}
+								const init = () => {
+									// loadhandler
+									async function loadhandler(context) {
+										console.log('loadhandler file', context)
+									}
+									return loadhandler
+								}
 								// EXPORT
 								let file = {
 									init,
@@ -401,30 +411,38 @@ Development note:
 								return file
 							})()
 							const camera = (function() {
+								// execution control module
 								const init = () => {
-									// mediadevices?.getUserMedia
+									// loadhandler
+									async function loadhandler(context) {
+										console.log('loadhandler camera', context)
+									}
+									return loadhandler
 								}
 								return {init}
 							})()
 							const display = (function() {
+								// execution control module
 								const init = () => {
-									// mediadevices?.getDisplayStream
+									// loadhandler
+									async function loadhandler(context) {
+										console.log('loadhandler display', context)
+									}
+									return loadhandler
 								}
 								return {init}
 							})()
 							const engine = (function() {
-								let _readystate
-								const scene = {}
 								// execution control module
 								const init = (function(context) {
-									if(!context) {
-										if(_source) {
-											// move enginedata() here
-										}
+									// loadhandler
+									async function loadhandler(context) {
+										console.log('loadhandler engine', context)
 									}
+									return loadhandler
 								})
 								// EXPORT
-								return {scene}
+								return {init}
 							})()
 							// methods
 							const select = async (context) => {
@@ -444,14 +462,16 @@ Development note:
 							// execution control module
 							const init = (function() {
 								// type support verification concept
-								// combine webcam and display as device? aswell caputre? matching execution logic, stream?
 								_descriptor = new Object
 								_descriptor.file = Boolean(window.File && window.FileReader && window.Blob)
 								_descriptor.camera = Boolean(navigator.mediaDevices?.getUserMedia)
 								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
 								_descriptor.engine = Boolean(navigator.gpu && engine)
-								// _descriptor.mobilecapture = Boolean('capture' in document.querySelector('input'))
 								if(!_descriptor.engine) {document.querySelector('.input .type select').children[3].remove()} // quickfix :: remove engine type
+								async function loadhandler(context) {
+									console.log('loadhandler type', context)
+								}
+								return loadhandler
 							})()
 							// EXPORT
 							return {init, file, camera, display, engine, select}
@@ -467,7 +487,12 @@ Development note:
 								}
 							}
 							// execution control module
-							const init = (function() { })()
+							const init = (function() {
+								async function loadhandler(context) {
+									console.log('loadhandler source', context)
+								}
+								return loadhandler
+							})()
 							// EXPORT
 							return {select}
 						})()
@@ -513,6 +538,11 @@ Development note:
 									}
 								}
 							}
+							// loadhandler
+							async function loadhandler(context) {
+								console.log('loadhandler input', context)
+							}
+							return loadhandler
 						})()
 						// EXPORT
 						return {init, type}
@@ -522,13 +552,19 @@ Development note:
 							const blur = () => {}
 							const downscale = () => {}
 							// execution control module
-							const init = (function() { })
+							const init = (function() {
+								async function loadhandler(context) {
+									console.log('loadhandler synthesize', context)
+								}
+								return loadhandler
+							})
 							return {blur, downscale}
 						})()
 					// methods
 					// execution controll method
 					const init = (function() {
 						console.info('init module : inference')
+						// loadhandler
 						async function loadhandler(context) {
 							console.log('loadhandler inference', context)
 						}
