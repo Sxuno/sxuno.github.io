@@ -195,7 +195,7 @@ Development note:
 									<div class = 'f11-50'>
 										source
 									</div>
-									<select class = 'f11-50'>
+									<select class = 'f11-50' data-handler = 'camera'>
 										<option selected hidden></option>									
 									</select>
 								</div>
@@ -203,13 +203,13 @@ Development note:
 									<div class = 'f11-50'>
 										source
 									</div>
-									<button data-handler = 'mediadevices'>select</button>
+									<button data-handler = 'display'>select</button>
 								</div>
 								<div class = 'engine'>
 									<div class = 'f11-50'>
 										source
 									</div>
-									<select class = 'f11-50'>
+									<select class = 'f11-50' data-handler = 'engine'>
 										<option selected hidden></option>
 										<optgroup label = 'scene'>
 										</optgroup>										
@@ -222,7 +222,7 @@ Development note:
 									<div class = 'f11-50'>
 										<button data-handler = 'input'>select</button>
 										<label>&lt;target&gt;</label>
-										<input type = 'file' accept = 'image/png' style = 'display: none;'>
+										<input type = 'file' accept = 'image/png' data-handler = 'file' style = 'display: none;'>
 									</div>
 								</div>
 							</div>
@@ -268,36 +268,26 @@ Development note:
 					return
 				}
 				console.info('init demo')
-				// setup layout
+				// privates
 				let _style
 				let _layout
-				// placeholder setup while missing execution order
-				_style = new CSSStyleSheet()
-				_style.insertRule(`#demo {}`)
-				_layout = _style.cssRules[0].style
-				document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
 				// module layout
 				const layout = (function() {
-					let _descriptor
-					let _context
 					// let _layout
 					// let _style
-
-					// let _style = new CSSStyleSheet()
-					// document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
-
 					var controller = new Array
-
+					// execution control module
+					const init = (function() {
+						_style = new CSSStyleSheet()
+						_style.insertRule(`#demo {}`)
+						_layout = _style.cssRules[0].style
+						document.adoptedStyleSheets = [...document.adoptedStyleSheets, _style]
+					})()				
+					// EXPORT
 					return {controller}
 				})()
 				// module infrence
 				const inference = (function() {
-					// TODO : 	rethink privates
-					// NOTE : 	store html objects? as in acessor 
-					//			store active only? 
-					// 			store all? while context is active and descriptor keyword pointer?
-					let _descriptor // lookup table
-					let _context // active context
 					let _viewbox // canvas contetxt?
 					let _model
 					// mdoules
@@ -350,7 +340,6 @@ Development note:
 					const model = (function() {
 						let _version
 						let _runtime
-						let _weights // buffer pointer
 						// modules
 						const runtime = (function() {
 							// methods
@@ -371,7 +360,6 @@ Development note:
 							return {init, select}
 						})()
 						// methods
-						const weights = () => {return _weights}
 						// execution control module
 						const init = (model) => {
 							if (!_weights) {
@@ -384,44 +372,68 @@ Development note:
 					const input = (function () {
 						let _type
 						let _source
-						let _handler // placeholder
 						// modules
 						const type = (function() {
-							let _descriptor // type validation list
-							// modules // validation only? format specifics in source?
+							let _descriptor // type validation list :: to be removed by conditional export
+							// modules // add mobilecapture? dependency softreload handling : experimental only?
 							const file = (function() {
 								// NOTE : 		CONDITIONAL export failes _descriptor declared after
-								// SOLUTION : 	add file format validation, 
-								// 				redundent at first thought but essential for child scope
+								// SOLUTION : 	add file format validation || enforce execution control model
 								const png = {}
 								const jpg = {}
 								const gltf = {}
+								// execution control module
+								const init = () => {}
 								// EXPORT
-								let file = new Object
+								let file = {
+									init,
+									format : new Object
+								}
 								// CONDITIONAL
 								if (_descriptor?.file) {
-									file.png = png,
-									file.jpg = jpg
+									file.format.png = png,
+									file.format.jpg = jpg
 								}
 								if (_descriptor?.engine) {
-									file.gltf = gltf
+									file.format.gltf = gltf
 								}
 								// RETURN VAR
 								return file
 							})()
-							const device = (function() {
-								const webcam = {}
-								const display = {}
-								const capture = {}
-								return {webcam, display, capture}
+							const camera = (function() {
+								const init = () => {
+									// mediadevices?.getUserMedia
+								}
+								return {init}
+							})()
+							const display = (function() {
+								const init = () => {
+									// mediadevices?.getDisplayStream
+								}
+								return {init}
 							})()
 							const engine = (function() {
+								let _readystate
 								const scene = {}
+								// execution control module
+								const init = (function(context) {
+									if(!context) {
+										if(_source) {
+											// move enginedata() here
+										}
+									}
+								})
 								// EXPORT
 								return {scene}
 							})()
 							// methods
-							const select = () => { 
+							const select = async (context) => {
+								console.log(context.target.value)
+								if (context.target.value === 'camera') {
+									let _devices = await navigator.mediaDevices.enumerateDevices()
+									// navigator.mediaDevices.ondevicechange
+									console.log(_devices)
+								}
 								for(let s = 0; s < _source.children.length; s++) {
 									_source.children[s].layout.display = 'none'
 									if (_source.children[s].classList[0] === _type.value) {
@@ -439,16 +451,20 @@ Development note:
 								_descriptor.display = Boolean(navigator.mediaDevices?.getDisplayMedia)
 								_descriptor.engine = Boolean(navigator.gpu && engine)
 								// _descriptor.mobilecapture = Boolean('capture' in document.querySelector('input'))
-								if(!_descriptor.engine) {document.querySelector('.input .type select').children[2].remove()} // quickfix :: remove engine type
+								if(!_descriptor.engine) {document.querySelector('.input .type select').children[3].remove()} // quickfix :: remove engine type
 							})()
 							// EXPORT
-							return {init, file, device, engine, select}
+							return {init, file, camera, display, engine, select}
 						})()
 						const source = (function() {
 							// methods
-							const select = (target) => {
-								/* type.file['png'].init() */
-								console.log(target)
+							const select = async (context) => {
+								if(context.target.dataset.handler === 'display') {		
+									let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
+									_display.getVideoTracks()[0].addEventListener('ended', () => {
+										console.log('screen shareing stopped')
+									})
+								}
 							}
 							// execution control module
 							const init = (function() { })()
@@ -458,7 +474,7 @@ Development note:
 						// execution control module
 						const init = (function () {
 							_type = document.querySelector('.input .type select')
-							_type.onchange = (event) => {type.select()}
+							_type.onchange = (event) => {type.select(event)}
 							_source = document.querySelector('.input .source')
 							// typeselector concept #query selector for eventlistener elements?
 							for(let s = 0; s < _source.children.length; s++) {
@@ -492,7 +508,7 @@ Development note:
 											_input.click()										
 										}
 									}
-									if(_inputhandler[i].dataset.handler === 'mediadevices') {
+									if(_inputhandler[i].dataset.handler === 'display') {
 										_inputhandler[i].onclick = (event) => source.select(event)
 									}
 								}
@@ -510,22 +526,17 @@ Development note:
 							return {blur, downscale}
 						})()
 					// methods
-					const exec = () => { // to be replaced by init(arg) : only exec if arg is given
-						switch(_model) {
-							case 'sfr' : break
-							default : console.error(`model ${model} does not exist.`)
-						}
-					}
 					// execution controll method
-					const init = (function(context) {
-						if (!context) {
-							console.info('init module : inference')
-						} else {
-							console.info('module inference : init (context)')
+					const init = (function() {
+						console.info('init module : inference')
+						async function loadhandler(context) {
+							console.log('loadhandler inference', context)
 						}
+						document.querySelector('.exec button').onclick = (event) => loadhandler(event)
+						return loadhandler
 					})()
 					// EXPORT
-					return {viewbox, input, exec}
+					return {init, viewbox, input}
 				})()
 				// methods
 				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
