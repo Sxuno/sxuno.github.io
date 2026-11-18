@@ -25,7 +25,7 @@
 a:link, a:hover, a:active, a:focus {text-decoration: none;}
 a:link, a:visited, a:hover, a:active, a:focus {color: var(--color-active);}
 
-button {border: 1px solid var(--color-default);background-color: var(--color-overlay);padding: unset;}
+button {color: var(--color-default); border: 1px solid var(--color-default);background-color: var(--color-overlay);padding: unset;}
 button:hover {background-color: var(--color-hover);}
 
 nav button {width: 24px; height: 24px; border: unset; background-color: unset; background-repeat: no-repeat;background-position: center; background-size: contain;}

@@ -25,6 +25,11 @@ Development note:
 		<!--- PAGE SPECIFIC -->
 		<style>
 			.controller {display: none;}
+			.decoder {display: none;}
+
+			.renderer {width: 100%; height: 100%; position: relative;}
+			.renderer canvas {width: 100%; height: 100%; position: absolute;}
+
 			.configuration section > div {margin-top: 5px}
 			.configuration > h3 {margin-bottom: 5px;}
 
@@ -143,6 +148,7 @@ Development note:
 							<canvas class = 'original'></canvas>
 							<canvas class = 'reconstruction'></canvas>
 						</div>
+						<div class = 'decoder'></div> <!-- concept placeholder -->
 					</section>
 					<section class = 'configuration'>
 						<h2>configuration</h2>
@@ -252,7 +258,7 @@ Development note:
 						<label><i>*input is processed strictly local.</i></label>
 					</section>
 					<div class = 'notification'></div>
-					<!-- route output to footer console menu || use console menu as anchor -->
+					<!-- route output to footer console menu? || use console menu as anchor? -->
 				</section>
 			</section>
         </main>
@@ -283,12 +289,23 @@ Development note:
 					return {controller}
 				})()
 				const inference = (function() {
-					let _viewbox // canvas contetxt?
+					let _viewbox // canvas context?
 					let _model
-					// mdoules
+					// modules
 					const viewbox = (function() {
 						let _layout
 						// modules
+						const controller = (function() {
+							const comparison = {}
+							const viewport = {
+							// event onhover & mouse down : viewbox => canvas context move
+							// event onhover & mouse wheel : viewbox => canvas context resize
+							// if context == scene :: event onhover & double click : viewbox => enable engine.input.controller
+							// if engine.input.controller enabled :: key down (esc) => disable engine.input.controller # engine override?
+							}
+							const init = {}
+							return {init}
+						})()
 						const renderer = (function() {
 							// methods
 							const draw = () => {
@@ -308,14 +325,15 @@ Development note:
 							})
 							return {draw}
 						})()
-						const event = (function() {
-							let _observer
-							let _dispatcher
-							// event onhover & mouse down : viewbox => canvas context move
-							// event onhover & mouse wheel : viewbox => canvas context resize
-							// if context == scene :: event onhover & double click : viewbox => enable engine.input.controller
-							// if engine.input.controller enabled :: key down (esc) => disable engine.input.controller # engine override?
-							const init = (function() {})()
+						const decoder = (function() {
+							const init = (function() {
+								// loadhandler
+								async function loadhandler(context) {
+									console.log('loadhandler decoder', context)
+								}
+								return loadhandler
+							})()
+							return {init}
 						})()
 						// methods
 						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
@@ -328,7 +346,11 @@ Development note:
 								// setup html elements
 							}
 							async function loadhandler(context) {
-								console.log('loadhandler viewbox')
+								if (context) {
+									console.log('loadhandler viewbox', context)
+								} else {
+									console.info('loadhandler viewbox : reset')
+								}								
 							}
 							return loadhandler
 						})()
@@ -387,34 +409,36 @@ Development note:
 							let _descriptor // type validation list :: to be replaced by conditional export?
 							// modules
 							const file = (function() {
-								// NOTE : 		CONDITIONAL export failes _descriptor declared after
-								// SOLUTION : 	add file format validation || enforce execution control model
-								const png = {}
-								const jpg = {}
-								const gltf = {}
+								// modules
+								const handler = (function() {
+									const png = (function() {
+										const init = () => {
+											console.log('format handler png')
+											viewbox.init({frame : 'buffer'})
+										}
+										return {init}
+									})()
+									const jpg = {}
+									const gltf = {}
+									return {png}
+								})()
 								// execution control module
-								const init = () => {
+								const init = (function() {
 									// loadhandler
 									async function loadhandler(context) {
-										console.log('loadhandler file', context)
+										if (context) {
+											console.log('loadhandler file', context)
+											let format = context.target.files[0].type.split('/')[1]
+											console.log(handler)
+											handler[format]?.init()
+										} else {
+											console.info('loadhandler file init')
+										}																			
 									}
 									return loadhandler
-								}
+								})()
 								// EXPORT
-								let file = {
-									init,
-									format : new Object
-								}
-								// CONDITIONAL
-								if (_descriptor?.file) {
-									file.format.png = png,
-									file.format.jpg = jpg
-								}
-								if (_descriptor?.engine) {
-									file.format.gltf = gltf
-								}
-								// RETURN VAR
-								return file
+								return {init}
 							})()
 							const camera = (function() {
 								// execution control module
@@ -503,11 +527,15 @@ Development note:
 						const source = (function() {
 							// methods
 							const select = async (context) => {
-								if(context.target.dataset.handler === 'display') {		
+								console.info('select : context', context)
+								if(context.target.dataset.handler === 'display') {
 									let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
 									_display.getVideoTracks()[0].addEventListener('ended', () => {
-										console.log('screen shareing stopped')
+										console.log('screen sharing stopped')
 									})
+								}
+								if(context.target.dataset.handler === 'file') {
+									await input.type[context.target.dataset.handler].init(context)
 								}
 							}
 							// execution control module
@@ -522,10 +550,11 @@ Development note:
 						})()
 						// execution control module
 						const init = (function () {
+							// move to type.init?
 							_type = document.querySelector('.input .type select')
 							_type.onchange = (event) => {type.select(event)}
 							_source = document.querySelector('.input .source')
-							// typeselector concept #query selector for eventlistener elements?
+							// typeselector // move to source.init(arg)?
 							for(let s = 0; s < _source.children.length; s++) {
 								_style.insertRule(`.source .${_source.children[s].classList[0]} {display: none;}`)
 								_source.children[s].layout = _style.cssRules[0].style
@@ -533,7 +562,6 @@ Development note:
 									_source.children[s].layout.display = 'flex'
 								}
 							}
-							// concept
 							function enginedata() {
 								for(let i = 0; i < engine.scene.info.length; i++) {
 									let scene = document.createElement('option')
@@ -542,7 +570,7 @@ Development note:
 								}
 							}
 							if (!engine.scene?.info) {engine.eventdispatcher.addEventListener('SceneInfo', () => {enginedata()})} else {enginedata()}
-							// inputhanlder 
+							// inputhanlder // move to source.init?
 							// [input].[file][display][camera][engine]
 							let _inputhandler = _source.querySelectorAll('.source :is(select, button)')
 							for(let i = 0; i < _inputhandler.length; i++){
@@ -583,10 +611,11 @@ Development note:
 								}
 								return loadhandler
 							})
+							// EXPORT
 							return {blur, downscale}
 						})()
 					// methods
-					// execution controll method
+					// execution control module
 					const init = (function() {
 						console.info('init inference')
 						// loadhandler
@@ -597,11 +626,11 @@ Development note:
 						return loadhandler
 					})()
 					// EXPORT
-					return {init, viewbox, input}
+					return {init, viewbox}
 				})()
 				// methods
 				const rescale = () => {_layout.width = `${(window.layout.width() > 720) ? 900 : window.layout.width()}px`}
-				// execution controll method
+				// execution control module
 				const init = (function() {
 					// initialize layout
 					rescale()
