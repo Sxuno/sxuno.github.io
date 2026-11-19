@@ -342,13 +342,10 @@ Development note:
 							// placholder lifecycle objects
 							let _video = document.createElement('video')
 							let _stream 
-							// interfaces
+							// modules
 							const interface = (function() {
-								var frame = new Image()
-								frame.onload = () => {
-									console.log('void frame')
-									URL.revokeObjectURL(frame.src)
-								}
+								// modules
+								const frame = new Image()
 								const stream = {
 									onload: () => {console.log('void stream')},
 									video: _video,
@@ -383,6 +380,13 @@ Development note:
 										return _scene
 									}
 								}
+								// execution control module
+								const init = (function() {
+									frame.onload = () => {
+										console.log('void frame')
+										URL.revokeObjectURL(frame.src)
+									}
+								})()
 								return {frame, stream, scene}
 							})()
 							// execution control module
@@ -391,9 +395,8 @@ Development note:
 								async function loadhandler(context) {
 									console.log('loadhandler decoder', context)
 									if (context) {
-										// console.log(Object.keys(context)[0])
 										let [[key, value]] = Object.entries(context)
-										interface[key]
+										interface[key].src = value
 									}
 								}
 								return loadhandler
@@ -482,8 +485,8 @@ Development note:
 								const handler = (function() {
 									const png = (function() {
 										const init = async (context) => {
-											console.log('format handler png')
-											let bits = await context.target.files[0].arrayBuffer()
+											console.log('input type file handler png', context)
+											let bits = await context.arrayBuffer()
 											let bytes = new Uint8Array(bits)
 											let blob = new Blob([bytes], {type: 'image/png'})
 											let url = URL.createObjectURL(blob)
@@ -501,9 +504,8 @@ Development note:
 									async function loadhandler(context) {
 										if (context) {
 											console.log('loadhandler file', context)
-											let format = context.target.files[0].type.split('/')[1]
-											console.log(handler)
-											handler[format]?.init(context)
+											let format = context.files[0].type.split('/')[1]
+											handler[format]?.init(context.files[0])
 										} else {
 											console.info('loadhandler file init')
 										}																			
@@ -621,7 +623,7 @@ Development note:
 									})
 								}
 								if(context.target.dataset.handler === 'file') {
-									await input.type[context.target.dataset.handler].init(context)
+									await input.type[context.target.dataset.handler].init(context.target)
 								}
 							}
 							// execution control module
