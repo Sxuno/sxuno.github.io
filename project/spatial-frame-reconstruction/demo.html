@@ -326,7 +326,51 @@ Development note:
 							return {draw}
 						})()
 						const decoder = (function() {
+							// placholder lifecycle objects
+							let _video = document.createElement('video')
+							let _stream 
+							// interfaces
+							const frame = new Image()
+							const stream = {
+								onload: null,
+								video: _video,
+								set src(context) {
+									_stream = context // temp lifecycle 
+									_video.srcObject = context
+									_video.muted = true
+									_video.play()
+
+									_video.onloadeddata = () => {
+										if (typeof stream.onload === 'function') {
+											stream.onload()
+										}
+									}
+								},
+								get src() {
+									return _video.srcObject
+								}
+							}
+							const scene = {
+								onload: null,
+								set src(context) {
+									_scene = context
+									
+									queueMicrotask(() => {
+										if (typeof scene.onload === 'function') {
+											scene.onload()
+										}
+									})
+								},
+								get src() {
+									return _scene
+								}
+							}
+							// execution control module
 							const init = (function() {
+								// frame.onload = () => {}
+								// scene.onload = () => {}
+								// stream.onload = () => {}
+								
 								// loadhandler
 								async function loadhandler(context) {
 									console.log('loadhandler decoder', context)
@@ -392,6 +436,7 @@ Development note:
 						// methods
 						// execution control module
 						const init = (function() {
+							_model = new Object
 							// loadhandler
 							async function loadhandler(context) {
 								console.log('loadhandler model', context)
@@ -406,15 +451,17 @@ Development note:
 						let _source
 						// modules
 						const type = (function() {
-							let _descriptor // type validation list :: to be replaced by conditional export?
+							let _descriptor // to be replaced by model descriptor
 							// modules
 							const file = (function() {
 								// modules
 								const handler = (function() {
 									const png = (function() {
-										const init = () => {
+										const init = (context) => {
 											console.log('format handler png')
-											viewbox.init({frame : 'buffer'})
+											let bits = context.target.files[0].arrayBuffer()
+											let bytes = new Uint8Array(bits)
+											viewbox.init({frame : bytes})
 										}
 										return {init}
 									})()
@@ -430,7 +477,7 @@ Development note:
 											console.log('loadhandler file', context)
 											let format = context.target.files[0].type.split('/')[1]
 											console.log(handler)
-											handler[format]?.init()
+											handler[format]?.init(context)
 										} else {
 											console.info('loadhandler file init')
 										}																			
@@ -441,6 +488,8 @@ Development note:
 								return {init}
 							})()
 							const camera = (function() {
+								// modules
+								const handler = (function() {})()
 								// execution control module
 								const init = () => {
 									// loadhandler
@@ -452,10 +501,15 @@ Development note:
 								return {init}
 							})()
 							const display = (function() {
+								// modules
+								const handler = (function() {
+									const init = (function() {
+										console.log('display handler init (decoder)')
+									})()
+								})()
 								// execution control module
 								const init = () => {
 									// device feature test sample functions
-
 									/* copyExternalImageToTexture
 									navigator.gpu?.requestAdapter().then(a => a?.requestDevice()).then(d => {
 										console.log("copyExternalImageToTexture supported:", typeof d?.queue?.copyExternalImageToTexture === "function");
@@ -467,13 +521,19 @@ Development note:
 
 									// loadhandler
 									async function loadhandler(context) {
-										console.log('loadhandler display', context)
+										if (context) {
+											console.log('loadhandler display', context)
+											handler.init()
+										} else {
+											console.info('loadhandler display init')
+										}										
 									}
 									return loadhandler
 								}
 								return {init}
 							})()
 							const engine = (function() {
+								const handler = (function() {})()
 								// execution control module
 								const init = (function(context) {
 									// loadhandler
