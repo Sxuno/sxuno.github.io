@@ -296,14 +296,27 @@ Development note:
 						let _layout
 						// modules
 						const controller = (function() {
+							// modules
 							const comparison = {}
-							const viewport = {
-							// event onhover & mouse down : viewbox => canvas context move
-							// event onhover & mouse wheel : viewbox => canvas context resize
-							// if context == scene :: event onhover & double click : viewbox => enable engine.input.controller
-							// if engine.input.controller enabled :: key down (esc) => disable engine.input.controller # engine override?
-							}
-							const init = {}
+							const viewport = (function() {
+								let _layout
+								// methods
+								const scale = () => {/* event onhover & mouse wheel : viewbox => canvas context resize */}
+								const move = () => {/* event onhover & mouse down : viewbox => canvas context move */}
+								const fullscreen = () => {/* event target menu item */}
+								const input = () => {
+									// if context == scene :: event onhover & double click : viewbox => enable engine.input.controller
+									// if engine.input.controller enabled :: key down (esc) => disable engine.input.controller # engine override?
+								}
+								// execution control method
+								const init = (function() { /* use viewbox type || tpye arg */})			
+								// EXPORTS
+								return {init}
+							})()
+							// execution control module
+							const init = (function() {
+								console.log('init viewbox controller')
+							})()
 							return {init}
 						})()
 						const renderer = (function() {
@@ -330,50 +343,58 @@ Development note:
 							let _video = document.createElement('video')
 							let _stream 
 							// interfaces
-							const frame = new Image()
-							const stream = {
-								onload: null,
-								video: _video,
-								set src(context) {
-									_stream = context // temp lifecycle 
-									_video.srcObject = context
-									_video.muted = true
-									_video.play()
+							const interface = (function() {
+								var frame = new Image()
+								frame.onload = () => {
+									console.log('void frame')
+									URL.revokeObjectURL(frame.src)
+								}
+								const stream = {
+									onload: () => {console.log('void stream')},
+									video: _video,
+									set src(context) {
+										_stream = context // temp lifecycle 
+										_video.srcObject = context
+										_video.muted = true
+										_video.play()
 
-									_video.onloadeddata = () => {
-										if (typeof stream.onload === 'function') {
-											stream.onload()
+										_video.onloadeddata = () => {
+											if (typeof stream.onload === 'function') {
+												stream.onload()
+											}
 										}
+									},
+									get src() {
+										return _video.srcObject
 									}
-								},
-								get src() {
-									return _video.srcObject
 								}
-							}
-							const scene = {
-								onload: null,
-								set src(context) {
-									_scene = context
-									
-									queueMicrotask(() => {
-										if (typeof scene.onload === 'function') {
-											scene.onload()
-										}
-									})
-								},
-								get src() {
-									return _scene
+								const scene = {
+									onload: null,
+									set src(context) {
+										_scene = context
+										
+										queueMicrotask(() => {
+											if (typeof scene.onload === 'function') {
+												scene.onload()
+											}
+										})
+									},
+									get src() {
+										return _scene
+									}
 								}
-							}
+								return {frame, stream, scene}
+							})()
 							// execution control module
 							const init = (function() {
-								// frame.onload = () => {}
-								// scene.onload = () => {}
-								// stream.onload = () => {}
-								
 								// loadhandler
 								async function loadhandler(context) {
 									console.log('loadhandler decoder', context)
+									if (context) {
+										// console.log(Object.keys(context)[0])
+										let [[key, value]] = Object.entries(context)
+										interface[key]
+									}
 								}
 								return loadhandler
 							})()
@@ -392,6 +413,9 @@ Development note:
 							async function loadhandler(context) {
 								if (context) {
 									console.log('loadhandler viewbox', context)
+									// controller.init
+									decoder.init(context)
+									// renderer.init
 								} else {
 									console.info('loadhandler viewbox : reset')
 								}								
@@ -457,11 +481,13 @@ Development note:
 								// modules
 								const handler = (function() {
 									const png = (function() {
-										const init = (context) => {
+										const init = async (context) => {
 											console.log('format handler png')
-											let bits = context.target.files[0].arrayBuffer()
+											let bits = await context.target.files[0].arrayBuffer()
 											let bytes = new Uint8Array(bits)
-											viewbox.init({frame : bytes})
+											let blob = new Blob([bytes], {type: 'image/png'})
+											let url = URL.createObjectURL(blob)
+											viewbox.init({frame : url})
 										}
 										return {init}
 									})()
@@ -504,7 +530,7 @@ Development note:
 								// modules
 								const handler = (function() {
 									const init = (function() {
-										console.log('display handler init (decoder)')
+										console.log('init input type display handler')
 									})()
 								})()
 								// execution control module
@@ -661,8 +687,8 @@ Development note:
 					})()
 					const synthesize = (function() {
 							// methods
-							const blur = () => {}
-							const downscale = () => {}
+							const blur = (imgdata) => {return imgdata}
+							const downscale = (imagedata) => {return imagedata}
 							// execution control module
 							const init = (function() {
 								// loadhandler
@@ -682,7 +708,9 @@ Development note:
 						async function loadhandler(context) {
 							console.log('loadhandler inference', context)
 						}
+						// eventhandler
 						document.querySelector('.exec button').onclick = (event) => loadhandler(event)
+						// override
 						return loadhandler
 					})()
 					// EXPORT
