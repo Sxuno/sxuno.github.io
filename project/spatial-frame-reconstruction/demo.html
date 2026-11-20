@@ -295,6 +295,7 @@ Development note:
 					// modules
 					const viewbox = (function() {
 						let _layout
+						let _descriptor
 						let _context
 						// viewbox signals
 						let _eventdispatcher
@@ -313,13 +314,17 @@ Development note:
 									// if engine.input.controller enabled :: key down (esc) => disable engine.input.controller # engine override?
 								}
 								// execution control method
-								const init = (function() { /* use viewbox type || tpye arg */})			
+								const init = (function() { /* use viewbox type || tpye arg */})		
 								// EXPORTS
 								return {init}
 							})()
 							// execution control module
 							const init = (function() {
 								console.log('init viewbox controller')
+								async function loadhandler(context) {
+									console.log('loadhandler viewbox controller', context)
+								}
+								return loadhandler
 							})()
 							return {init}
 						})()
@@ -335,11 +340,10 @@ Development note:
 									onload: () => {console.log('void stream')},
 									video: _video,
 									set src(context) {
-										_stream = context // temp lifecycle 
+										document.querySelector('.viewbox .decoder').append(_video)
 										_video.srcObject = context
 										_video.muted = true
 										_video.play()
-
 										_video.onloadeddata = () => {
 											if (typeof stream.onload === 'function') {
 												stream.onload()
@@ -400,7 +404,13 @@ Development note:
 							}
 							// execution control module
 							const init = (function() {
-								
+								console.log('init viewbox controller')
+								async function loadhandler(context) {
+									console.log('loadhandler viewbox renderer', context)
+									let [[key, value]] = Object.entries(context)
+									decode[key].src = value
+								}
+								return loadhandler
 							})()
 							return {init, draw}
 						})()
@@ -418,7 +428,7 @@ Development note:
 							async function loadhandler(context) {
 								if (context) {
 									console.log('loadhandler viewbox', context)
-									controller.init(context)	
+									controller.init(context)
 									renderer.init(context)																	
 								} else {
 									console.info('loadhandler viewbox : reset')
@@ -539,7 +549,7 @@ Development note:
 									})()
 								})()
 								// execution control module
-								const init = () => {
+								const init = (function() {
 									// device feature test sample functions
 									/* copyExternalImageToTexture
 									navigator.gpu?.requestAdapter().then(a => a?.requestDevice()).then(d => {
@@ -554,13 +564,17 @@ Development note:
 									async function loadhandler(context) {
 										if (context) {
 											console.log('loadhandler display', context)
-											handler.init()
+											let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
+											_display.getVideoTracks()[0].addEventListener('ended', () => {
+												console.log('screen sharing stopped')
+											})
+											viewbox.init({stream : _display})
 										} else {
 											console.info('loadhandler display init')
 										}										
 									}
 									return loadhandler
-								}
+								})()
 								return {init}
 							})()
 							const engine = (function() {
@@ -618,16 +632,8 @@ Development note:
 						const source = (function() {
 							// methods
 							const select = async (context) => {
-								console.info('select : context', context)
-								if(context.target.dataset.handler === 'display') {
-									let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
-									_display.getVideoTracks()[0].addEventListener('ended', () => {
-										console.log('screen sharing stopped')
-									})
-								}
-								if(context.target.dataset.handler === 'file') {
-									await input.type[context.target.dataset.handler].init(context.target)
-								}
+								console.info('source select : context', context.target.dataset.handler)
+								input.type[context.target.dataset.handler].init(context.target)
 							}
 							// execution control module
 							const init = (function() {
