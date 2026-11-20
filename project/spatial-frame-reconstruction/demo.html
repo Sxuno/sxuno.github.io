@@ -264,12 +264,13 @@ Development note:
         </main>
 		<script>
 			const demo = (function(){
+				// VERSION = 0.1.0-dev
+				console.info('init demo')
 				// dependency check
 				if (!window.layout) {
 					console.error('missing script dependency : framework layout')
 					return
-				}
-				console.info('init demo')
+				}				
 				// privates
 				let _style
 				let _layout
@@ -294,12 +295,15 @@ Development note:
 					// modules
 					const viewbox = (function() {
 						let _layout
+						let _context
+						// viewbox signals
+						let _eventdispatcher
 						// modules
 						const controller = (function() {
 							// modules
 							const comparison = {}
 							const viewport = (function() {
-								let _layout
+								let _layout // placeholder
 								// methods
 								const scale = () => {/* event onhover & mouse wheel : viewbox => canvas context resize */}
 								const move = () => {/* event onhover & mouse down : viewbox => canvas context move */}
@@ -320,30 +324,11 @@ Development note:
 							return {init}
 						})()
 						const renderer = (function() {
-							// methods
-							const draw = () => {
-								// runtime = modelexecution :: cpu webworker canvas2d || gpu webgpu
-								// video mapping = source.requestVideoFrameCallback()
-								// note: 	may just use method draw, render instead of module renderer ?
-								// 			if navigator.gpu && engine = dispatch render?
-								// question is about doing an sample renderer vs only implement into engine
-							}
-							// execution control module
-							const init = (function() {
-								// loadhandler
-								async function loadhandler(context) {
-									console.log('loadhandler renderer', context)
-								}
-								return loadhandler
-							})
-							return {draw}
-						})()
-						const decoder = (function() {
-							// placholder lifecycle objects
-							let _video = document.createElement('video')
-							let _stream 
-							// modules
-							const interface = (function() {
+							// interface
+							const decode = (function() {
+								// placholder lifecycle objects
+								let _video = document.createElement('video')
+								let _stream 
 								// modules
 								const frame = new Image()
 								const stream = {
@@ -382,26 +367,42 @@ Development note:
 								}
 								// execution control module
 								const init = (function() {
-									frame.onload = () => {
-										console.log('void frame')
+									frame.addEventListener('load', () => {})
+									frame.onload = async () => {
+										console.log('frame onload')
+										// image data 
+										console.log(`SIZE :: ${frame.naturalWidth} x ${frame.naturalHeight}`)
+										// html
+										let _canvas
+										document.querySelector('.decoder').replaceChildren()
+										_canvas = document.createElement('canvas')
+										_canvas.classList = 'frame'
+										document.querySelector('.viewbox .decoder').append(_canvas)
+										// context
+										_canvas.width = frame.naturalWidth
+										_canvas.height = frame.naturalHeight
+										let _ctx = _canvas.getContext('2d')
+										_ctx.clearRect(0, 0, _canvas.width, _canvas.height)
+										_ctx.drawImage(frame, 0, 0)
 										URL.revokeObjectURL(frame.src)
+										// output event || return || callmethod ?
 									}
 								})()
 								return {frame, stream, scene}
 							})()
+							// methods
+							const draw = () => {
+								// runtime = modelexecution :: cpu webworker canvas2d || gpu webgpu
+								// video mapping = source.requestVideoFrameCallback()
+								// note: 	may just use method draw, render instead of module renderer ?
+								// 			if navigator.gpu && engine = dispatch render?
+								// question is about doing an sample renderer vs only implement into engine
+							}
 							// execution control module
 							const init = (function() {
-								// loadhandler
-								async function loadhandler(context) {
-									console.log('loadhandler decoder', context)
-									if (context) {
-										let [[key, value]] = Object.entries(context)
-										interface[key].src = value
-									}
-								}
-								return loadhandler
+								
 							})()
-							return {init}
+							return {init, draw}
 						})()
 						// methods
 						const rescale = () => {_layout.height = `${(window.layout.width() > 720) ? 900 * (9/16) : window.layout.width() * (9/16)}px`}
@@ -411,16 +412,18 @@ Development note:
 								_style.insertRule(`.viewbox {}`)
 								_layout = _style.cssRules[0].style
 								rescale()
-								// setup html elements
+								// setup viewbox signals
+								_eventdispatcher = new EventTarget
 							}
 							async function loadhandler(context) {
 								if (context) {
 									console.log('loadhandler viewbox', context)
-									// controller.init
-									decoder.init(context)
-									// renderer.init
+									controller.init(context)	
+									renderer.init(context)																	
 								} else {
 									console.info('loadhandler viewbox : reset')
+									controller.init() // reset
+									renderer.init() // reset
 								}								
 							}
 							return loadhandler
