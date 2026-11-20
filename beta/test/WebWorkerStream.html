@@ -1,0 +1,44 @@
+<button>select</button>
+<canvas></canvas>
+<script>
+    let _eventdispatcher = new EventTarget
+    let canvas = document.querySelector('canvas')
+    let ctx = canvas.getContext('2d')
+    canvas.width = 800
+    canvas.height = 600
+    function render(context) {
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.drawImage(stream.video, 0, 0)
+
+        stream.video.requestVideoFrameCallback(render)
+    }
+    let stream
+    async function init(context) {
+        console.log('init')
+        stream = {
+            video: document.createElement('video'),
+            onload: () => {stream.video.requestVideoFrameCallback(render)},
+            set src(context) {
+                stream.video.srcObject = context
+                stream.video.muted = true
+                stream.video.playsInline = true
+                stream.video.play()
+                stream.video.onloadeddata = () => {
+                    if (typeof stream.onload === 'function') {
+                        stream.onload()
+                    }
+                }
+            },
+            get src() {
+                return frame.video.srcObject
+            }
+        }
+        let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
+        _display.getVideoTracks()[0].addEventListener('ended', () => {
+            console.log('screen sharing stopped')
+        })
+        stream.src = _display
+    }
+    
+    document.querySelector('button').onclick = (event) => init(event.target)
+</script>

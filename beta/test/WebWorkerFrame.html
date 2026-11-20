@@ -1,0 +1,46 @@
+<style>
+    input{direction: ltr}
+    input::file-selector-button{position: absolute;right: 0px;}
+</style>
+<input type = 'file' style = 'all: unset;'></input>
+<script>
+    let _eventdispatcher = new EventTarget
+    function render() {console.log('render')}
+    _eventdispatcher.addEventListener('DONE', render)
+    async function init(context) {
+        console.log('init')
+        console.log(context.files)
+        let bits = await context.files[0].arrayBuffer()
+        let bytes = new Uint8Array(bits)
+        let blob = new Blob([bytes], {type: 'image/png'})
+        let url = URL.createObjectURL(blob)
+        frame = new Image()
+        frame.onload = () => {
+            console.log('done')
+            try{document.querySelector('canvas').remove()}catch{}
+            let decoder = new OffscreenCanvas(frame.naturalWidth,frame.naturalHeight)
+            canvas = document.createElement('canvas')
+            document.body.append(canvas)
+            canvas.width = 800
+            canvas.height = 600
+            let ctx = canvas.getContext('2d')
+            ctx.clearRect(0,0, 800,600)
+            ctx.drawImage(frame, 0, 0, canvas.width, canvas.height)
+            URL.revokeObjectURL(frame.src)
+            _eventdispatcher.dispatchEvent(new Event('DONE'))
+        }
+        frame.src = url
+        console.log('src')
+    }
+
+    document.querySelector('input').onchange = (event) => init(event.target)
+
+
+
+
+    /* viewbox.renderer[runtime][type].init( if(_frame === 0) {
+        viewbox.renderer[runtime][type].draw()
+    })
+    */
+
+</script>

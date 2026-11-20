@@ -33,7 +33,8 @@
 
 !/project/spatial-frame-reconstruction.html
 !/project/spatial-frame-reconstruction/
-!/project/spatial-frame-reconstruction/*.html
+!/project/spatial-frame-reconstruction/demo.html
+!/project/spatial-frame-reconstruction/onnxviewer.html
 !/project/spatial-frame-reconstruction/preview/
 !/project/spatial-frame-reconstruction/preview/**
 !/project/spatial-frame-reconstruction/download/
