@@ -1,14 +1,55 @@
+<style>:root {color-scheme: dark;}</style>
 <button>select</button>
+<div id = 'stats'>
+    <div class = 'input'></div>
+    <div class = 'renderer'></div>
+</div>
 <canvas></canvas>
 <script>
-    let _eventdispatcher = new EventTarget
+    let _eventdispatcher = new EventTarget // placeholder
+    // context
     let canvas = document.querySelector('canvas')
     let ctx = canvas.getContext('2d')
     canvas.width = 800
     canvas.height = 600
+    // resolution matching
+    let scale
+    let renderWidth
+    let renderHeight
+    let offsetX
+    let offsetY
+    // stats 
+    // framebudgetpercentage = ( renderer.framedelta / input.frametime ) * 100
+    let STATS = new Object()
+    STATS.input = new Object()
+    STATS.renderer = new Object()
+    STATS.input.delta = null
+    STATS.renderer.delta = null
+    // profiler
+    let profiler = new Object()
+    profiler.input = document.querySelector('#stats .input')
+    profiler.renderer = document.querySelector('#stats .renderer')
+    function inputprofiler() {
+        let now = performance.now()
+        STATS.input.frametime = now - STATS.input.delta
+        STATS.input.delta = now
+        STATS.input.fps = 1 / ( STATS.input.frametime / 1000)
+        profiler.input.textContent = Math.trunc(STATS.input.fps)
+        STATS.input.framedelta = performance.now() - STATS.input.delta
+        stream.video.requestVideoFrameCallback(inputprofiler)
+    }
+
     function render(context) {
+        let now = performance.now()
+        profiler.renderer.textContent = `${(Math.trunc(STATS.renderer.framedelta * 100) / 100).toFixed(2)} ms` // lastframe
+        STATS.renderer.frametime = now - STATS.renderer.delta
+        STATS.renderer.delta = now
+        STATS.renderer.fps = 1 / ( STATS.renderer.frametime / 1000)
+
         ctx.clearRect(0,0,canvas.width,canvas.height)
-        ctx.drawImage(stream.video, 0, 0)
+        ctx.drawImage(stream.video, offsetX, offsetY, renderWidth, renderHeight)
+
+        STATS.renderer.framedelta = performance.now() - STATS.renderer.delta
 
         stream.video.requestVideoFrameCallback(render)
     }
@@ -17,7 +58,18 @@
         console.log('init')
         stream = {
             video: document.createElement('video'),
-            onload: () => {stream.video.requestVideoFrameCallback(render)},
+            onload: () => {
+                // profiler
+                stream.video.requestVideoFrameCallback(inputprofiler)
+                // native canvas resolution matching
+                scale = Math.min(canvas.width / stream.video.videoWidth, canvas.height / stream.video.videoHeight)
+                renderWidth = stream.video.videoWidth * scale
+                renderHeight = stream.video.videoHeight * scale
+                offsetX = (canvas.width - renderWidth) / 2
+                offsetY = (canvas.height - renderHeight) /2
+                // renderer
+                stream.video.requestVideoFrameCallback(render)
+            },
             set src(context) {
                 stream.video.srcObject = context
                 stream.video.muted = true
@@ -30,10 +82,10 @@
                 }
             },
             get src() {
-                return frame.video.srcObject
+                return stream.video.srcObject
             }
         }
-        let _display = await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
+        let _display = await navigator.mediaDevices.getDisplayMedia({video: {frameRate: {ideal: 60, max: 60}}, audio: false})
         _display.getVideoTracks()[0].addEventListener('ended', () => {
             console.log('screen sharing stopped')
         })
@@ -41,4 +93,14 @@
     }
     
     document.querySelector('button').onclick = (event) => init(event.target)
+</script>
+<script>
+    /* notes:
+
+    worker setup
+
+    const maxAvailable = Math.max(1, (navigator.hardwareConcurrency || 4) - 3);
+    const workersToUse = Math.min(16, 1 << Math.floor(Math.log2(maxAvailable)));
+
+    */
 </script>
