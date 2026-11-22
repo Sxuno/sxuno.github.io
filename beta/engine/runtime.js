@@ -119,9 +119,9 @@ engine.runtime = (function() {
 
 	function renderloop() {
 		let now = performance.now()
-		engine.STATS.frametime = now - engine.STATS.delta
+		engine.STATS.framedelta = now - engine.STATS.delta
 		engine.STATS.delta = now
-		engine.STATS.fps = 1/(engine.STATS.frametime/1000)
+		engine.STATS.fps = 1/(engine.STATS.framedelta/1000)
 
 		// DRAWCALLS
 		// use seperate loops for webgpunotsupported?
@@ -132,7 +132,7 @@ engine.runtime = (function() {
 			}
 		}
 
-		engine.STATS.framedelta = performance.now() - engine.STATS.delta
+		engine.STATS.frametime = performance.now() - engine.STATS.delta
 		_frame = requestAnimationFrame(renderloop)
 	}
 

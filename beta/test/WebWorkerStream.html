@@ -19,7 +19,7 @@
     let offsetX
     let offsetY
     // stats 
-    // framebudgetpercentage = ( renderer.framedelta / input.frametime ) * 100
+    // framebudgetpercentage = ( renderer.frametime / input.framedelta ) * 100
     let STATS = new Object()
     STATS.input = new Object()
     STATS.renderer = new Object()
@@ -31,25 +31,25 @@
     profiler.renderer = document.querySelector('#stats .renderer')
     function inputprofiler() {
         let now = performance.now()
-        STATS.input.frametime = now - STATS.input.delta
+        STATS.input.framedelta = now - STATS.input.delta
         STATS.input.delta = now
-        STATS.input.fps = 1 / ( STATS.input.frametime / 1000)
+        STATS.input.fps = 1 / ( STATS.input.framedelta / 1000)
         profiler.input.textContent = Math.trunc(STATS.input.fps)
-        STATS.input.framedelta = performance.now() - STATS.input.delta
+        STATS.input.frametime = performance.now() - STATS.input.delta
         stream.video.requestVideoFrameCallback(inputprofiler)
     }
 
     function render(context) {
         let now = performance.now()
-        profiler.renderer.textContent = `${(Math.trunc(STATS.renderer.framedelta * 100) / 100).toFixed(2)} ms` // lastframe
-        STATS.renderer.frametime = now - STATS.renderer.delta
+        profiler.renderer.textContent = `${(Math.trunc(STATS.renderer.frametime * 100) / 100).toFixed(2)} ms` // lastframe
+        STATS.renderer.framedelta = now - STATS.renderer.delta
         STATS.renderer.delta = now
-        STATS.renderer.fps = 1 / ( STATS.renderer.frametime / 1000)
+        STATS.renderer.fps = 1 / ( STATS.renderer.framedelta / 1000)
 
         ctx.clearRect(0,0,canvas.width,canvas.height)
         ctx.drawImage(stream.video, offsetX, offsetY, renderWidth, renderHeight)
 
-        STATS.renderer.framedelta = performance.now() - STATS.renderer.delta
+        STATS.renderer.frametime = performance.now() - STATS.renderer.delta
 
         stream.video.requestVideoFrameCallback(render)
     }
