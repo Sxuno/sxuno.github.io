@@ -82,7 +82,7 @@
 				</div>
             </section>
         </main>
-		<script>
+		<script> // NOTES
 			/* notes bit logic :
 				BASE 2
 
@@ -94,8 +94,7 @@
 				• 0000011 = 2 + 1 = 3
 				• 0000101 = 4 + 1 = 5
 			*/
-
-			// SAMPLE AI GENERATED
+			/* SAMPLE AI GENERATED
 
 			// Extracts `bitCount` bits from `byte` starting at `bitPos` (0 = rightmost, 7 = leftmost).
 			// Constraint: bitPos + bitCount <= 8
@@ -120,8 +119,17 @@
 
 			value = (high7 << 7) | low7;            // Shift high7 above low7 and merge
 			}
-		</script>
-		<script> /* onnx node parser
+			*/
+			/* wires
+				ID	type
+				0	VARINT
+				1	FIXED64
+				2	LEN_DELIMITED
+				3	START_GROUP
+				4	END_GROUP
+				5	FIXED32
+			*/
+			/* proto paths
 
 				Navigation Path to the Nodes
 
@@ -152,12 +160,60 @@
 				7	domain					2 (String)			Custom domain (empty "" = standard ONNX)
 
 			*/
+		</script>
+		<script> /* onnx node parser */
 			const onnxviewer = (function() {
 				let buffer
 				// let cursor
 				// let index
-								
-				return {buffer}
+				let byteLength
+				let bytes = 512
+
+				function parse() {
+					for (let i = 0; i < bytes ; i++) {
+						let wiretype = this.buffer[i] & 0x07
+						let proto = this.buffer[i] >>> 3
+						let overflow = this.buffer[i] >>> 7
+						switch(wiretype) {
+							case 0 : {
+								let value = this.buffer[i+1]
+								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} value ${value}`)
+								i++
+								break
+							}
+							case 1 : {
+								console.log('case 1')
+								break
+							}
+							case 2 : {
+								let len = this.buffer[i+1]
+								let lenO = this.buffer[i+1] >>> 7
+								for (let o = 0; o < lenO; o++) {
+									len = len | ((this.buffer[i+1+o] & 0b01111111 /*0x7f*/) << (7 * o))
+								}
+								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} len ${len} overflow ${lenO}`)
+								i = i+1+lenO+len
+								break
+							}
+							case 3 : {
+								console.log('case 3')
+								break
+							}
+							case 4 : {
+								console.log('case 4')
+								break
+							}
+							case 5 : {
+								console.log('case 5')
+								break
+							}
+							default : {
+								 console.warn('uknown')
+							}
+						}
+					}
+				}
+				return {buffer, byteLength, parse}
 			})()
 		</script>
 		<script> // secure context			
@@ -183,7 +239,6 @@
 							if (done) break
 							// CHUNK LOGIC VALIDATION AND PARSING
 							bytes = new Uint8Array(value)
-							console.log(bytes)
 						}
 					}
 					onnxviewer.buffer = bytes
@@ -209,10 +264,12 @@
 					console.log(input)
 					let onnx = input.files[0]
 					let buffer = await onnx.arrayBuffer()
+					onnxviewer.byteLength = buffer.byteLength
 					let bytes = new Uint8Array(buffer)
 					onnxviewer.buffer = bytes
 					try { body.removeChild(view)} catch {body.appendChild(view)}
 					view.textContent = onnxviewer.buffer
+					onnxviewer.parse()
 				}
 			}
 		</script>
