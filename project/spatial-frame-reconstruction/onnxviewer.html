@@ -4,7 +4,7 @@
 		<title>Spatial Frame Reconstruction</title>
 
 		<meta name = 'description' content = 'Art, coding and modeling portfolio'>
-		<meta name = 'keywords' content= 'SXuno, Portfolio, Project, Github, Githubpage, Machine learning, Spatial Frame Reconstruction, ONNX viewer'>
+		<meta name = 'keywords' content= 'SXuno, Portfolio, Project, Github, Githublength, Machine learning, Spatial Frame Reconstruction, ONNX viewer'>
 		<meta name = 'author' content = 'Stefan Wienold'>
 		<meta name = 'language' content = 'en'>
 		
@@ -162,73 +162,77 @@
 			*/
 		</script>
 		<script> /* onnx node parser */
-
-			// TODO : tag overflow handling
-			const onnxviewer = (function() {
-				let buffer
-				// let cursor
-				// let index
-				let byteLength
-				let bytes = 256
-
-				function parse() {
-					for (let i = 0; i < this.byteLength ; i++) {
-						let wiretype = this.buffer[i] & 0b00000111 // 0x07 // 7
-						let proto = this.buffer[i] >>>  0b00000011 // 0x03 // 3
-						let overflow = this.buffer[i] >>> 0b00000111 // 0x07 // 7
-						switch(wiretype) {
+			const onnx = (function() {
+				function read(buffer) {
+					// console.info('read', buffer)
+					for (let cursor = 0; cursor < buffer.length; cursor++) {
+						// proto
+						let stride = 1 + (buffer[cursor] >>> 0b00000111)
+						let proto = (buffer[cursor] & 0b01111000) >>> 0b00000011
+						let wire = buffer[cursor] & 0b00000111
+						for (let offset = 1; offset < stride; offset++) {
+							stride += (buffer[cursor+offset] >>> 0b00000111)
+							proto = proto | ((buffer[cursor+offset] & 0b01111111) << (4 + 7 * (offset - 1)))
+						}				
+						switch(wire) {
 							case 0 : {
-								let value = this.buffer[i+1]
-								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} value ${value}`)
-								// cursor += stride
-								i++
+								let value = buffer[cursor+stride] & 0b01111111
+								let pad = 1 + (buffer[cursor+stride] >>> 0b00000111)
+								for(let offset = 1; offset < pad; offset++) {
+									value += (buffer[cursor+stride+offset] & 0b01111111) * (2 ** (7 * offset))
+									pad += (buffer[cursor+stride+offset] >>> 0b00000111)
+								}
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								cursor += stride+pad-1
+								console.log(`cursor move to ${cursor+1}`)
 								break
 							}
 							case 1 : {
-								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto}`)
-								// cursor += stride
-								i = i + 1 + 8
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								cursor += stride + 8 - 1
 								break
 							}
 							case 2 : {
-								let len = this.buffer[i+1] & 0b01111111
-								let lenO = this.buffer[i+1] >>> 0b00000111 // 0x07 // 7
-								for (let o = 1; o <= lenO; o++) {
-									len = len | ((this.buffer[i+1+o] & 0b01111111 /*0x7f*/) << (7 * o))
-									lenO = lenO + (this.buffer[i+1+o] >>> 0b00000111)
+								let size = buffer[cursor+stride] & 0b01111111
+								let pad = 1 + (buffer[cursor+stride] >>> 0b00000111)
+								for(let offset = 1; offset < pad; offset++) {
+									size += (buffer[cursor+stride+offset] & 0b01111111) * (2 ** (7 * offset))
+									pad += (buffer[cursor+stride+offset] >>> 0b00000111)
 								}
-								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} len ${len} overflow ${lenO}`)
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire} pad ${pad} size ${size}`)
 								if (proto === 7) {
-									// cursor += stride
-									i = i+1+lenO
+								cursor += stride+pad-1
+								console.log(`cursor move to ${cursor+1}`)
 								} else {
-									// cursor += stride
-									i = i+1+lenO+len
+								cursor += stride+pad+size-1
+								console.log(`cursor move to ${cursor+1}`)
 								}
 								break
-							}
+							} 
 							case 3 : {
-								console.warn('case 3') // placeholder for debuging onnx dose wire not support
-								break
+								console.warn('cursor @', cursor)
+								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								return
 							}
 							case 4 : {
-								console.warn('case 4') // placeholder for debuging onnx dose wire not support
-								break
+								console.warn('cursor @', cursor)
+								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								return
 							}
 							case 5 : {
-								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto}`)
-								// cursor += stride
-								i = i + 1 + 4
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								cursor += stride + 4 - 1
 								break
 							}
 							default : {
-								console.warn(`${this.buffer[i].toString(2).padStart(8, '0')} uknown wiretype ${wiretype} @ byte ${[i]}`)
-								//return
+								console.warn('cursor @', cursor)
+								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								return
 							}
 						}
-					}
+					}					
 				}
-				return {buffer, byteLength, parse}
+				return {read}
 			})()
 		</script>
 		<script> // secure context			
@@ -256,8 +260,7 @@
 							bytes = new Uint8Array(value)
 						}
 					}
-					onnxviewer.buffer = bytes
-					document.querySelector('#preview div').textContent = String(onnxviewer.buffer)
+					document.querySelector('#preview div').textContent = String(bytes)
 				})()
 			}
 		</script>
@@ -276,15 +279,14 @@
 				body.appendChild(input)
 
 				input.onchange = async() => {
-					console.log(input)
-					let onnx = input.files[0]
-					let buffer = await onnx.arrayBuffer()
-					onnxviewer.byteLength = buffer.byteLength
+					let buffer = await input.files[0].arrayBuffer()
+					// onnxviewer.byteLength = buffer.byteLength
 					let bytes = new Uint8Array(buffer)
-					onnxviewer.buffer = bytes
+					// onnxviewer.buffer = bytes
 					try { body.removeChild(view)} catch {body.appendChild(view)}
-					view.textContent = onnxviewer.buffer
-					onnxviewer.parse()
+					view.textContent = bytes
+					// onnxviewer.parse()
+					onnx.read(bytes)
 				}
 			}
 		</script>
