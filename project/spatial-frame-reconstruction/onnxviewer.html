@@ -162,53 +162,68 @@
 			*/
 		</script>
 		<script> /* onnx node parser */
+
+			// TODO : tag overflow handling
 			const onnxviewer = (function() {
 				let buffer
 				// let cursor
 				// let index
 				let byteLength
-				let bytes = 512
+				let bytes = 256
 
 				function parse() {
-					for (let i = 0; i < bytes ; i++) {
-						let wiretype = this.buffer[i] & 0x07
-						let proto = this.buffer[i] >>> 3
-						let overflow = this.buffer[i] >>> 7
+					for (let i = 0; i < this.byteLength ; i++) {
+						let wiretype = this.buffer[i] & 0b00000111 // 0x07 // 7
+						let proto = this.buffer[i] >>>  0b00000011 // 0x03 // 3
+						let overflow = this.buffer[i] >>> 0b00000111 // 0x07 // 7
 						switch(wiretype) {
 							case 0 : {
 								let value = this.buffer[i+1]
 								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} value ${value}`)
+								// cursor += stride
 								i++
 								break
 							}
 							case 1 : {
-								console.log('case 1')
+								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto}`)
+								// cursor += stride
+								i = i + 1 + 8
 								break
 							}
 							case 2 : {
-								let len = this.buffer[i+1]
-								let lenO = this.buffer[i+1] >>> 7
-								for (let o = 0; o < lenO; o++) {
+								let len = this.buffer[i+1] & 0b01111111
+								let lenO = this.buffer[i+1] >>> 0b00000111 // 0x07 // 7
+								for (let o = 1; o <= lenO; o++) {
 									len = len | ((this.buffer[i+1+o] & 0b01111111 /*0x7f*/) << (7 * o))
+									lenO = lenO + (this.buffer[i+1+o] >>> 0b00000111)
 								}
 								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto} len ${len} overflow ${lenO}`)
-								i = i+1+lenO+len
+								if (proto === 7) {
+									// cursor += stride
+									i = i+1+lenO
+								} else {
+									// cursor += stride
+									i = i+1+lenO+len
+								}
 								break
 							}
 							case 3 : {
-								console.log('case 3')
+								console.warn('case 3') // placeholder for debuging onnx dose wire not support
 								break
 							}
 							case 4 : {
-								console.log('case 4')
+								console.warn('case 4') // placeholder for debuging onnx dose wire not support
 								break
 							}
 							case 5 : {
-								console.log('case 5')
+								console.info(`${this.buffer[i].toString(2).padStart(8, '0')}\nWiretype ${wiretype} overflow ${overflow} proto ${proto}`)
+								// cursor += stride
+								i = i + 1 + 4
 								break
 							}
 							default : {
-								 console.warn('uknown')
+								console.warn(`${this.buffer[i].toString(2).padStart(8, '0')} uknown wiretype ${wiretype} @ byte ${[i]}`)
+								//return
 							}
 						}
 					}
