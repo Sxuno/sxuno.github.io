@@ -59,7 +59,7 @@
 			</style>
 		</noscript>
 		<style>
-			.node {width: 800px; min-height: 25px; border: 1px solid white;margin-bottom: 10px; border-radius: 5px;white-space: pre-wrap;}
+			.node { min-height: 25px; border: 1px solid white;margin: 10px; border-radius: 5px;white-space: pre-wrap;}
 		</style>
 	</head>
     <body>
@@ -199,16 +199,18 @@
 									value += (buffer[cursor+stride+offset] & 0b01111111) * (2 ** (7 * offset))
 									pad += (buffer[cursor+stride+offset] >>> 0b00000111)
 								}
-								start = cursor+stride
+								size = 0
+								start = cursor
 								end = cursor+stride+pad
-								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
-								cursor += stride+pad-1
-								console.log(`cursor move to ${cursor+1}`)
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} ${leaf} @ ${cursor} stride ${stride} proto ${proto} wire ${wire}`)
 								break
 							}
-							case 1 : {
-								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
-								cursor += stride + 8 - 1
+							case 1 : {			
+								pad = 0
+								size = 8
+								start = cursor
+								end = cursor+stride+pad
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} ${leaf} @ ${cursor} stride ${stride} proto ${proto} wire ${wire}`)
 								break
 							}
 							case 2 : {
@@ -218,21 +220,14 @@
 									size += (buffer[cursor+stride+offset] & 0b01111111) * (2 ** (7 * offset))
 									pad += (buffer[cursor+stride+offset] >>> 0b00000111)
 								}
-								start = cursor+stride+pad
+								start = cursor
 								end = cursor+stride+pad+size
-								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire} pad ${pad} size ${size}`)
-								if (proto === 7) {
-								cursor += stride+pad-1
-								console.log(`cursor move to ${cursor+1}`)
-								} else {
-								cursor += stride+pad+size-1
-								console.log(`cursor move to ${cursor+1}`)
-								}
+								console.info(`${buffer[cursor].toString(2).padStart(8, '0')} ${leaf} @ ${cursor} stride ${stride} proto ${proto} wire ${wire} pad ${pad} size ${size}`)
 								break
 							} 
 							case 3 : {
 								console.warn('cursor @', cursor)
-								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} ${leaf} @ ${cursor} stride ${stride} proto ${proto} wire ${wire}`)
 								return
 							}
 							case 4 : {
@@ -247,7 +242,7 @@
 							}
 							default : {
 								console.warn('cursor @', cursor)
-								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} stride ${stride} proto ${proto} wire ${wire}`)
+								console.error(`${buffer[cursor].toString(2).padStart(8, '0')} ${leaf} @ ${cursor} stride ${stride} proto ${proto} wire ${wire}`)
 								return
 							}
 						}
@@ -256,31 +251,34 @@
 							//			use flat array for tree traversal based on length
 							// 			reduce redundency with helper
 							//			may integrate schema selector for protoswitches
-
 							switch(leaf) {
 								case 'model' : {
 									switch(proto) {
 										case 1 : {
-											if (value) { // placholder condition till graph traversal
 											let leafnode = document.createElement('div')
-												leafnode.classList = 'node ir_version'											
-												leafnode.textContent = `ir_version  @ ${cursor+stride}\n${value}`
-												document.querySelector('.model').appendChild(leafnode)
-											}
+											leafnode.classList = 'node ir_version'											
+											leafnode.textContent = `ir_version  @ ${cursor+stride}\n${value}`
+											document.querySelector('.model').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 2 : {
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node producer_name'
-											leafnode.textContent = `producer_name @ ${start}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `producer_name @ ${start}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.model').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 3 : {
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node producer_version'
-											leafnode.textContent = `producer_version @ ${start}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `producer_version @ ${start}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.model').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 5 : {
@@ -288,6 +286,8 @@
 											leafnode.classList = 'node model_version'
 											leafnode.textContent = `model_version @ ${cursor+stride}\n${value} `
 											document.querySelector('.model').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 7 : {
@@ -296,6 +296,8 @@
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node graph'
 											document.querySelector('.model').appendChild(leafnode)
+											cursor += stride+pad-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 8 : {
@@ -308,48 +310,89 @@
 									switch(proto) {
 										case 1 : {
 											leaf = 'node'
-											length = length - (end - cursor)
+											length = length - (end - start)
 											tree = length
 											length = size
+
+											let label = document.createElement('div')
+											label.textContent = `graph node`
+											label.classList = 'node'
+											document.querySelector('.graph').appendChild(label)
+
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node graph_node'
 											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 2 : {
-											length = length - (end - cursor - stride) 
+											length = length - (end - start)
 											if (length === 0) {leaf = 'model'}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node graph_name'
-											leafnode.textContent = `graph_name @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `graph_name @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 5 : {
-											length = length - (end - cursor - stride) 
-											if (length === 0) {leaf = 'model'}
+											// console.log(length, tree, leaf)
+											leaf = 'tensor'
+											length = length - (end - start) 
+											tree = length
+											length = size
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node initializer_tensorProto'
-											leafnode.textContent = `initializer_tensorProto @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `graph initializer_tensorProto @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 11 : {
-											length = length - (end - cursor - stride) 
+											length = length - (end - start) 
 											if (length === 0) {leaf = 'model'}
 											let leafnode = document.createElement('div')
-											leafnode.classList = 'node input_valueInfo'
-											leafnode.textContent = `input_valueInfo @ ${start}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.classList = 'node input'
+											leafnode.textContent = `graph input @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 12 : {
-											length = length - (end - cursor - stride) 
+											length = length - (end - start) 
 											if (length === 0) {leaf = 'model'}
 											let leafnode = document.createElement('div')
-											leafnode.classList = 'node output_valueInfo'
-											leafnode.textContent = `output_valueInfo @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.classList = 'node output'
+											leafnode.textContent = `graph output @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+											break
+										}
+										case 13 : {
+											length = length - (end - start) 
+											if (length === 0) {leaf = 'model'}
+											let leafnode = document.createElement('div')
+											leafnode.classList = 'node value_info'
+											leafnode.textContent = `graph value_info @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
+											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+											break
+										}
+										case 16 : {
+											length = length - (end - start) 
+											if (length === 0) {leaf = 'model'}
+											let leafnode = document.createElement('div')
+											leafnode.classList = 'node metadata_probs'
+											leafnode.textContent = `graph metadata_probs @ ${start} :: ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
+											document.querySelector('.graph').appendChild(leafnode)
+											cursor += stride+pad+size-1 
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 									}
@@ -358,83 +401,165 @@
 								case 'node' : {
 									switch(proto) {
 										case 1 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start)
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node input'
-											leafnode.textContent = `input @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `input @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 2 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node output'
-											leafnode.textContent = `output @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `output @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 3 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node name'
-											leafnode.textContent = `name @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `name @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 4 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node op_type'
-											leafnode.textContent = `op_type @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `op_type @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 5 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node node_attriute'
-											leafnode.textContent = `node_attribute @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `node_attribute @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
 										}
 										case 7 : {
-											length = length - (end - cursor - stride) 
-											tree = tree - length
-											if (length === 0) {leaf = 'graph'}
-											if (tree === 0) {leaf = 'model'}
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
 											let leafnode = document.createElement('div')
 											leafnode.classList = 'node domain'
-											leafnode.textContent = `domain @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start, end))}`
+											leafnode.textContent = `domain @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
 											let html = document.querySelectorAll('.graph_node')
 											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 											break
+										}
+										case 9 : {
+											length = length - (end -start)
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											let leafnode = document.createElement('div')
+											leafnode.classList = 'node metadata_props'
+											leafnode.textContent = `metadata_probps @ ${start} :: ${tree} - ${length}\n${new TextDecoder().decode(buffer.subarray(start+stride+pad, end))}`
+											let html = document.querySelectorAll('.graph_node')
+											html[html.length-1].appendChild(leafnode)
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
 										}
 									}
 									break
 								}
 								case 'tensor' : {
 									switch(proto) {
-										case 0 : {
+										case 1 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
+											break
+										}
+										case 2 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
+											break
+										}
+										case 8 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
+											break
+										}
+										case 9 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
+											break
+										}
+										case 13 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
+											break
+										}
+										case 14 : {
+											length = length - (end - start) 
+											tree = tree - (end - start)
+											if (length === 0) {leaf = 'graph'; length = tree}
+											if (tree === 0) {leaf = 'model'; tree = 0}
+											cursor += stride+pad+size-1
+											console.log(`cursor move to ${cursor+1}`)
+
 											break
 										}
 									}
