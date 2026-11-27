@@ -59,7 +59,7 @@
 			</style>
 		</noscript>
 		<style>
-			main section div { min-height: 25px; border: 1px solid white;margin: 10px; border-radius: 5px;white-space: pre-wrap; overflow-wrap: anywhere;}
+			main section div div { min-height: 25px; border: 1px solid white;margin: 10px; border-radius: 5px;white-space: pre-wrap; overflow-wrap: anywhere;}
 		</style>
 	</head>
     <body>
@@ -166,7 +166,7 @@
 			// FLAGS
 			DEBUG = 1
 			LOG = 0
-			LOG_TREE = 1
+			LOG_TREE = 0
 			LOG_BYTE = 0
 			LOG_CURSOR = 0
 			LOG_LENGTH = 1
@@ -174,19 +174,19 @@
 			const onnx = (function() {
 				function read(buffer) {
 					if(LOG_LENGTH){console.info('buffer byte length', buffer.length)}
-					// traversal // TODO :: make array 1D based?
+					// traversal
 					let tri = [{leaf : 'model', size : buffer.length}]
 					let depth = 1
 					console.log('tri '+tri[0].size)
 
 					let parentnode = document.createElement('div')
 					parentnode.classList = 'model'
-					parentnode.textContent = 'model'
+					parentnode.textContent = `model :: size ${tri[0].size} bytes`
 					document.querySelector('#preview div').appendChild(parentnode)
-					
+
 					for (let index = 0; index < buffer.length; index++) {
 						let cursor = index
-						let start = index						
+						let start = index // note : as payload identificator?
 						let end = null
 
 						let msb = buffer[index] >>> 0b00000111
@@ -198,7 +198,7 @@
 							proto += ((buffer[cursor] & 0b01111111) * ( 2 ** (4 + 7 * (offset - 1))))
 						}
 						let continues = msb
-						let size = null
+						let size = null 
 						let value = null
 						let message = null
 						let length = msb+1
@@ -260,7 +260,7 @@
 								break
 							}
 							default : {
-								console.error(`${buffer[index].toString(2).padStart(8, '0')} proto ${tri[depth? depth-1:depth].leaf} @ ${index} msb ${msb} proto ${proto} wire ${wire}\nboundry exit error`)
+								console.error(`${index} :: ${buffer[index].toString(2).padStart(8, '0')} \nnode ${tri[depth-1].leaf}\nmsb ${msb} proto ${proto} wire ${wire} \nsize ${size} length ${length} end ${end}`)
 								return
 							}
 						}
@@ -270,7 +270,7 @@
 									case 1 : {
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model ir_version'											
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nir_version\n${value}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nir_version\n${value}`
 										document.querySelector('.model').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -279,7 +279,7 @@
 									case 2 : {
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model producer_name'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nprducer_name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nprducer_name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.model').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -288,7 +288,7 @@
 									case 3 : {
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model producer_version'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nprducer_version\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nprducer_version\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.model').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -297,7 +297,7 @@
 									case 5 : {
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model model_version'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nmodel_version\n${value}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nmodel_version\n${value}`
 										document.querySelector('.model').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -308,7 +308,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model graph'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nmodel graph`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nmodel graph`
 										document.querySelector('.model').appendChild(leafnode)
 										
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -317,7 +317,7 @@
 									case 8 : {
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'model opset_import'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nprducer_version\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nprducer_version\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.model').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -334,7 +334,7 @@
 										let html = document.querySelectorAll('.model.graph')
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph node'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph node`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph node`
 										html[html.length-1].appendChild(leafnode)
 										// cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -344,7 +344,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node graph_name'
-										leafnode.textContent = `graph_name @ ${start} - ${end} :: proto ${tri[depth? depth-1:depth].leaf} ${length}\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph_name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -355,7 +355,7 @@
 										
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph initializer_tensorProto'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph initializer_tensorProto\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph initializer_tensorProto\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -366,7 +366,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph input'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph input\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph input\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -377,7 +377,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph output'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph output\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph output\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -387,7 +387,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph value_info'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph value_info\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph value_info\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -397,7 +397,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'graph metadata_props'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\ngraph metadata_props\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph metadata_props\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										document.querySelector('.graph').appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -412,7 +412,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node input'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode input\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode input\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -423,7 +423,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node output'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode output\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode output\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -434,7 +434,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node name'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -445,7 +445,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node op_type'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode op_type\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode op_type\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -457,7 +457,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node node_attriute'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode attribute\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode attribute\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -468,7 +468,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node domain'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode domain\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode domain\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
 										cursor = end
@@ -479,7 +479,7 @@
 
 										let leafnode = document.createElement('div')
 										leafnode.classList = 'node metadata_props'
-										leafnode.textContent = `tag @ ${index} - ${end} bytelength ${length} :: proto ${proto} wire ${wire} : message @ ${cursor} - ${end}\nnode metadata_props\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode metadata_props\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
 										let html
 										if (tri[tri.length-1].leaf === 'node') {html = document.querySelectorAll('.graph.node')}
 										if (tri[tri.length-1].leaf === 'graph') {html = document.querySelectorAll('.graph')}
@@ -533,7 +533,7 @@
 								break
 							}
 						}
-						if(DEBUG){console.log(`${index} :: ${buffer[index].toString(2).padStart(8, '0')} \nnode ${tri[depth-1].leaf}\nmsb ${msb} proto ${proto} wire ${wire} \nsize ${size} length ${length} end ${end}`)}
+						if(LOG){console.log(`${index} :: ${buffer[index].toString(2).padStart(8, '0')} \nnode ${tri[depth-1].leaf}\nmsb ${msb} proto ${proto} wire ${wire} \nsize ${size} length ${length} end ${end}`)}
 
 						if(depth < tri.length) {
 							for(let i = 0; i < depth; i++) {
@@ -560,7 +560,7 @@
 				return {read}
 			})()
 		</script>
-		<script> // secure context			
+		<script> // server context
 			if (window.location.protocol !== 'file:') {		
 				(async function() {
 					STREAM = 0
@@ -589,7 +589,7 @@
 				})()
 			}
 		</script>
-		<script> // file context 
+		<script> // local context
 			if (window.location.protocol === 'file:') {
 				let body 
 				let input 
