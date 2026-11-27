@@ -165,13 +165,15 @@
 		<script> /* onnx node parser */
 			// FLAGS
 			DEBUG = 1
-			LOG = 0
+			LOG = 1
 			LOG_TREE = 0
 			LOG_BYTE = 0
 			LOG_CURSOR = 0
 			LOG_LENGTH = 1
 
 			const onnx = (function() {
+				const data_type = {1 : 'FLOAT', 2 : 'UINT8', 3 : 'INT8', 4: 'UINT16', 5: 'INT16', 6: 'INT32', 7: 'INT64', 9: 'BOOL', 10: 'FLOAT16', 11: 'DOUBLE'}
+
 				function read(buffer) {
 					if(LOG_LENGTH){console.info('buffer byte length', buffer.length)}
 					// traversal
@@ -354,8 +356,8 @@
 										tri.push({leaf : 'tensor', size : size})
 										
 										let leafnode = document.createElement('div')
-										leafnode.classList = 'graph initializer_tensorProto'
-										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph initializer_tensorProto\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.classList = 'graph tensor'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ngraph initializer_tensorProto`
 										document.querySelector('.graph').appendChild(leafnode)
 										
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
@@ -453,14 +455,14 @@
 										break
 									}
 									case 5 : {
-										// if(tri[tri.length-1]?.leaf !== 'attribute') {tri.push({leaf: 'attribute', size : size})}
+										tri.push({leaf : 'attribute', size : size})
 
 										let leafnode = document.createElement('div')
-										leafnode.classList = 'node node_attriute'
-										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode attribute\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										leafnode.classList = 'node attribute'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nnode attribute`
 										let html = document.querySelectorAll('.graph.node')
 										html[html.length-1].appendChild(leafnode)
-										cursor = end
+										// cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
@@ -494,37 +496,66 @@
 							case 'tensor' : {
 								switch(proto) {
 									case 1 : {
-
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'tensor'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ndims\n${value}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
 									case 2 : {
-
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'tensor data_type'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ndata_type\n${value} ${data_type[value]}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
 									case 8 : {
-
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'node'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nname\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
 									case 9 : {
+										// TODO: swap data op with payload start end
+										let raw
+										raw = buffer.slice(index+length-size, end+1)
+										raw = new Float32Array(raw.buffer, 0, raw.length / 4)
 
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'tensor raw_data'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nraw_data\n${raw ? raw : 'error'}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
 									case 13 : {
-
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'node'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nexternal_data\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
 									}
 									case 14 : {
-
+										let leafnode = document.createElement('div')
+										leafnode.classList = 'node'
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\ndata_location\n${value}`
+										let html = document.querySelectorAll('.graph.tensor')
+										html[html.length-1].appendChild(leafnode)
 										cursor = end
 										if(LOG_CURSOR){console.info(`cursor move to ${cursor}`)}
 										break
@@ -532,8 +563,166 @@
 								}
 								break
 							}
+							case 'attribute': {
+								switch(proto) {
+									case 1 : {
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nattribute name\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 2 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = 'a2'
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 3 : {
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nattribute int64\n${value}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 4 : {
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nattribute string\n${new TextDecoder().decode(buffer.subarray(cursor+1, end+1))}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 5 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = 'a5'
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 6 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = 'a6'
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 7 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = 'a7'
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 8 : {
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nattribute ints\n${value}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 9 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = 'a9'
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 10 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 11 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 13 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 14 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 15 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 20 : {
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `message @ ${index} bytelength ${length} :: tag : wire ${wire} type ${tri[depth-1].leaf}_proto ${proto} :: payload @ ${cursor} - ${end} : size ${size}\nattribute type enum\n${value}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 21 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 22 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+									case 23 : { // not found in output
+										let leafnode = document.createElement('div')
+										leafnode.textContent = `a${proto}`
+										let html = document.querySelectorAll('.attribute')
+										html[html.length-1].appendChild(leafnode)
+										cursor = end
+										break
+									}
+								}
+								break
+							}
+							case 'valueinfo': {
+								switch(proto) {
+									case 1 : {
+										cursor = end
+										break
+									}
+								}
+								break
+							}
 						}
-						if(LOG){console.log(`${index} :: ${buffer[index].toString(2).padStart(8, '0')} \nnode ${tri[depth-1].leaf}\nmsb ${msb} proto ${proto} wire ${wire} \nsize ${size} length ${length} end ${end}`)}
+						if(LOG){console.log(`${index} :: ${buffer[index].toString(2).padStart(8, '0')} cursor ${cursor}\ntag :: msb ${continues} ${tri[depth-1].leaf}_proto ${proto} wire ${wire} \nmessage :: msb ${msb} size ${size} length ${length} end ${end}`)}
 
 						if(depth < tri.length) {
 							for(let i = 0; i < depth; i++) {
